@@ -1,0 +1,141 @@
+"use client";
+
+import { BookOpen, Video, Users, Award, TrendingUp, Headphones } from "lucide-react";
+
+export function ModernFeaturesSection() {
+    const features = [
+        {
+            icon: Video,
+            title: "Recorded Lessons",
+            description: "Access high-quality video lessons anytime, anywhere. Never miss a class again.",
+            color: "from-blue-500 to-blue-600"
+        },
+        {
+            icon: BookOpen,
+            title: "Comprehensive Resources",
+            description: "Get access to detailed notes, past papers, and study materials curated by experts.",
+            color: "from-purple-500 to-purple-600"
+        },
+        {
+            icon: Users,
+            title: "Interactive Classes",
+            description: "Engage with teachers and peers in dynamic, interactive classroom sessions.",
+            color: "from-green-500 to-green-600"
+        },
+        {
+            icon: Award,
+            title: "Regular Assessments",
+            description: "Track your progress with quizzes, assignments, and mock exams throughout the year.",
+            color: "from-red-500 to-red-600"
+        },
+        {
+            icon: TrendingUp,
+            title: "Performance Analytics",
+            description: "Monitor your improvement with detailed analytics and personalized feedback.",
+            color: "from-yellow-500 to-yellow-600"
+        },
+        {
+            icon: Headphones,
+            title: "24/7 Support",
+            description: "Get your questions answered anytime through our dedicated support channels.",
+            color: "from-pink-500 to-pink-600"
+        },
+    ];
+
+    return (
+        <section className="py-24 bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white relative overflow-hidden">
+            {/* Abstract Background Elements */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
+
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="text-center mb-16">
+                    <div className="inline-block">
+                        <span className="text-yellow-500 font-semibold text-sm uppercase tracking-wider mb-4 block">
+                            Why Choose Us
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+                            Modern Teaching Features
+                        </h2>
+                        <div className="h-1 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6" />
+                    </div>
+                    <p className="text-gray-400 max-w-3xl mx-auto text-lg">
+                        Experience a revolutionary approach to A/L Economics education with cutting-edge technology and proven teaching methodologies.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {features.map((feature, idx) => (
+                        <div
+                            key={idx}
+                            className="group relative bg-gradient-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)] hover:-translate-y-2"
+                        >
+                            {/* Icon with Gradient Background */}
+                            <div className="relative mb-6">
+                                <div className={`inline-flex p-4 bg-gradient-to-br ${feature.color} rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                                    <feature.icon className="w-8 h-8 text-white" />
+                                </div>
+                                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-2xl`} />
+                            </div>
+
+                            {/* Content */}
+                            <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
+                                {feature.title}
+                            </h3>
+                            <p className="text-gray-400 text-sm leading-relaxed">
+                                {feature.description}
+                            </p>
+
+                            {/* Decorative Corner */}
+                            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-bl-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Student Benefits Section */}
+                <div className="mt-20 bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-3xl p-12 border border-yellow-500/20">
+                    <div className="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 className="text-3xl font-bold text-white mb-4">
+                                Student Benefits
+                            </h3>
+                            <p className="text-gray-300 mb-6">
+                                Our comprehensive learning platform is designed to give you every advantage in your A/L Economics journey.
+                            </p>
+                            <ul className="space-y-3">
+                                {[
+                                    "Flexible learning schedule that fits your lifestyle",
+                                    "Access to a vast library of educational resources",
+                                    "Personalized learning paths based on your progress",
+                                    "Direct communication with experienced teachers",
+                                    "Competitive environment that motivates excellence"
+                                ].map((benefit, idx) => (
+                                    <li key={idx} className="flex items-start gap-3 text-gray-300">
+                                        <div className="min-w-[24px] min-h-[24px] rounded-full bg-yellow-500 flex items-center justify-center mt-0.5">
+                                            <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                        <span>{benefit}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="relative">
+                            <div className="aspect-square rounded-2xl bg-gradient-to-br from-yellow-500/20 to-purple-500/20 backdrop-blur-sm border border-gray-700 flex items-center justify-center p-8">
+                                <div className="text-center">
+                                    <div className="text-6xl font-bold text-white mb-4">92%</div>
+                                    <div className="text-xl text-gray-300 mb-2">Success Rate</div>
+                                    <div className="text-sm text-gray-400">Our students achieve A grades</div>
+                                </div>
+                            </div>
+                            {/* Floating Elements */}
+                            <div className="absolute -top-4 -right-4 w-24 h-24 bg-yellow-500/20 rounded-full blur-2xl animate-pulse" />
+                            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: "1s" }} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
