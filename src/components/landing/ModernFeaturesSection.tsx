@@ -7,37 +7,37 @@ export function ModernFeaturesSection() {
         {
             icon: Video,
             title: "Recorded Lessons",
-            description: "Access high-quality video lessons anytime, anywhere. Never miss a class again.",
+            description: "ඕනෑම වේලාවක, ඕනෑම තැනක උසස් තත්ත්වයේ වීඩියෝ පාඩම් වලට ප්‍රවේශ වන්න. නැවත කිසිදා පන්තියක් මග හරින්න එපා.",
             color: "from-blue-500 to-blue-600"
         },
         {
             icon: BookOpen,
             title: "Comprehensive Resources",
-            description: "Get access to detailed notes, past papers, and study materials curated by experts.",
+            description: "ප්‍රවීණයන් විසින් සකස් කරන ලද සවිස්තරාත්මක සටහන්, පසුගිය ප්‍රශ්න පත්‍ර සහ අධ්‍යයන ද්‍රව්‍ය වෙත ප්‍රවේශය ලබා ගන්න.",
             color: "from-purple-500 to-purple-600"
         },
         {
             icon: Users,
             title: "Interactive Classes",
-            description: "Engage with teachers and peers in dynamic, interactive classroom sessions.",
+            description: "ගතික, අන්තර්ක්‍රියාකාරී පන්ති කාමර සැසිවලදී ගුරුවරුන් සහ සම වයසේ මිතුරන් සමඟ සම්බන්ධ වන්න.",
             color: "from-green-500 to-green-600"
         },
         {
             icon: Award,
             title: "Regular Assessments",
-            description: "Track your progress with quizzes, assignments, and mock exams throughout the year.",
+            description: "මුළු වර්ෂය පුරාම ප්‍රශ්න මාලා, පැවරුම් සහ ආදර්ශ විභාග සමඟ ඔබගේ ප්‍රගතිය නිරීක්ෂණය කරන්න.",
             color: "from-red-500 to-red-600"
         },
         {
             icon: TrendingUp,
             title: "Performance Analytics",
-            description: "Monitor your improvement with detailed analytics and personalized feedback.",
+            description: "සවිස්තරාත්මක විශ්ලේෂණ සහ පුද්ගලික ප්‍රතිපෝෂණ සමඟ ඔබගේ දියුණුව නිරීක්ෂණය කරන්න.",
             color: "from-yellow-500 to-yellow-600"
         },
         {
             icon: Headphones,
             title: "24/7 Support",
-            description: "Get your questions answered anytime through our dedicated support channels.",
+            description: "අපගේ කැප වූ සහාය නාලිකා හරහා ඕනෑම වේලාවක ඔබගේ ප්‍රශ්නවලට පිළිතුරු ලබා ගන්න.",
             color: "from-pink-500 to-pink-600"
         },
     ];
@@ -60,7 +60,7 @@ export function ModernFeaturesSection() {
                         <div className="h-1 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6" />
                     </div>
                     <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-                        Experience a revolutionary approach to A/L Economics education with cutting-edge technology and proven teaching methodologies.
+                        අති නවීන තාක්ෂණය සහ ඔප්පු වූ ගුරු ක්‍රමවේද සමඟ උ.පෙ. ආර්ථික විද්‍යා අධ්‍යාපනයට විප්ලවවාදී ප්‍රවේශයක් අත්විඳින්න.
                     </p>
                 </div>
 

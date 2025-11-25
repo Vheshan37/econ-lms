@@ -47,7 +47,7 @@ export function ContactSection() {
                         Start Your AL Economics Journey Today
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                        Have questions? Want to enroll? Get in touch with us and take the first step towards achieving your academic goals.
+                        ප්‍රශ්න තිබේද? ලියාපදිංචි වීමට අවශ්‍යද? අප සමඟ සම්බන්ධ වී ඔබගේ ශාස්ත්‍රීය ඉලක්ක කරා පළමු පියවර තබන්න.
                     </p>
                 </div>
 

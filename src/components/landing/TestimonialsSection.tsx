@@ -73,7 +73,7 @@ export function TestimonialsSection() {
                         What Our Students Say
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto">
-                        Don't just take our word for it. Hear from students who achieved their dreams with our guidance.
+                        අපගේ වචන පමණක් ගන්න එපා. අපගේ මඟපෙන්වීම සමඟ තමන්ගේ සිහින ඉටු කර ගත් සිසුන්ගෙන් අසන්න.
                     </p>
                 </div>
 

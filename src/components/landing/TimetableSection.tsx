@@ -50,7 +50,7 @@ export function TimetableSection() {
                         Class Timetable
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto">
-                        Choose the institute that's convenient for you. Classes are conducted at multiple locations across Sri Lanka.
+                        ඔබට පහසු ආයතනය තෝරා ගන්න. පන්ති ශ්‍රී ලංකාව පුරා විවිධ ස්ථානවල පවත්වනු ලැබේ.
                     </p>
                 </div>
 

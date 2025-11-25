@@ -56,9 +56,9 @@ export function AboutSection() {
                         transition={{ duration: 0.6 }}
                         className="space-y-8"
                     >
-                        <h4 className="text-3xl font-bold text-white">Transforming Complexity into <span className="text-yellow-500">Simplicity</span></h4>
+                        <h4 className="text-3xl font-bold text-white">සංකීර්ණතාවය <span className="text-yellow-500">සරල බවට</span> පරිවර්තනය කිරීම</h4>
                         <p className="text-gray-400 leading-relaxed text-lg">
-                            With over a decade of teaching experience, we have developed a unique methodology that breaks down complex economic theories into digestible, real-world concepts. Our goal is not just to help you pass the exam, but to make you fall in love with the subject.
+                            දශකයකට වැඩි ගුරු අත්දැකීම් සහිතව, අපි සංකීර්ණ ආර්ථික න්‍යායන් පහසුවෙන් තේරුම් ගත හැකි, සැබෑ ලෝක සංකල්ප බවට බිඳ දමන අද්විතීය ක්‍රමවේදයක් වර්ධනය කර ඇත. අපගේ අරමුණ ඔබට විභාගය සමත්වීමට උදව් කිරීම පමණක් නොව, විෂය කෙරෙහි ඇති ඇල්ම වර්ධනය කිරීමයි.
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -73,7 +73,7 @@ export function AboutSection() {
                         <div className="pt-6">
                             <div className="p-6 bg-gray-900 rounded-xl border-l-4 border-yellow-500">
                                 <p className="italic text-gray-300">
-                                    "Economics is everywhere, and understanding it is the key to understanding the world."
+                                    "ආර්ථික විද්‍යාව සෑම තැනකම පවතී, එය තේරුම් ගැනීම ලෝකය තේරුම් ගැනීමයි."
                                 </p>
                                 <p className="mt-4 font-bold text-yellow-500">- Krishan Kasthuriarachchi</p>
                             </div>

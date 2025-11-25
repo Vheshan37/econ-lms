@@ -27,7 +27,7 @@ export function ResultsSection() {
                     </div>
                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Hall of Fame</h2>
                     <p className="text-gray-400 max-w-2xl mx-auto">
-                        Celebrating excellence. Our students consistently secure top island ranks, proving the effectiveness of our teaching methodology.
+                        විශිෂ්ටත්වය සමරමු. අපගේ ගුරු ක්‍රමවේදයේ ඵලදායීතාව ඔප්පු කරමින්, අපගේ සිසුන් අඛණ්ඩව දිවයිනේ ඉහළම ශ්‍රේණි ලබා ගනී.
                     </p>
                 </div>
 

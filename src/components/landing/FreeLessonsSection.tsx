@@ -59,7 +59,7 @@ export function FreeLessonsSection() {
                         Explore a Few Lessons Before You Join
                     </h2>
                     <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-                        Not sure if we're the right fit? Try our free resources and experience our teaching quality firsthand before making a commitment.
+                        අපි ඔබට සුදුසුද යන්න විශ්වාස නැද්ද? එක්වීමට පෙර අපගේ නොමිලේ සම්පත් උත්සාහ කර අපගේ ගුරු කිරීමේ ගුණාත්මකභාවය අත්විඳින්න.
                     </p>
                 </div>
 

@@ -26,15 +26,15 @@ export function HeroSection() {
                         #1 Economics Class in Sri Lanka
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-bold leading-tight font-serif">
-                        Quality <span className="text-yellow-500">Econ</span> <br />
-                        <span className="text-3xl md:text-4xl font-light text-gray-300 block mt-4">
+                    <h1 className="text-5xl md:text-7xl font-black leading-tight font-serif">
+                        Quality <span className="text-yellow-500">ම Econ</span> <br />
+                        <span className="text-3xl md:text-4xl font-normal text-gray-300 block mt-4">
                             For A/L Students
                         </span>
                     </h1>
 
                     <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
-                        Experience the most comprehensive Economics education with a proven track record of producing Island Rankers. Join the league of excellence.
+                        දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන් බිහිකරන ලද ඔප්පු වූ ඉතිහාසයක් ඇති වඩාත්ම සවිස්තරාත්මක ආර්ථික විද්‍යා අධ්‍යාපනය අත්විඳින්න. විශිෂ්ටත්වයේ සම්මේලනයට එක්වන්න.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4">

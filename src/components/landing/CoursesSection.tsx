@@ -10,7 +10,7 @@ export function CoursesSection() {
             year: "2025",
             title: "Advanced Level",
             status: "Revision & Paper Class",
-            description: "Intensive preparation for the upcoming exam. Focus on past papers and rapid revision.",
+            description: "ඉදිරියට එන විභාගය සඳහා දැඩි සූදානමක්. පසුගිය ප්‍රශ්න පත්‍ර සහ ඉක්මන් පුනරීක්ෂණය කෙරෙහි අවධානය.",
             schedule: "Saturday 8:00 AM",
             color: "from-yellow-600 to-yellow-800"
         },
@@ -18,7 +18,7 @@ export function CoursesSection() {
             year: "2026",
             title: "Advanced Level",
             status: "Theory & Revision",
-            description: "Comprehensive theory coverage with parallel revision. Building a solid foundation.",
+            description: "සමාන්තර පුනරීක්ෂණය සමඟ සවිස්තරාත්මක න්‍යාය ආවරණය. ශක්තිමත් පදනමක් ගොඩනැංවීම.",
             schedule: "Sunday 8:00 AM",
             color: "from-blue-600 to-blue-800"
         },
@@ -26,7 +26,7 @@ export function CoursesSection() {
             year: "2027",
             title: "Advanced Level",
             status: "Theory Class",
-            description: "Start your journey early. In-depth theory explanation and fundamental concepts.",
+            description: "ඔබගේ ගමන අද ආරම්භ කරන්න. ගැඹුරු න්‍යාය පැහැදිලි කිරීම් සහ මූලික සංකල්ප.",
             schedule: "Friday 3:00 PM",
             color: "from-purple-600 to-purple-800"
         }
@@ -39,7 +39,7 @@ export function CoursesSection() {
                     <h2 className="text-yellow-500 font-medium tracking-widest uppercase text-sm mb-4">Our Programs</h2>
                     <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Select Your Batch</h3>
                     <p className="text-gray-400 max-w-2xl mx-auto">
-                        Tailored curriculums for every stage of your A/L journey. Join the class that fits your exam year.
+                        ඔබගේ උ.පෙ. ගමනේ සෑම අදියරක් සඳහාම සකස්  කරන ලද විෂය මාලාව. ඔබගේ විභාග වර්ෂයට ගැලපෙන පන්තියට එක්වන්න.
                     </p>
                 </div>
 
