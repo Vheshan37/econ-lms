@@ -1,0 +1,2 @@
+firebase Details
+Project ID: econ-lms

@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CountUp } from "@/components/ui/CountUp";
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -45,7 +44,7 @@ export function HeroSection() {
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         </Link>
-                        <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-white/30 text-white hover:bg-white hover:text-black rounded-full w-full sm:w-auto transition-all duration-300">
+                        <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-gray-700/50 bg-gray-900/50 text-gray-300 hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-500 rounded-full w-full sm:w-auto transition-all duration-300">
                             <Play className="mr-2 h-5 w-5" />
                             Watch Intro
                         </Button>
@@ -53,21 +52,15 @@ export function HeroSection() {
 
                     <div className="flex items-center gap-8 pt-8 border-t border-gray-800">
                         <div>
-                            <p className="text-3xl font-bold text-white">
-                                <CountUp end={5000} suffix="+" />
-                            </p>
+                            <p className="text-3xl font-bold text-white">5000+</p>
                             <p className="text-sm text-gray-500 uppercase tracking-wider">Students</p>
                         </div>
                         <div>
-                            <p className="text-3xl font-bold text-white">
-                                <CountUp end={100} suffix="+" />
-                            </p>
+                            <p className="text-3xl font-bold text-white">100+</p>
                             <p className="text-sm text-gray-500 uppercase tracking-wider">Island Ranks</p>
                         </div>
                         <div>
-                            <p className="text-3xl font-bold text-white">
-                                <CountUp end={10} suffix="+" />
-                            </p>
+                            <p className="text-3xl font-bold text-white">10+</p>
                             <p className="text-sm text-gray-500 uppercase tracking-wider">Years Exp.</p>
                         </div>
                     </div>

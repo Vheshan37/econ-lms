@@ -75,7 +75,7 @@ export function AboutSection() {
                                 <p className="italic text-gray-300">
                                     "Economics is everywhere, and understanding it is the key to understanding the world."
                                 </p>
-                                <p className="mt-4 font-bold text-yellow-500">- Mr. Teacher</p>
+                                <p className="mt-4 font-bold text-yellow-500">- Krishan Kasthuriarachchi</p>
                             </div>
                         </div>
                     </motion.div>

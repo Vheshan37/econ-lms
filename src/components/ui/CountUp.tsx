@@ -64,5 +64,5 @@ export function CountUp({ end, duration = 2000, suffix = "", className = "" }: C
         };
     }, [end, duration, suffix]);
 
-    return <span ref={countRef} className={className}>0{suffix}</span>;
+    return <span ref={countRef} className={`tabular-nums ${className}`}>0{suffix}</span>;
 }
