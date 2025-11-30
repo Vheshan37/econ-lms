@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, GraduationCap, Calendar, Power, Layers, Trash2 } from 'lucide-react';
+import { Plus, Edit2, GraduationCap, Calendar, Power, Layers, Trash2, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -129,24 +129,34 @@ export default function YearsPage() {
 
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Academic Years</h1>
-                    <p className="text-gray-500 mt-2">
-                        Manage your academic years and class types.
-                        <span className="ml-2 text-[#D4AF37] font-medium">
-                            {activeCount}/3 Active
-                        </span>
-                    </p>
+            {/* Header */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+
+                <div className="relative z-10 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
+                            <BookOpen className="w-10 h-10 text-[#1a1a1a]" />
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-bold text-white mb-2">Class Management</h1>
+                            <p className="text-gray-400 text-lg">
+                                Organize your academic years and class structure
+                                <span className="ml-3 text-[#D4AF37] font-medium">
+                                    {years.length} {years.length === 1 ? 'Year' : 'Years'}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <Button
+                        onClick={() => setIsAdding(true)}
+                        className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Add Year
+                    </Button>
                 </div>
-                <Button
-                    onClick={() => setIsAdding(true)}
-                    disabled={activeCount >= 3}
-                    className="bg-[#1a1a1a] hover:bg-black text-white gap-2"
-                >
-                    <Plus className="w-4 h-4" />
-                    Add Year
-                </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -361,6 +371,6 @@ export default function YearsPage() {
                 confirmText="Delete"
                 cancelText="Cancel"
             />
-        </div>
+        </div >
     );
 }

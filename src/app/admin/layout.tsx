@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useStore } from "@/lib/store";
-import { LayoutDashboard, Users, BookOpen, LogOut, Trophy } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminLayout({
@@ -18,6 +18,7 @@ export default function AdminLayout({
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Classes', href: '/admin/classes', icon: BookOpen },
         { name: 'Students', href: '/admin/students', icon: Users },
+        { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
         { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
     ];

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, Edit2, Trash2, UserPlus, X, Check, ChevronRight, Eye, EyeOff, RefreshCw, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Search, Filter, Edit2, Trash2, UserPlus, X, Check, ChevronRight, Eye, EyeOff, RefreshCw, Calendar, ChevronDown, ChevronUp, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -293,23 +293,33 @@ export default function StudentsPage() {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Student Management</h1>
-                    <p className="text-gray-500 mt-2">
-                        Manage student accounts and class assignments
-                        <span className="ml-2 text-[#D4AF37] font-medium">
-                            {filteredStudents.length} {filteredStudents.length === 1 ? 'Student' : 'Students'}
-                        </span>
-                    </p>
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+
+                <div className="relative z-10 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
+                            <Users className="w-10 h-10 text-[#1a1a1a]" />
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-bold text-white mb-2">Student Management</h1>
+                            <p className="text-gray-400 text-lg">
+                                Manage student accounts and class assignments
+                                <span className="ml-3 text-[#D4AF37] font-medium">
+                                    {filteredStudents.length} {filteredStudents.length === 1 ? 'Student' : 'Students'}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <Button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30"
+                    >
+                        <UserPlus className="w-5 h-5" />
+                        Register Student
+                    </Button>
                 </div>
-                <Button
-                    onClick={() => setIsModalOpen(true)}
-                    className="bg-[#1a1a1a] hover:bg-black text-white gap-2"
-                >
-                    <UserPlus className="w-4 h-4" />
-                    Register Student
-                </Button>
             </div>
 
             {/* Search and Filters */}

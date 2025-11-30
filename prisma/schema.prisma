@@ -122,3 +122,26 @@ model HallOfFame {
   updatedAt     DateTime @updatedAt
 }
 
+model Institute {
+  id         String      @id @default(uuid())
+  name       String
+  location   String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  timetables Timetable[]
+}
+
+model Timetable {
+  id           String    @id @default(uuid())
+  instituteId  String
+  institute    Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+  day          String    // Monday, Tuesday, etc.
+  startTime    String    // e.g. "09:00"
+  endTime      String    // e.g. "11:00"
+  academicYear String    // e.g. "2025 A/L"
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([instituteId])
+}
+
