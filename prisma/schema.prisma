@@ -34,6 +34,7 @@ model ClassType {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   topics    Topic[]
+  studentAssignments StudentClassType[]
 
   @@index([yearId])
 }
@@ -65,3 +66,47 @@ model Resource {
 
   @@index([topicId])
 }
+
+model FreeResource {
+  id          String       @id @default(uuid())
+  title       String
+  type        ResourceType
+  url         String
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Student {
+  id              String              @id @default(uuid())
+  // Personal Information
+  name            String
+  school          String
+  dateOfBirth     DateTime
+  
+  // Account Credentials
+  email           String              @unique
+  password        String              // Hashed with bcrypt
+  
+  // Status
+  isActive        Boolean             @default(true)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  
+  // Relations
+  classAssignments StudentClassType[]
+}
+
+model StudentClassType {
+  id          String      @id @default(uuid())
+  studentId   String
+  student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classTypeId String
+  classType   ClassType   @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
+  assignedAt  DateTime    @default(now())
+  
+  @@unique([studentId, classTypeId])
+  @@index([studentId])
+  @@index([classTypeId])
+}
+

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { VideoPlayer } from '@/components/VideoPlayer';
-import { getFreeResources, createResource, updateResource, deleteResource } from '@/lib/actions/resource';
+import { getFreeResources, createFreeResource, updateFreeResource, deleteFreeResource } from '@/lib/actions/freeResource';
 import { ResourceType } from '@prisma/client';
 
 interface Resource {
@@ -79,8 +79,8 @@ export default function FreeResourcesPage() {
         setIsSubmitting(true);
 
         const result = editingResource
-            ? await updateResource(editingResource.id, { title, type: resourceType, url, description })
-            : await createResource({ topicId: null, title, type: resourceType, url, description });
+            ? await updateFreeResource(editingResource.id, { title, type: resourceType, url, description })
+            : await createFreeResource({ title, type: resourceType, url, description });
 
         if (result.success) {
             await fetchResources();
@@ -107,7 +107,7 @@ export default function FreeResourcesPage() {
     const handleDeleteConfirm = async () => {
         if (!deleteAlert.resourceId) return;
 
-        const result = await deleteResource(deleteAlert.resourceId);
+        const result = await deleteFreeResource(deleteAlert.resourceId);
         if (result.success) {
             await fetchResources();
             setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '' });
