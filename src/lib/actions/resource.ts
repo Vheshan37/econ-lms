@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { ResourceType } from '@prisma/client';
 
 export async function createResource(data: {
-    topicId: string;
+    topicId?: string | null;
     title: string;
     type: ResourceType;
     url: string;
@@ -18,22 +18,28 @@ export async function createResource(data: {
                 type: data.type,
                 url: data.url,
                 description: data.description,
-                topicId: data.topicId,
+                topicId: data.topicId || null,
             },
         });
 
-        // Get hierarchy for revalidation
-        const topic = await (prisma as any).topic.findUnique({
-            where: { id: data.topicId },
-            include: {
-                classType: {
-                    select: { yearId: true, id: true }
+        // Revalidate paths
+        if (data.topicId) {
+            // Get hierarchy for topic-based resources
+            const topic = await (prisma as any).topic.findUnique({
+                where: { id: data.topicId },
+                include: {
+                    classType: {
+                        select: { yearId: true, id: true }
+                    }
                 }
-            }
-        });
+            });
 
-        if (topic) {
-            revalidatePath(`/admin/classes/${topic.classType.yearId}/${topic.classType.id}/${data.topicId}`);
+            if (topic) {
+                revalidatePath(`/admin/classes/${topic.classType.yearId}/${topic.classType.id}/${data.topicId}`);
+            }
+        } else {
+            // Free resource
+            revalidatePath('/admin/resources');
         }
 
         return { success: true, data: resource };
@@ -105,7 +111,12 @@ export async function deleteResource(id: string) {
             where: { id },
         });
 
-        revalidatePath(`/admin/classes/${resource.topic.classType.yearId}/${resource.topic.classType.id}/${resource.topicId}`);
+        // Revalidate appropriate path
+        if (resource.topicId && resource.topic) {
+            revalidatePath(`/admin/classes/${resource.topic.classType.yearId}/${resource.topic.classType.id}/${resource.topicId}`);
+        } else {
+            revalidatePath('/admin/resources');
+        }
 
         return { success: true };
     } catch (error) {
@@ -113,3 +124,22 @@ export async function deleteResource(id: string) {
         return { success: false, error: 'Failed to delete resource' };
     }
 }
+
+export async function getFreeResources() {
+    try {
+        const resources = await (prisma as any).resource.findMany({
+            where: {
+                topicId: null
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        return { success: true, data: resources };
+    } catch (error) {
+        console.error('Failed to fetch free resources:', error);
+        return { success: false, error: 'Failed to fetch free resources' };
+    }
+}
+
