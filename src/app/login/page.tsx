@@ -2,79 +2,307 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { motion, AnimatePresence } from "framer-motion";
+import { GraduationCap, ShieldCheck, ArrowRight, Lock, Mail } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { GraduationCap, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
     const { login } = useStore();
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [role, setRole] = useState<'admin' | 'student'>('student');
+    const [isLoading, setIsLoading] = useState(false);
+    const [loginStep, setLoginStep] = useState<'credentials' | 'otp'>('credentials');
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleSendOtp = async (e: React.FormEvent) => {
         e.preventDefault();
-        login(email, role);
-        if (role === 'admin') {
+        setIsLoading(true);
+
+        // Simulate API call to validate credentials and send OTP
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        setLoginStep('otp');
+        setIsLoading(false);
+    };
+
+    const handleVerifyOtp = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        // Simulate OTP verification
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Auto-detect role based on email
+        // In a real app, the backend would return the user's role
+        let finalRole: 'admin' | 'student' = role;
+        if (email === 'teacher@econ.lk') {
+            finalRole = 'admin';
+        } else {
+            finalRole = 'student';
+        }
+
+        login(email, finalRole);
+        if (finalRole === 'admin') {
             router.push('/admin/dashboard');
         } else {
             router.push('/student/dashboard');
         }
+        setIsLoading(false);
+    };
+
+    const handleOtpChange = (index: number, value: string) => {
+        if (value.length > 1) return;
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+
+        // Auto-focus next input
+        if (value && index < 5) {
+            const nextInput = document.getElementById(`otp-${index + 1}`);
+            nextInput?.focus();
+        }
+    };
+
+    const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            const prevInput = document.getElementById(`otp-${index - 1}`);
+            prevInput?.focus();
+        }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-8">
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-                    <p className="text-gray-500 mt-2">Sign in to access your dashboard</p>
-                </div>
+        <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA] relative overflow-hidden">
+            {/* Background Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-linear-to-br from-[#D4AF37]/10 to-transparent blur-3xl" />
+                <div className="absolute top-[40%] -left-[10%] w-[40%] h-[40%] rounded-full bg-linear-to-tr from-[#1a1a1a]/5 to-transparent blur-3xl" />
+            </div>
 
-                <div className="flex p-1 bg-gray-100 rounded-lg">
-                    <button
-                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${role === 'student' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                        onClick={() => setRole('student')}
-                    >
-                        <GraduationCap className="h-4 w-4" />
-                        Student
-                    </button>
-                    <button
-                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${role === 'admin' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                        onClick={() => setRole('admin')}
-                    >
-                        <ShieldCheck className="h-4 w-4" />
-                        Teacher
-                    </button>
-                </div>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 relative z-10 m-4"
+            >
+                {/* Left Side - Visual/Brand */}
+                <div className="relative hidden lg:flex flex-col justify-between p-12 bg-[#1a1a1a] text-white overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay" />
+                    <div className="absolute inset-0 bg-linear-to-b from-[#1a1a1a]/80 via-[#1a1a1a]/90 to-[#1a1a1a]" />
 
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder={role === 'admin' ? "teacher@econ.lk" : "student@example.com"}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                    <div className="relative z-10">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="flex items-center gap-3"
+                        >
+                            <div className="h-10 w-10 rounded-xl bg-[#D4AF37] flex items-center justify-center">
+                                <span className="text-[#1a1a1a] font-bold text-xl">E</span>
+                            </div>
+                            <span className="text-2xl font-bold tracking-tight">Econ LMS</span>
+                        </motion.div>
                     </div>
 
-                    <Button type="submit" className="w-full h-11 text-lg">
-                        Sign In
-                    </Button>
-                </form>
+                    <div className="relative z-10 space-y-6">
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-4xl font-bold leading-tight"
+                        >
+                            Master Economics <br />
+                            <span className="text-[#D4AF37]">With Excellence</span>
+                        </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                            className="text-gray-400 text-lg max-w-md"
+                        >
+                            Join our premium learning platform designed to help you achieve your academic goals with structured lessons and expert guidance.
+                        </motion.p>
+                    </div>
 
-                <div className="text-center text-sm text-gray-500">
-                    <p>Demo Credentials:</p>
-                    <p className="mt-1">Teacher: teacher@econ.lk</p>
-                    <p>Student: kamal@student.lk</p>
+                    <div className="relative z-10 flex gap-2">
+                        <div className="h-1 w-12 rounded-full bg-[#D4AF37]" />
+                        <div className="h-1 w-4 rounded-full bg-gray-600" />
+                        <div className="h-1 w-4 rounded-full bg-gray-600" />
+                    </div>
                 </div>
-            </div>
+
+                {/* Right Side - Login Form */}
+                <div className="p-8 lg:p-12 flex flex-col justify-center bg-white relative">
+                    <div className="max-w-md mx-auto w-full space-y-8">
+                        <AnimatePresence mode="wait">
+                            {loginStep === 'credentials' ? (
+                                <motion.div
+                                    key="credentials"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="space-y-8"
+                                >
+                                    <div className="text-center lg:text-left">
+                                        <h3 className="text-3xl font-bold text-gray-900">Welcome Back</h3>
+                                        <p className="text-gray-500 mt-2">Please enter your details to sign in.</p>
+                                    </div>
+
+                                    {/* Role Selector */}
+                                    <div className="bg-gray-50 p-1.5 rounded-xl flex relative">
+                                        <motion.div
+                                            className="absolute top-1.5 bottom-1.5 rounded-lg bg-white shadow-sm border border-gray-100"
+                                            initial={false}
+                                            animate={{
+                                                x: role === 'student' ? 0 : '100%',
+                                                width: '50%'
+                                            }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        />
+                                        <button
+                                            onClick={() => setRole('student')}
+                                            className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold rounded-lg relative z-10 transition-colors ${role === 'student' ? 'text-[#1a1a1a]' : 'text-gray-500 hover:text-gray-700'
+                                                }`}
+                                        >
+                                            <GraduationCap className={`w-4 h-4 ${role === 'student' ? 'text-[#D4AF37]' : ''}`} />
+                                            Student
+                                        </button>
+                                        <button
+                                            onClick={() => setRole('admin')}
+                                            className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold rounded-lg relative z-10 transition-colors ${role === 'admin' ? 'text-[#1a1a1a]' : 'text-gray-500 hover:text-gray-700'
+                                                }`}
+                                        >
+                                            <ShieldCheck className={`w-4 h-4 ${role === 'admin' ? 'text-[#D4AF37]' : ''}`} />
+                                            Teacher
+                                        </button>
+                                    </div>
+
+                                    <form onSubmit={handleSendOtp} className="space-y-6">
+                                        <div className="space-y-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-700 ml-1">Email Address</label>
+                                                <div className="relative group">
+                                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#D4AF37] transition-colors" />
+                                                    <input
+                                                        type="email"
+                                                        value={email}
+                                                        onChange={(e) => setEmail(e.target.value)}
+                                                        placeholder={role === 'admin' ? "teacher@econ.lk" : "student@example.com"}
+                                                        required
+                                                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37] transition-all placeholder:text-gray-400 text-gray-900"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-700 ml-1">Password</label>
+                                                <div className="relative group">
+                                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#D4AF37] transition-colors" />
+                                                    <input
+                                                        type="password"
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
+                                                        placeholder="••••••••"
+                                                        required
+                                                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37] transition-all placeholder:text-gray-400 text-gray-900"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            disabled={isLoading}
+                                            className="w-full bg-[#1a1a1a] hover:bg-black text-white h-14 rounded-xl font-semibold text-lg shadow-lg shadow-gray-200 hover:shadow-xl transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
+                                        >
+                                            <span className="relative z-10 flex items-center gap-2">
+                                                {isLoading ? 'Sending OTP...' : 'Send OTP'}
+                                                {!isLoading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                                            </span>
+                                            <div className="absolute inset-0 bg-linear-to-r from-[#D4AF37] to-[#F4C430] opacity-0 group-hover:opacity-10 transition-opacity" />
+                                        </button>
+                                    </form>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="otp"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="space-y-8"
+                                >
+                                    <div className="text-center lg:text-left">
+                                        <button
+                                            onClick={() => setLoginStep('credentials')}
+                                            className="text-sm text-gray-500 hover:text-[#1a1a1a] mb-4 flex items-center gap-1 transition-colors"
+                                        >
+                                            ← Back to login
+                                        </button>
+                                        <h3 className="text-3xl font-bold text-gray-900">Enter OTP</h3>
+                                        <p className="text-gray-500 mt-2">
+                                            We sent a verification code to <br />
+                                            <span className="font-medium text-[#1a1a1a]">{email}</span>
+                                        </p>
+                                    </div>
+
+                                    <form onSubmit={handleVerifyOtp} className="space-y-8">
+                                        <div className="flex gap-2 justify-center lg:justify-start">
+                                            {otp.map((digit, index) => (
+                                                <input
+                                                    key={index}
+                                                    id={`otp-${index}`}
+                                                    type="text"
+                                                    maxLength={1}
+                                                    value={digit}
+                                                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                                                    onKeyDown={(e) => handleKeyDown(index, e)}
+                                                    className="w-12 h-14 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37] transition-all text-gray-900"
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <button
+                                                type="submit"
+                                                disabled={isLoading || otp.some(d => !d)}
+                                                className="w-full bg-[#1a1a1a] hover:bg-black text-white h-14 rounded-xl font-semibold text-lg shadow-lg shadow-gray-200 hover:shadow-xl transition-all flex items-center justify-center gap-2 group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                <span className="relative z-10 flex items-center gap-2">
+                                                    {isLoading ? 'Verifying...' : 'Verify & Login'}
+                                                    {!isLoading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                                                </span>
+                                                <div className="absolute inset-0 bg-linear-to-r from-[#D4AF37] to-[#F4C430] opacity-0 group-hover:opacity-10 transition-opacity" />
+                                            </button>
+
+                                            <div className="text-center">
+                                                <button type="button" className="text-sm text-gray-500 hover:text-[#D4AF37] transition-colors">
+                                                    Didn't receive code? Resend
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        <div className="pt-6 border-t border-gray-100">
+                            <div className="text-center space-y-2">
+                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Demo Credentials</p>
+                                <div className="flex justify-center gap-4 text-sm text-gray-600">
+                                    <span className="px-3 py-1 bg-gray-50 rounded-full border border-gray-100">
+                                        Teacher: <span className="font-medium text-[#1a1a1a]">teacher@econ.lk</span>
+                                    </span>
+                                    <span className="px-3 py-1 bg-gray-50 rounded-full border border-gray-100">
+                                        Student: <span className="font-medium text-[#1a1a1a]">kamal@student.lk</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
         </div>
     );
 }
