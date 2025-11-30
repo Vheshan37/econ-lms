@@ -6,7 +6,7 @@ import { Plus, Trash2, GraduationCap, Calendar, Tag, AlertCircle } from 'lucide-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { createClass, getClasses, deleteClass } from '@/app/actions/class';
+import { createClass, getClasses, deleteClass } from '@/lib/actions/class';
 
 interface ClassType {
     id: string;
