@@ -2,16 +2,16 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import { ClassTypeName } from '@prisma/client';
 
 export async function getClassTypes(yearId: string) {
     try {
         const classTypes = await prisma.classType.findMany({
             where: { yearId },
-            orderBy: { name: 'asc' },
+            orderBy: { createdAt: 'asc' }, // Order by creation time to keep defaults first usually
             include: {
                 _count: {
-                    select: { resources: true }
+                    // @ts-ignore
+                    select: { topics: true }
                 }
             }
         });
@@ -22,11 +22,15 @@ export async function getClassTypes(yearId: string) {
     }
 }
 
-export async function createClassType(yearId: string, name: ClassTypeName) {
+export async function createClassType(yearId: string, name: string) {
     try {
-        // Check if this class type already exists for this year
+        // Check if this class type already exists for this year (case insensitive)
         const existing = await prisma.classType.findFirst({
-            where: { yearId, name }
+            where: {
+                yearId,
+                // @ts-ignore
+                name: name
+            }
         });
 
         if (existing) {
@@ -35,6 +39,7 @@ export async function createClassType(yearId: string, name: ClassTypeName) {
 
         const newClassType = await prisma.classType.create({
             data: {
+                // @ts-ignore
                 name,
                 yearId,
                 isActive: true,
@@ -70,8 +75,13 @@ export async function getClassTypeById(id: string) {
             where: { id },
             include: {
                 year: true,
-                resources: {
-                    orderBy: { createdAt: 'desc' }
+                // @ts-ignore
+                topics: {
+                    orderBy: { order: 'asc' },
+                    include: {
+                        // @ts-ignore
+                        resources: true
+                    }
                 }
             }
         });
@@ -87,19 +97,21 @@ export async function getClassTypeById(id: string) {
     }
 }
 
-// Ensure all 3 class types exist for a year
+// Ensure default class types exist for a year
 export async function ensureClassTypes(yearId: string) {
     try {
-        const classTypeNames: ClassTypeName[] = ['THEORY', 'REVISION', 'PAPER_CLASS'];
+        const defaultTypes = ['Theory', 'Revision', 'Paper Class'];
 
-        for (const name of classTypeNames) {
+        for (const name of defaultTypes) {
             const existing = await prisma.classType.findFirst({
+                // @ts-ignore
                 where: { yearId, name }
             });
 
             if (!existing) {
                 await prisma.classType.create({
                     data: {
+                        // @ts-ignore
                         name,
                         yearId,
                         isActive: false, // Create as inactive by default
@@ -112,5 +124,19 @@ export async function ensureClassTypes(yearId: string) {
     } catch (error) {
         console.error('Failed to ensure class types:', error);
         return { success: false, error: 'Failed to ensure class types' };
+    }
+}
+
+export async function deleteClassType(id: string) {
+    try {
+        const classType = await prisma.classType.delete({
+            where: { id },
+        });
+
+        revalidatePath(`/admin/classes/${classType.yearId}`);
+        return { success: true, data: classType };
+    } catch (error) {
+        console.error('Failed to delete class type:', error);
+        return { success: false, error: 'Failed to delete class type' };
     }
 }

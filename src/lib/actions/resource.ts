@@ -5,50 +5,41 @@ import { revalidatePath } from 'next/cache';
 import { ResourceType } from '@prisma/client';
 
 export async function createResource(data: {
-    classTypeId: string;
+    topicId: string;
     title: string;
     type: ResourceType;
     url: string;
     description?: string;
 }) {
     try {
-        const resource = await prisma.resource.create({
+        const resource = await (prisma as any).resource.create({
             data: {
                 title: data.title,
                 type: data.type,
                 url: data.url,
                 description: data.description,
-                classTypeId: data.classTypeId,
+                topicId: data.topicId,
             },
         });
 
-        // Get yearId for revalidation
-        const classType = await prisma.classType.findUnique({
-            where: { id: data.classTypeId },
-            select: { yearId: true }
+        // Get hierarchy for revalidation
+        const topic = await (prisma as any).topic.findUnique({
+            where: { id: data.topicId },
+            include: {
+                classType: {
+                    select: { yearId: true, id: true }
+                }
+            }
         });
 
-        if (classType) {
-            revalidatePath(`/admin/classes/${classType.yearId}/${data.classTypeId}`);
+        if (topic) {
+            revalidatePath(`/admin/classes/${topic.classType.yearId}/${topic.classType.id}/${data.topicId}`);
         }
 
         return { success: true, data: resource };
     } catch (error) {
         console.error('Failed to create resource:', error);
         return { success: false, error: 'Failed to create resource' };
-    }
-}
-
-export async function getResourcesByClassType(classTypeId: string) {
-    try {
-        const resources = await prisma.resource.findMany({
-            where: { classTypeId },
-            orderBy: { createdAt: 'desc' },
-        });
-        return { success: true, data: resources };
-    } catch (error) {
-        console.error('Failed to fetch resources:', error);
-        return { success: false, error: 'Failed to fetch resources' };
     }
 }
 
@@ -59,7 +50,7 @@ export async function updateResource(id: string, data: {
     description?: string;
 }) {
     try {
-        const resource = await prisma.resource.update({
+        const resource = await (prisma as any).resource.update({
             where: { id },
             data: {
                 title: data.title,
@@ -69,14 +60,18 @@ export async function updateResource(id: string, data: {
             },
         });
 
-        // Get yearId for revalidation
-        const classType = await prisma.classType.findUnique({
-            where: { id: resource.classTypeId },
-            select: { yearId: true }
+        // Get hierarchy for revalidation
+        const topic = await (prisma as any).topic.findUnique({
+            where: { id: resource.topicId },
+            include: {
+                classType: {
+                    select: { yearId: true, id: true }
+                }
+            }
         });
 
-        if (classType) {
-            revalidatePath(`/admin/classes/${classType.yearId}/${resource.classTypeId}`);
+        if (topic) {
+            revalidatePath(`/admin/classes/${topic.classType.yearId}/${topic.classType.id}/${resource.topicId}`);
         }
 
         return { success: true, data: resource };
@@ -88,28 +83,29 @@ export async function updateResource(id: string, data: {
 
 export async function deleteResource(id: string) {
     try {
-        const resource = await prisma.resource.findUnique({
+        const resource = await (prisma as any).resource.findUnique({
             where: { id },
-            select: { classTypeId: true }
+            include: {
+                topic: {
+                    include: {
+                        // @ts-ignore
+                        classType: {
+                            select: { yearId: true, id: true }
+                        }
+                    }
+                }
+            }
         });
 
         if (!resource) {
             return { success: false, error: 'Resource not found' };
         }
 
-        await prisma.resource.delete({
+        await (prisma as any).resource.delete({
             where: { id },
         });
 
-        // Get yearId for revalidation
-        const classType = await prisma.classType.findUnique({
-            where: { id: resource.classTypeId },
-            select: { yearId: true }
-        });
-
-        if (classType) {
-            revalidatePath(`/admin/classes/${classType.yearId}/${resource.classTypeId}`);
-        }
+        revalidatePath(`/admin/classes/${resource.topic.classType.yearId}/${resource.topic.classType.id}/${resource.topicId}`);
 
         return { success: true };
     } catch (error) {

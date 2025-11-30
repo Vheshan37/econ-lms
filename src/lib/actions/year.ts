@@ -93,6 +93,7 @@ export async function toggleYearStatus(id: string, newStatus: boolean) {
 
 export async function getYearById(id: string) {
     try {
+        console.log('getYearById called with ID:', id);
         const year = await prisma.academicYear.findUnique({
             where: { id },
             include: {
@@ -100,7 +101,8 @@ export async function getYearById(id: string) {
                     orderBy: { createdAt: 'asc' },
                     include: {
                         _count: {
-                            select: { resources: true }
+                            // @ts-ignore
+                            select: { topics: true }
                         }
                     }
                 }
@@ -108,8 +110,11 @@ export async function getYearById(id: string) {
         });
 
         if (!year) {
+            console.log('Year not found in database for ID:', id);
             return { success: false, error: 'Year not found' };
         }
+
+        console.log('Year found:', year.year);
 
         return { success: true, data: year };
     } catch (error) {

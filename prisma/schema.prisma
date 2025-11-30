@@ -14,11 +14,6 @@ enum ResourceType {
   QUIZ
 }
 
-enum ClassTypeName {
-  THEORY
-  REVISION
-  PAPER_CLASS
-}
 
 model AcademicYear {
   id          String      @id @default(uuid())
@@ -32,15 +27,29 @@ model AcademicYear {
 
 model ClassType {
   id        String        @id @default(uuid())
-  name      ClassTypeName // THEORY, REVISION, PAPER_CLASS
+  name      String        // Custom names allowed
   yearId    String
   year      AcademicYear  @relation(fields: [yearId], references: [id], onDelete: Cascade)
   isActive  Boolean       @default(true)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
-  resources Resource[]
+  topics    Topic[]
 
   @@index([yearId])
+}
+
+model Topic {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  order       Int         @default(0)
+  classTypeId String
+  classType   ClassType   @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  resources   Resource[]
+
+  @@index([classTypeId])
 }
 
 model Resource {
@@ -49,10 +58,10 @@ model Resource {
   type        ResourceType
   url         String
   description String?
-  classTypeId String
-  classType   ClassType    @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
+  topicId     String
+  topic       Topic        @relation(fields: [topicId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
-  @@index([classTypeId])
+  @@index([topicId])
 }

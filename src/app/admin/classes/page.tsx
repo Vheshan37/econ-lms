@@ -137,7 +137,7 @@ export default function YearsPage() {
                             exit={{ opacity: 0, scale: 0.9 }}
                             className={`relative group cursor-pointer overflow-hidden rounded-3xl transition-all ${yr.isActive
                                 ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] hover:shadow-2xl hover:shadow-[#D4AF37]/20'
-                                : 'bg-gray-100 opacity-60 hover:opacity-80'
+                                : 'bg-gray-100 opacity-60 hover:opacity-80 grayscale'
                                 }`}
                             onClick={() => yr.isActive && router.push(`/admin/classes/${yr.id}`)}
                         >
@@ -146,15 +146,15 @@ export default function YearsPage() {
                             <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-2xl -ml-16 -mb-16 pointer-events-none" />
 
                             {/* Action Buttons */}
-                            <div className="absolute top-4 right-4 flex items-center gap-2 z-20 pointer-events-auto">
+                            <div className="absolute top-4 right-4 flex items-center gap-2 z-50 pointer-events-auto">
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleEdit(yr);
                                     }}
                                     className={`p-2 rounded-full transition-colors ${yr.isActive
-                                            ? 'text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10'
-                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
+                                        ? 'text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10'
+                                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
                                         }`}
                                 >
                                     <Edit2 className="w-4 h-4" />
@@ -165,8 +165,8 @@ export default function YearsPage() {
                                         handleToggle(yr.id, yr.isActive);
                                     }}
                                     className={`p-2 rounded-full transition-colors ${yr.isActive
-                                            ? 'text-green-400 hover:bg-green-400/10'
-                                            : 'text-gray-500 hover:bg-gray-200'
+                                        ? 'text-green-400 hover:bg-green-400/10'
+                                        : 'text-gray-500 hover:bg-gray-200'
                                         }`}
                                     title={yr.isActive ? 'Disable year' : 'Enable year'}
                                 >
@@ -214,14 +214,6 @@ export default function YearsPage() {
                                 </div>
                             </div>
 
-                            {/* Inactive Overlay */}
-                            {!yr.isActive && (
-                                <div className="absolute inset-0 bg-gray-50/50 rounded-3xl flex items-center justify-center pointer-events-none">
-                                    <span className="text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-full shadow-sm">
-                                        Inactive
-                                    </span>
-                                </div>
-                            )}
                         </motion.div>
                     ))}
                 </AnimatePresence>
