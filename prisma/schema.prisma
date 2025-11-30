@@ -4,13 +4,55 @@ generator client {
 
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-model AcademicClass {
-  id          String   @id @default(uuid())
-  year        String
-  badge       String
+enum ResourceType {
+  VIDEO
+  PDF
+  PAST_PAPER
+  QUIZ
+}
+
+enum ClassTypeName {
+  THEORY
+  REVISION
+  PAPER_CLASS
+}
+
+model AcademicYear {
+  id          String      @id @default(uuid())
+  year        String      // e.g., "2025 A/L"
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  classTypes  ClassType[]
+}
+
+model ClassType {
+  id        String        @id @default(uuid())
+  name      ClassTypeName // THEORY, REVISION, PAPER_CLASS
+  yearId    String
+  year      AcademicYear  @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  resources Resource[]
+
+  @@index([yearId])
+}
+
+model Resource {
+  id          String       @id @default(uuid())
+  title       String
+  type        ResourceType
+  url         String
+  description String?
+  classTypeId String
+  classType   ClassType    @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([classTypeId])
 }

@@ -1,226 +1,330 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, GraduationCap, Calendar, Tag, AlertCircle } from 'lucide-react';
+import { Plus, Edit2, GraduationCap, Calendar, Power, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { createClass, getClasses, deleteClass } from '@/lib/actions/class';
+import { AlertDialog } from '@/components/ui/alert-dialog';
+import { getYears, createYear, updateYear, toggleYearStatus } from '@/lib/actions/year';
 
-interface ClassType {
+interface YearType {
     id: string;
     year: string;
-    badge: string;
     description: string | null;
+    isActive: boolean;
     createdAt: Date;
+    _count?: {
+        classTypes: number;
+    };
 }
 
-export default function ClassesPage() {
-    const [classes, setClasses] = useState<ClassType[]>([]);
+export default function YearsPage() {
+    const router = useRouter();
+    const [years, setYears] = useState<YearType[]>([]);
     const [isAdding, setIsAdding] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    // Alert Dialog State
+    const [errorAlert, setErrorAlert] = useState<{ isOpen: boolean; message: string }>({
+        isOpen: false,
+        message: ''
+    });
+
     // Form State
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [year, setYear] = useState('');
-    const [badge, setBadge] = useState('');
     const [description, setDescription] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        fetchClasses();
+        fetchYears();
     }, []);
 
-    const fetchClasses = async () => {
+    const fetchYears = async () => {
         setIsLoading(true);
-        const result = await getClasses();
+        const result = await getYears();
         if (result.success && result.data) {
-            setClasses(result.data);
+            setYears(result.data);
         } else {
-            setError(result.error || 'Failed to fetch classes');
+            setError(result.error || 'Failed to fetch years');
         }
         setIsLoading(false);
     };
 
-    const handleCreate = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
         setError(null);
 
-        const result = await createClass({ year, badge, description });
+        const result = editingId
+            ? await updateYear(editingId, { year, description })
+            : await createYear({ year, description });
 
         if (result.success && result.data) {
-            setClasses([result.data, ...classes]);
-            setIsAdding(false);
-            setYear('');
-            setBadge('');
-            setDescription('');
+            if (editingId) {
+                setYears(years.map(y => y.id === editingId ? result.data : y));
+            } else {
+                setYears([result.data, ...years]);
+            }
+            closeModal();
         } else {
-            setError(result.error || 'Failed to create class');
+            setError(result.error || 'Failed to save year');
         }
         setIsSubmitting(false);
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this class?')) return;
+    const handleEdit = (yr: YearType) => {
+        setEditingId(yr.id);
+        setYear(yr.year);
+        setDescription(yr.description || '');
+        setIsAdding(true);
+    };
 
-        const result = await deleteClass(id);
-        if (result.success) {
-            setClasses(classes.filter(c => c.id !== id));
+    const handleToggle = async (id: string, currentStatus: boolean) => {
+        const newStatus = !currentStatus;
+        const result = await toggleYearStatus(id, newStatus);
+
+        if (result.success && result.data) {
+            setYears(years.map(y => y.id === id ? result.data : y));
         } else {
-            alert('Failed to delete class');
+            setErrorAlert({ isOpen: true, message: result.error || 'Failed to toggle year status' });
         }
     };
+
+    const closeModal = () => {
+        setIsAdding(false);
+        setEditingId(null);
+        setYear('');
+        setDescription('');
+        setError(null);
+    };
+
+    const activeCount = years.filter(y => y.isActive).length;
 
     return (
         <div className="space-y-8">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Manage Classes</h1>
-                    <p className="text-gray-500 mt-2">Create and manage your academic classes (Max 3).</p>
+                    <h1 className="text-3xl font-bold text-gray-900">Academic Years</h1>
+                    <p className="text-gray-500 mt-2">
+                        Manage your academic years and class types.
+                        <span className="ml-2 text-[#D4AF37] font-medium">
+                            {activeCount}/3 Active
+                        </span>
+                    </p>
                 </div>
                 <Button
                     onClick={() => setIsAdding(true)}
-                    disabled={classes.length >= 3}
+                    disabled={activeCount >= 3}
                     className="bg-[#1a1a1a] hover:bg-black text-white gap-2"
                 >
                     <Plus className="w-4 h-4" />
-                    Add Class
+                    Add Year
                 </Button>
             </div>
 
-            {error && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-lg flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5" />
-                    {error}
-                </div>
-            )}
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
-                    {classes.map((cls) => (
+                    {years.map((yr) => (
                         <motion.div
-                            key={cls.id}
+                            key={yr.id}
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative group"
+                            className={`relative group cursor-pointer overflow-hidden rounded-3xl transition-all ${yr.isActive
+                                ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] hover:shadow-2xl hover:shadow-[#D4AF37]/20'
+                                : 'bg-gray-100 opacity-60 hover:opacity-80'
+                                }`}
+                            onClick={() => yr.isActive && router.push(`/admin/classes/${yr.id}`)}
                         >
-                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {/* Decorative Elements */}
+                            <div className="absolute top-0 right-0 w-40 h-40 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-2xl -ml-16 -mb-16 pointer-events-none" />
+
+                            {/* Action Buttons */}
+                            <div className="absolute top-4 right-4 flex items-center gap-2 z-20 pointer-events-auto">
                                 <button
-                                    onClick={() => handleDelete(cls.id)}
-                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEdit(yr);
+                                    }}
+                                    className={`p-2 rounded-full transition-colors ${yr.isActive
+                                            ? 'text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10'
+                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
+                                        }`}
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Edit2 className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleToggle(yr.id, yr.isActive);
+                                    }}
+                                    className={`p-2 rounded-full transition-colors ${yr.isActive
+                                            ? 'text-green-400 hover:bg-green-400/10'
+                                            : 'text-gray-500 hover:bg-gray-200'
+                                        }`}
+                                    title={yr.isActive ? 'Disable year' : 'Enable year'}
+                                >
+                                    <Power className="w-4 h-4" />
                                 </button>
                             </div>
 
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="h-10 w-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37]">
-                                    <GraduationCap className="w-5 h-5" />
+                            {/* Content */}
+                            <div className="relative z-10 p-8">
+                                {/* Icon */}
+                                <div className={`h-16 w-16 rounded-2xl flex items-center justify-center mb-6 ${yr.isActive
+                                    ? 'bg-gradient-to-br from-[#D4AF37] to-[#B5952F] shadow-lg shadow-[#D4AF37]/30'
+                                    : 'bg-gray-300'
+                                    }`}>
+                                    <GraduationCap className={`w-8 h-8 ${yr.isActive ? 'text-[#1a1a1a]' : 'text-gray-600'}`} />
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 text-lg">{cls.year}</h3>
-                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{cls.badge}</p>
+
+                                {/* Year */}
+                                <h3 className={`text-4xl font-bold mb-2 ${yr.isActive ? 'text-white' : 'text-gray-700'}`}>
+                                    {yr.year}
+                                </h3>
+
+                                {/* Description */}
+                                {yr.description && (
+                                    <p className={`text-sm mb-6 line-clamp-2 ${yr.isActive ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        {yr.description}
+                                    </p>
+                                )}
+
+                                {/* Stats */}
+                                <div className={`flex items-center gap-4 pt-4 border-t ${yr.isActive ? 'border-white/10' : 'border-gray-300'
+                                    }`}>
+                                    <div className="flex items-center gap-2">
+                                        <Layers className={`w-4 h-4 ${yr.isActive ? 'text-[#D4AF37]' : 'text-gray-500'}`} />
+                                        <span className={`text-sm ${yr.isActive ? 'text-gray-300' : 'text-gray-600'}`}>
+                                            {yr._count?.classTypes || 0} class types
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Calendar className={`w-4 h-4 ${yr.isActive ? 'text-[#D4AF37]' : 'text-gray-500'}`} />
+                                        <span className={`text-xs ${yr.isActive ? 'text-gray-400' : 'text-gray-500'}`}>
+                                            {new Date(yr.createdAt).toLocaleDateString()}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
-                            {cls.description && (
-                                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                                    {cls.description}
-                                </p>
+                            {/* Inactive Overlay */}
+                            {!yr.isActive && (
+                                <div className="absolute inset-0 bg-gray-50/50 rounded-3xl flex items-center justify-center pointer-events-none">
+                                    <span className="text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-full shadow-sm">
+                                        Inactive
+                                    </span>
+                                </div>
                             )}
-
-                            <div className="flex items-center gap-4 text-xs text-gray-400 pt-4 border-t border-gray-50">
-                                <div className="flex items-center gap-1">
-                                    <Calendar className="w-3 h-3" />
-                                    {new Date(cls.createdAt).toLocaleDateString()}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Tag className="w-3 h-3" />
-                                    {cls.badge}
-                                </div>
-                            </div>
                         </motion.div>
                     ))}
                 </AnimatePresence>
 
-                {classes.length === 0 && !isLoading && (
-                    <div className="col-span-full text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                        <p className="text-gray-500">No classes found. Create your first class to get started.</p>
+                {years.length === 0 && !isLoading && (
+                    <div className="col-span-full text-center py-16 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                        <GraduationCap className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">No academic years found</p>
+                        <p className="text-gray-400 text-sm mt-2">Create your first year to get started</p>
                     </div>
                 )}
             </div>
 
-            {/* Add Class Modal/Dialog Overlay */}
+            {/* Add/Edit Year Modal */}
             <AnimatePresence>
                 {isAdding && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-                        onClick={() => setIsAdding(false)}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        onClick={closeModal}
                     >
                         <motion.div
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
-                            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            transition={{ type: "spring", duration: 0.5 }}
+                            className="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden"
                             onClick={e => e.stopPropagation()}
                         >
-                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Create New Class</h2>
-                            <form onSubmit={handleCreate} className="space-y-6">
-                                <div className="space-y-2">
-                                    <Label>Academic Year</Label>
-                                    <Input
-                                        placeholder="e.g. 2025 A/L"
-                                        value={year}
-                                        onChange={e => setYear(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Badge / Type</Label>
-                                    <Input
-                                        placeholder="e.g. Theory & Revision"
-                                        value={badge}
-                                        onChange={e => setBadge(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Description (Optional)</Label>
-                                    <Input
-                                        placeholder="Brief description..."
-                                        value={description}
-                                        onChange={e => setDescription(e.target.value)}
-                                    />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
+
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
+                                        {editingId ? <Edit2 className="w-6 h-6 text-[#1a1a1a]" /> : <Plus className="w-6 h-6 text-[#1a1a1a]" />}
+                                    </div>
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-white">{editingId ? 'Edit Year' : 'New Academic Year'}</h2>
+                                        <p className="text-gray-400 text-sm">{editingId ? 'Update year details' : 'Create a new academic year'}</p>
+                                    </div>
                                 </div>
 
-                                <div className="flex gap-3 pt-4">
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="flex-1"
-                                        onClick={() => setIsAdding(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        className="flex-1 bg-[#1a1a1a] hover:bg-black text-white"
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting ? 'Creating...' : 'Create Class'}
-                                    </Button>
-                                </div>
-                            </form>
+                                <form onSubmit={handleSubmit} className="space-y-5">
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-300 ml-1">Year</Label>
+                                        <div className="relative group">
+                                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#D4AF37] transition-colors" />
+                                            <Input
+                                                placeholder="e.g. 2025 A/L"
+                                                value={year}
+                                                onChange={e => setYear(e.target.value)}
+                                                required
+                                                className="bg-white/5 border-white/10 text-white pl-10 h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-300 ml-1">Description <span className="text-gray-600 text-xs">(Optional)</span></Label>
+                                        <Input
+                                            placeholder="Brief description..."
+                                            value={description}
+                                            onChange={e => setDescription(e.target.value)}
+                                            className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                        />
+                                    </div>
+
+                                    <div className="flex gap-3 pt-6">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            className="flex-1 text-gray-400 hover:text-white hover:bg-white/5 h-12 rounded-xl"
+                                            onClick={closeModal}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            className="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? (editingId ? 'Updating...' : 'Creating...') : (editingId ? 'Update Year' : 'Create Year')}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Error Alert */}
+            <AlertDialog
+                isOpen={errorAlert.isOpen}
+                onClose={() => setErrorAlert({ isOpen: false, message: '' })}
+                title="Error"
+                description={errorAlert.message}
+                type="error"
+                cancelText="Close"
+            />
         </div>
     );
 }
