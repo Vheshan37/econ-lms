@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, Edit2, Trash2, UserPlus, X, Check, ChevronRight, Eye, EyeOff, RefreshCw, Calendar } from 'lucide-react';
+import { Plus, Search, Filter, Edit2, Trash2, UserPlus, X, Check, ChevronRight, Eye, EyeOff, RefreshCw, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -34,9 +34,11 @@ interface Student {
 interface Year {
     id: string;
     year: string;
+    isActive: boolean;
     classTypes: {
         id: string;
         name: string;
+        isActive: boolean;
     }[];
 }
 
@@ -48,9 +50,11 @@ export default function StudentsPage() {
     const [filterYearId, setFilterYearId] = useState<string>('');
     const [filterClassTypeId, setFilterClassTypeId] = useState<string>('');
     const [showFilters, setShowFilters] = useState(false);
+    const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
-    // Registration Modal State
-    const [isRegistering, setIsRegistering] = useState(false);
+    // Registration/Edit Modal State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingStudent, setEditingStudent] = useState<Student | null>(null);
     const [registrationStep, setRegistrationStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -112,6 +116,19 @@ export default function StudentsPage() {
         setConfirmPassword(generated);
     };
 
+    const handleEdit = (student: Student) => {
+        setEditingStudent(student);
+        setName(student.name);
+        setSchool(student.school);
+        setDateOfBirth(new Date(student.dateOfBirth).toISOString().split('T')[0]);
+        setEmail(student.email);
+        setPassword('');
+        setConfirmPassword('');
+        setSelectedClassTypes(student.classAssignments.map(a => a.classType.id));
+        setRegistrationStep(1);
+        setIsModalOpen(true);
+    };
+
     const handleSubmit = async () => {
         if (registrationStep === 1) {
             if (!name || !school || !dateOfBirth) {
@@ -120,15 +137,25 @@ export default function StudentsPage() {
             }
             setRegistrationStep(2);
         } else if (registrationStep === 2) {
-            if (!email || !password || !confirmPassword) {
-                setErrorAlert({ isOpen: true, message: 'Please fill in all credentials' });
-                return;
+            // For editing, password is optional
+            if (editingStudent) {
+                if (password && password !== confirmPassword) {
+                    setErrorAlert({ isOpen: true, message: 'Passwords do not match' });
+                    return;
+                }
+                setRegistrationStep(3);
+            } else {
+                // For new students, password is required
+                if (!email || !password || !confirmPassword) {
+                    setErrorAlert({ isOpen: true, message: 'Please fill in all credentials' });
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    setErrorAlert({ isOpen: true, message: 'Passwords do not match' });
+                    return;
+                }
+                setRegistrationStep(3);
             }
-            if (password !== confirmPassword) {
-                setErrorAlert({ isOpen: true, message: 'Passwords do not match' });
-                return;
-            }
-            setRegistrationStep(3);
         } else if (registrationStep === 3) {
             if (selectedClassTypes.length === 0) {
                 setErrorAlert({ isOpen: true, message: 'Please select at least one class type' });
@@ -136,20 +163,56 @@ export default function StudentsPage() {
             }
 
             setIsSubmitting(true);
-            const result = await createStudent({
-                name,
-                school,
-                dateOfBirth,
-                email,
-                password,
-                classTypeIds: selectedClassTypes
-            });
 
-            if (result.success) {
-                await fetchData();
-                closeModal();
+            if (editingStudent) {
+                // Update existing student
+                const updateData: any = {
+                    name,
+                    school,
+                    dateOfBirth,
+                    email,
+                };
+
+                const result = await updateStudent(editingStudent.id, updateData);
+
+                if (result.success) {
+                    // Update class assignments
+                    const currentClassTypeIds = editingStudent.classAssignments.map(a => a.classType.id);
+                    const toAdd = selectedClassTypes.filter(id => !currentClassTypeIds.includes(id));
+                    const toRemove = currentClassTypeIds.filter(id => !selectedClassTypes.includes(id));
+
+                    // Add new assignments
+                    if (toAdd.length > 0) {
+                        await assignClassTypes(editingStudent.id, toAdd);
+                    }
+
+                    // Remove old assignments
+                    for (const classTypeId of toRemove) {
+                        await removeClassType(editingStudent.id, classTypeId);
+                    }
+
+                    await fetchData();
+                    closeModal();
+                } else {
+                    setErrorAlert({ isOpen: true, message: result.error || 'Failed to update student' });
+                }
             } else {
-                setErrorAlert({ isOpen: true, message: result.error || 'Failed to create student' });
+                // Create new student
+                const result = await createStudent({
+                    name,
+                    school,
+                    dateOfBirth,
+                    email,
+                    password,
+                    classTypeIds: selectedClassTypes
+                });
+
+                if (result.success) {
+                    await fetchData();
+                    closeModal();
+                } else {
+                    setErrorAlert({ isOpen: true, message: result.error || 'Failed to create student' });
+                }
             }
             setIsSubmitting(false);
         }
@@ -179,8 +242,21 @@ export default function StudentsPage() {
         );
     };
 
+    const toggleRowExpansion = (studentId: string) => {
+        setExpandedRows(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(studentId)) {
+                newSet.delete(studentId);
+            } else {
+                newSet.add(studentId);
+            }
+            return newSet;
+        });
+    };
+
     const closeModal = () => {
-        setIsRegistering(false);
+        setIsModalOpen(false);
+        setEditingStudent(null);
         setRegistrationStep(1);
         setName('');
         setSchool('');
@@ -228,7 +304,7 @@ export default function StudentsPage() {
                     </p>
                 </div>
                 <Button
-                    onClick={() => setIsRegistering(true)}
+                    onClick={() => setIsModalOpen(true)}
                     className="bg-[#1a1a1a] hover:bg-black text-white gap-2"
                 >
                     <UserPlus className="w-4 h-4" />
@@ -245,7 +321,7 @@ export default function StudentsPage() {
                             placeholder="Search by name, email, or school..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="pl-10 h-12 rounded-xl"
+                            className="pl-10 h-12 rounded-xl bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-[#D4AF37] focus:ring-[#D4AF37]"
                         />
                     </div>
                     <Button
@@ -271,11 +347,11 @@ export default function StudentsPage() {
                         className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4"
                     >
                         <div className="space-y-2">
-                            <Label>Filter by Year</Label>
+                            <Label className="text-gray-700">Filter by Year</Label>
                             <select
                                 value={filterYearId}
                                 onChange={e => setFilterYearId(e.target.value)}
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2"
                             >
                                 <option value="">All Years</option>
                                 {years.map(year => (
@@ -284,11 +360,11 @@ export default function StudentsPage() {
                             </select>
                         </div>
                         <div className="space-y-2">
-                            <Label>Filter by Class Type</Label>
+                            <Label className="text-gray-700">Filter by Class Type</Label>
                             <select
                                 value={filterClassTypeId}
                                 onChange={e => setFilterClassTypeId(e.target.value)}
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2"
                             >
                                 <option value="">All Class Types</option>
                                 {years.flatMap(year =>
@@ -304,82 +380,113 @@ export default function StudentsPage() {
                 )}
             </div>
 
-            {/* Students Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <AnimatePresence>
-                    {filteredStudents.map((student) => (
-                        <motion.div
-                            key={student.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all group"
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
-                                    <h3 className="font-bold text-gray-900 text-lg">{student.name}</h3>
-                                    <p className="text-sm text-gray-500">{student.email}</p>
-                                    <p className="text-xs text-gray-400 mt-1">{student.school}</p>
-                                </div>
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        onClick={() => handleDeleteClick(student.id, student.name)}
-                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-500">Status</span>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${student.isActive
-                                            ? 'bg-green-100 text-green-700'
-                                            : 'bg-gray-100 text-gray-600'
-                                        }`}>
-                                        {student.isActive ? 'Active' : 'Inactive'}
-                                    </span>
-                                </div>
-
-                                <div className="pt-3 border-t border-gray-100">
-                                    <p className="text-xs text-gray-500 mb-2">Assigned Classes</p>
-                                    <div className="flex flex-wrap gap-1">
-                                        {student.classAssignments.length > 0 ? (
-                                            student.classAssignments.map(assignment => (
-                                                <span
-                                                    key={assignment.id}
-                                                    className="px-2 py-1 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full text-xs font-medium"
-                                                >
-                                                    {assignment.classType.year.year} - {assignment.classType.name}
+            {/* Students Table */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Name</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Email</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">School</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Classes</th>
+                                <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {filteredStudents.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-16 text-center">
+                                        <UserPlus className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                                        <p className="text-gray-500">No students found</p>
+                                        <p className="text-gray-400 text-sm mt-1">
+                                            {searchQuery || filterYearId || filterClassTypeId
+                                                ? 'Try adjusting your search or filters'
+                                                : 'Register your first student to get started'}
+                                        </p>
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredStudents.map((student) => (
+                                    <>
+                                        <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="font-medium text-gray-900">{student.name}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm text-gray-600">{student.email}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm text-gray-600">{student.school}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${student.isActive
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-gray-100 text-gray-800'
+                                                    }`}>
+                                                    {student.isActive ? 'Active' : 'Inactive'}
                                                 </span>
-                                            ))
-                                        ) : (
-                                            <span className="text-xs text-gray-400 italic">No classes assigned</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    onClick={() => toggleRowExpansion(student.id)}
+                                                    className="flex items-center gap-1 text-sm text-[#D4AF37] hover:text-[#B5952F]"
+                                                >
+                                                    <span>{student.classAssignments.length} class{student.classAssignments.length !== 1 ? 'es' : ''}</span>
+                                                    {expandedRows.has(student.id) ? (
+                                                        <ChevronUp className="w-4 h-4" />
+                                                    ) : (
+                                                        <ChevronDown className="w-4 h-4" />
+                                                    )}
+                                                </button>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => handleEdit(student)}
+                                                        className="p-2 text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg transition-colors"
+                                                        title="Edit student"
+                                                    >
+                                                        <Edit2 className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteClick(student.id, student.name)}
+                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                        title="Delete student"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {expandedRows.has(student.id) && (
+                                            <tr key={`${student.id}-expanded`}>
+                                                <td colSpan={6} className="px-6 py-4 bg-gray-50">
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {student.classAssignments.map(assignment => (
+                                                            <span
+                                                                key={assignment.id}
+                                                                className="px-3 py-1 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full text-sm font-medium"
+                                                            >
+                                                                {assignment.classType.year.year} - {assignment.classType.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         )}
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-
-                {filteredStudents.length === 0 && (
-                    <div className="col-span-full text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-                        <UserPlus className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500 text-lg">No students found</p>
-                        <p className="text-gray-400 text-sm mt-2">
-                            {searchQuery || filterYearId || filterClassTypeId
-                                ? 'Try adjusting your search or filters'
-                                : 'Register your first student to get started'}
-                        </p>
-                    </div>
-                )}
+                                    </>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            {/* Registration Modal */}
+            {/* Registration/Edit Modal */}
             <AnimatePresence>
-                {isRegistering && (
+                {isModalOpen && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -403,10 +510,12 @@ export default function StudentsPage() {
                                 <div className="flex items-center justify-between mb-8">
                                     <div className="flex items-center gap-4">
                                         <div className="h-12 w-12 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg">
-                                            <UserPlus className="w-6 h-6 text-[#1a1a1a]" />
+                                            {editingStudent ? <Edit2 className="w-6 h-6 text-[#1a1a1a]" /> : <UserPlus className="w-6 h-6 text-[#1a1a1a]" />}
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-bold text-white">Register Student</h2>
+                                            <h2 className="text-2xl font-bold text-white">
+                                                {editingStudent ? 'Edit Student' : 'Register Student'}
+                                            </h2>
                                             <p className="text-gray-400 text-sm">Step {registrationStep} of 3</p>
                                         </div>
                                     </div>
@@ -491,55 +600,71 @@ export default function StudentsPage() {
                                                 value={email}
                                                 onChange={e => setEmail(e.target.value)}
                                                 required
-                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                                disabled={!!editingStudent}
+                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600 disabled:opacity-50"
                                             />
+                                            {editingStudent && (
+                                                <p className="text-xs text-gray-500">Email cannot be changed</p>
+                                            )}
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <Label className="text-gray-300 ml-1">Password</Label>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleGeneratePassword}
-                                                    className="text-xs text-[#D4AF37] hover:text-[#B5952F] flex items-center gap-1"
-                                                >
-                                                    <RefreshCw className="w-3 h-3" />
-                                                    Generate
-                                                </button>
+                                        {!editingStudent && (
+                                            <>
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <Label className="text-gray-300 ml-1">Password</Label>
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleGeneratePassword}
+                                                            className="text-xs text-[#D4AF37] hover:text-[#B5952F] flex items-center gap-1"
+                                                        >
+                                                            <RefreshCw className="w-3 h-3" />
+                                                            Generate
+                                                        </button>
+                                                    </div>
+                                                    <div className="relative">
+                                                        <Input
+                                                            type={showPassword ? "text" : "password"}
+                                                            placeholder="Enter password"
+                                                            value={password}
+                                                            onChange={e => setPassword(e.target.value)}
+                                                            required
+                                                            className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600 pr-10"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowPassword(!showPassword)}
+                                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                                                        >
+                                                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label className="text-gray-300 ml-1">Confirm Password</Label>
+                                                    <Input
+                                                        type={showPassword ? "text" : "password"}
+                                                        placeholder="Confirm password"
+                                                        value={confirmPassword}
+                                                        onChange={e => setConfirmPassword(e.target.value)}
+                                                        required
+                                                        className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                                    />
+                                                </div>
+
+                                                {password && confirmPassword && password !== confirmPassword && (
+                                                    <p className="text-red-400 text-sm">Passwords do not match</p>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {editingStudent && (
+                                            <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                                                <p className="text-sm text-gray-400">
+                                                    Password cannot be changed from this screen. Contact system administrator to reset password.
+                                                </p>
                                             </div>
-                                            <div className="relative">
-                                                <Input
-                                                    type={showPassword ? "text" : "password"}
-                                                    placeholder="Enter password"
-                                                    value={password}
-                                                    onChange={e => setPassword(e.target.value)}
-                                                    required
-                                                    className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600 pr-10"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                                                >
-                                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-300 ml-1">Confirm Password</Label>
-                                            <Input
-                                                type={showPassword ? "text" : "password"}
-                                                placeholder="Confirm password"
-                                                value={confirmPassword}
-                                                onChange={e => setConfirmPassword(e.target.value)}
-                                                required
-                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                            />
-                                        </div>
-
-                                        {password && confirmPassword && password !== confirmPassword && (
-                                            <p className="text-red-400 text-sm">Passwords do not match</p>
                                         )}
                                     </motion.div>
                                 )}
@@ -554,31 +679,36 @@ export default function StudentsPage() {
                                     >
                                         <div className="space-y-4">
                                             <Label className="text-gray-300 ml-1">Select Class Types</Label>
-                                            {years.map(year => (
-                                                <div key={year.id} className="space-y-2">
-                                                    <p className="text-sm font-medium text-[#D4AF37]">{year.year}</p>
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        {year.classTypes?.map(classType => (
-                                                            <button
-                                                                key={classType.id}
-                                                                type="button"
-                                                                onClick={() => toggleClassType(classType.id)}
-                                                                className={`p-3 rounded-xl border transition-all text-left ${selectedClassTypes.includes(classType.id)
+                                            {years.filter(year => year.isActive).map(year => {
+                                                const activeClassTypes = year.classTypes?.filter(ct => ct.isActive) || [];
+                                                if (activeClassTypes.length === 0) return null;
+
+                                                return (
+                                                    <div key={year.id} className="space-y-2">
+                                                        <p className="text-sm font-medium text-[#D4AF37]">{year.year}</p>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {activeClassTypes.map(classType => (
+                                                                <button
+                                                                    key={classType.id}
+                                                                    type="button"
+                                                                    onClick={() => toggleClassType(classType.id)}
+                                                                    className={`p-3 rounded-xl border transition-all text-left ${selectedClassTypes.includes(classType.id)
                                                                         ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
                                                                         : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                                                                    }`}
-                                                            >
-                                                                <div className="flex items-center justify-between">
-                                                                    <span className="text-sm font-medium">{classType.name}</span>
-                                                                    {selectedClassTypes.includes(classType.id) && (
-                                                                        <Check className="w-4 h-4" />
-                                                                    )}
-                                                                </div>
-                                                            </button>
-                                                        )) || <p className="text-gray-500 text-sm col-span-2">No class types available</p>}
+                                                                        }`}
+                                                                >
+                                                                    <div className="flex items-center justify-between">
+                                                                        <span className="text-sm font-medium">{classType.name}</span>
+                                                                        {selectedClassTypes.includes(classType.id) && (
+                                                                            <Check className="w-4 h-4" />
+                                                                        )}
+                                                                    </div>
+                                                                </button>
+                                                            ))}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
 
                                         {selectedClassTypes.length > 0 && (
@@ -607,7 +737,7 @@ export default function StudentsPage() {
                                         className="flex-1 bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
                                         disabled={isSubmitting}
                                     >
-                                        {isSubmitting ? 'Creating...' : registrationStep === 3 ? 'Register Student' : 'Next'}
+                                        {isSubmitting ? (editingStudent ? 'Updating...' : 'Creating...') : registrationStep === 3 ? (editingStudent ? 'Update Student' : 'Register Student') : 'Next'}
                                         {registrationStep < 3 && <ChevronRight className="w-4 h-4 ml-2" />}
                                     </Button>
                                 </div>

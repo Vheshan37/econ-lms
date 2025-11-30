@@ -18,7 +18,7 @@ export default function AdminLayout({
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Classes', href: '/admin/classes', icon: BookOpen },
         { name: 'Students', href: '/admin/students', icon: Users },
-        { name: 'Resources', href: '/admin/resources', icon: BookOpen },
+        { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
     ];
 
     return (
