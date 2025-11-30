@@ -122,3 +122,17 @@ export async function getYearById(id: string) {
         return { success: false, error: 'Failed to fetch year' };
     }
 }
+
+export async function deleteYear(id: string) {
+    try {
+        const year = await prisma.academicYear.delete({
+            where: { id },
+        });
+
+        revalidatePath('/admin/classes');
+        return { success: true, data: year };
+    } catch (error) {
+        console.error('Failed to delete year:', error);
+        return { success: false, error: 'Failed to delete year' };
+    }
+}

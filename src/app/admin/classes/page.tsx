@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, GraduationCap, Calendar, Power, Layers } from 'lucide-react';
+import { Plus, Edit2, GraduationCap, Calendar, Power, Layers, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog } from '@/components/ui/alert-dialog';
-import { getYears, createYear, updateYear, toggleYearStatus } from '@/lib/actions/year';
+import { getYears, createYear, updateYear, toggleYearStatus, deleteYear } from '@/lib/actions/year';
 
 interface YearType {
     id: string;
@@ -32,6 +32,12 @@ export default function YearsPage() {
     const [errorAlert, setErrorAlert] = useState<{ isOpen: boolean; message: string }>({
         isOpen: false,
         message: ''
+    });
+
+    const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; id: string | null; year: string }>({
+        isOpen: false,
+        id: null,
+        year: ''
     });
 
     // Form State
@@ -95,6 +101,22 @@ export default function YearsPage() {
         }
     };
 
+    const handleDeleteClick = (id: string, year: string) => {
+        setDeleteConfirm({ isOpen: true, id, year });
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deleteConfirm.id) return;
+
+        const result = await deleteYear(deleteConfirm.id);
+        if (result.success) {
+            setYears(years.filter(y => y.id !== deleteConfirm.id));
+            setDeleteConfirm({ isOpen: false, id: null, year: '' });
+        } else {
+            setErrorAlert({ isOpen: true, message: result.error || 'Failed to delete year' });
+        }
+    };
+
     const closeModal = () => {
         setIsAdding(false);
         setEditingId(null);
@@ -136,7 +158,7 @@ export default function YearsPage() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
                             className={`relative group cursor-pointer overflow-hidden rounded-3xl transition-all ${yr.isActive
-                                ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] hover:shadow-2xl hover:shadow-[#D4AF37]/20'
+                                ? 'bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] hover:shadow-2xl hover:shadow-[#D4AF37]/20'
                                 : 'bg-gray-100 opacity-60 hover:opacity-80 grayscale'
                                 }`}
                             onClick={() => yr.isActive && router.push(`/admin/classes/${yr.id}`)}
@@ -147,6 +169,16 @@ export default function YearsPage() {
 
                             {/* Action Buttons */}
                             <div className="absolute top-4 right-4 flex items-center gap-2 z-50 pointer-events-auto">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteClick(yr.id, yr.year);
+                                    }}
+                                    className="p-2 rounded-full transition-colors text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                                    title="Delete year"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -178,7 +210,7 @@ export default function YearsPage() {
                             <div className="relative z-10 p-8">
                                 {/* Icon */}
                                 <div className={`h-16 w-16 rounded-2xl flex items-center justify-center mb-6 ${yr.isActive
-                                    ? 'bg-gradient-to-br from-[#D4AF37] to-[#B5952F] shadow-lg shadow-[#D4AF37]/30'
+                                    ? 'bg-linear-to-br from-[#D4AF37] to-[#B5952F] shadow-lg shadow-[#D4AF37]/30'
                                     : 'bg-gray-300'
                                     }`}>
                                     <GraduationCap className={`w-8 h-8 ${yr.isActive ? 'text-[#1a1a1a]' : 'text-gray-600'}`} />
@@ -250,7 +282,7 @@ export default function YearsPage() {
 
                             <div className="relative z-10">
                                 <div className="flex items-center gap-4 mb-8">
-                                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
+                                    <div className="h-12 w-12 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
                                         {editingId ? <Edit2 className="w-6 h-6 text-[#1a1a1a]" /> : <Plus className="w-6 h-6 text-[#1a1a1a]" />}
                                     </div>
                                     <div>
@@ -295,7 +327,7 @@ export default function YearsPage() {
                                         </Button>
                                         <Button
                                             type="submit"
-                                            className="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
+                                            className="flex-1 bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
                                             disabled={isSubmitting}
                                         >
                                             {isSubmitting ? (editingId ? 'Updating...' : 'Creating...') : (editingId ? 'Update Year' : 'Create Year')}
@@ -316,6 +348,18 @@ export default function YearsPage() {
                 description={errorAlert.message}
                 type="error"
                 cancelText="Close"
+            />
+
+            {/* Delete Confirmation */}
+            <AlertDialog
+                isOpen={deleteConfirm.isOpen}
+                onClose={() => setDeleteConfirm({ isOpen: false, id: null, year: '' })}
+                onConfirm={handleConfirmDelete}
+                title="Delete Academic Year"
+                description={`Are you sure you want to delete "${deleteConfirm.year}"? This will permanently delete all class types, topics, and resources associated with it.`}
+                type="warning"
+                confirmText="Delete"
+                cancelText="Cancel"
             />
         </div>
     );
