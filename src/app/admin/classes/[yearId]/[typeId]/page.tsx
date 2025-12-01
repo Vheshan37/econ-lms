@@ -139,32 +139,47 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Button
-                        onClick={() => router.push(`/admin/classes/${yearId}`)}
-                        className="gap-2 bg-[#1a1a1a] hover:bg-black text-white border-none"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        Back
-                    </Button>
-                    <div>
-                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                            <span>{classTypeData.year.year}</span>
-                            <span>→</span>
-                            <span className="text-gray-900 font-medium">{classTypeData.name}</span>
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
+            >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-6">
+                        <Button
+                            onClick={() => router.push(`/admin/classes/${yearId}`)}
+                            variant="ghost"
+                            className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                        </Button>
+                        <div>
+                            <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                                <span>{classTypeData.year.year}</span>
+                                <ChevronRight className="w-3 h-3" />
+                                <span className="text-[#D4AF37] font-medium">{classTypeData.name}</span>
+                            </div>
+                            <h1 className="text-4xl font-bold text-white">
+                                Topics
+                            </h1>
+                            <p className="text-gray-400 mt-2 max-w-xl">
+                                Manage topics and curriculum structure for this class.
+                            </p>
                         </div>
-                        <h1 className="text-3xl font-bold text-gray-900">Topics</h1>
                     </div>
+
+                    <Button
+                        onClick={() => setIsAdding(true)}
+                        className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Add Topic
+                    </Button>
                 </div>
-                <Button
-                    onClick={() => setIsAdding(true)}
-                    className="bg-[#1a1a1a] hover:bg-black text-white gap-2"
-                >
-                    <Plus className="w-4 h-4" />
-                    Add Topic
-                </Button>
-            </div>
+            </motion.div>
 
             {/* Topics List */}
             <div className="grid gap-4">

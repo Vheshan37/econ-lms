@@ -103,7 +103,7 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
 
         const result = await getYearById(yearId);
         if (result.success && result.data) {
-            setYearData(result.data);
+            setYearData(result.data as YearData);
         } else {
             setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch year data' });
         }
@@ -185,30 +185,44 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center justify-between"
+                    className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
                 >
-                    <div className="flex items-center gap-6">
-                        <Button
-                            onClick={() => router.push('/admin/classes')}
-                            className="gap-2 bg-[#1a1a1a] hover:bg-black text-white border-none"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back
-                        </Button>
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">
-                                {yearData.year}
-                            </h1>
-                            <p className="text-gray-500 mt-1">Select a class type to manage topics</p>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
+
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="flex items-center gap-6">
+                            <Button
+                                onClick={() => router.push('/admin/classes')}
+                                variant="ghost"
+                                className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
+                            >
+                                <ArrowLeft className="w-5 h-5" />
+                            </Button>
+                            <div>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-medium flex items-center gap-2">
+                                        <BookOpen className="w-3 h-3" />
+                                        <span>Academic Year</span>
+                                    </div>
+                                </div>
+                                <h1 className="text-4xl font-bold text-white">
+                                    {yearData.year}
+                                </h1>
+                                <p className="text-gray-400 mt-2 max-w-xl">
+                                    Manage class types and curriculum for this academic year.
+                                </p>
+                            </div>
                         </div>
+
+                        <Button
+                            onClick={() => setIsAdding(true)}
+                            className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Add Class Type
+                        </Button>
                     </div>
-                    <Button
-                        onClick={() => setIsAdding(true)}
-                        className="bg-[#1a1a1a] hover:bg-black text-white gap-2"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add Class Type
-                    </Button>
                 </motion.div>
 
                 {/* Description */}

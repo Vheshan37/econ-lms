@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Plus, Edit2, Trash2, Youtube, FileText, File, ClipboardList, Play, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Plus, Edit2, Trash2, Youtube, FileText, File, ClipboardList, Play, ExternalLink, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -43,9 +43,16 @@ const TABS = [
     { id: 'QUIZ', label: 'Quizzes', icon: ClipboardList, color: 'text-green-500', bgColor: 'bg-green-500' },
 ];
 
-export default async function ResourceManagementPage({ params }: { params: Promise<{ yearId: string; typeId: string; topicId: string }> }) {
-    const { yearId, typeId, topicId } = await params;
-    return <ResourceManagementPageClient yearId={yearId} typeId={typeId} topicId={topicId} />;
+export default function ResourceManagementPage({ params }: { params: Promise<{ yearId: string; typeId: string; topicId: string }> }) {
+    const [resolvedParams, setResolvedParams] = useState<{ yearId: string; typeId: string; topicId: string } | null>(null);
+
+    useEffect(() => {
+        params.then(setResolvedParams);
+    }, [params]);
+
+    if (!resolvedParams) return null;
+
+    return <ResourceManagementPageClient yearId={resolvedParams.yearId} typeId={resolvedParams.typeId} topicId={resolvedParams.topicId} />;
 }
 
 function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: string; typeId: string; topicId: string }) {
@@ -195,35 +202,52 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
     return (
         <div className="space-y-8">
             {/* Breadcrumb Header */}
-            <div className="flex items-center gap-4">
-                <Button
-                    onClick={() => router.push(`/admin/classes/${yearId}/${typeId}`)}
-                    className="gap-2 bg-[#1a1a1a] hover:bg-black text-white border-none"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back
-                </Button>
-                <div className="flex-1">
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                        <span>{topicData.classType.year.year}</span>
-                        <span>→</span>
-                        <span>{topicData.classType.name}</span>
-                        <span>→</span>
-                        <span className="text-gray-900 font-medium">{topicData.title}</span>
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
+            >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-6">
+                        <Button
+                            onClick={() => router.push(`/admin/classes/${yearId}/${typeId}`)}
+                            variant="ghost"
+                            className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                        </Button>
+                        <div>
+                            <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                                <span>{topicData.classType.year.year}</span>
+                                <ChevronRight className="w-3 h-3" />
+                                <span>{topicData.classType.name}</span>
+                                <ChevronRight className="w-3 h-3" />
+                                <span className="text-[#D4AF37] font-medium">{topicData.title}</span>
+                            </div>
+                            <h1 className="text-4xl font-bold text-white">
+                                Resources
+                            </h1>
+                            <p className="text-gray-400 mt-2 max-w-xl">
+                                Manage learning materials, videos, and quizzes for this topic.
+                            </p>
+                        </div>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900">Resources</h1>
+
+                    <Button
+                        onClick={() => {
+                            setResourceType('VIDEO');
+                            setIsAddingResource(true);
+                        }}
+                        className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Add Resource
+                    </Button>
                 </div>
-                <Button
-                    onClick={() => {
-                        setResourceType('VIDEO');
-                        setIsAddingResource(true);
-                    }}
-                    className="bg-[#1a1a1a] hover:bg-black text-white gap-2"
-                >
-                    <Plus className="w-4 h-4" />
-                    Add Resource
-                </Button>
-            </div>
+            </motion.div>
 
             {/* Tabs - Only show if there are resources */}
             {availableTabs.length > 0 && (
