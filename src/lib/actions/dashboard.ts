@@ -11,11 +11,11 @@ export async function getDashboardStats() {
             instituteCount,
             hallOfFameCount
         ] = await Promise.all([
-            (prisma as any).user.count({ where: { role: 'student' } }),
-            (prisma as any).resource.count(),
-            (prisma as any).year.count({ where: { isActive: true } }),
-            (prisma as any).institute.count(),
-            (prisma as any).hallOfFame.count()
+            prisma.student.count(),
+            prisma.resource.count(),
+            prisma.academicYear.count({ where: { isActive: true } }),
+            prisma.institute.count(),
+            prisma.hallOfFame.count()
         ]);
 
         return {

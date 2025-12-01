@@ -180,12 +180,12 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
 
     return (
         <div className="space-y-8">
-            <div className="max-w-7xl mx-auto space-y-8">
+            <div className="mx-auto space-y-8">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
+                    className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
                 >
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
@@ -217,7 +217,7 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
 
                         <Button
                             onClick={() => setIsAdding(true)}
-                            className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
+                            className="bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
                         >
                             <Plus className="w-5 h-5" />
                             Add Class Type

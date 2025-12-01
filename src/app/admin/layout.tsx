@@ -52,13 +52,13 @@ export default function AdminLayout({
                         </div>
                     )}
                     {isCollapsed && (
-                        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
+                        <div className="h-8 w-8 rounded-lg bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
                             <span className="text-[#1a1a1a] font-bold text-lg">E</span>
                         </div>
                     )}
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+                <nav className={`flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar ${isCollapsed ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : ''}`}>
                     {navigation.map((item) => {
                         const isActive = pathname === item.href;
                         return (

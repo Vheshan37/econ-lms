@@ -201,334 +201,336 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
 
     return (
         <div className="space-y-8">
-            {/* Breadcrumb Header */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
-            >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
+            <div className="mx-auto space-y-8">
+                {/* Breadcrumb Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
+                >
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
 
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-6">
-                        <Button
-                            onClick={() => router.push(`/admin/classes/${yearId}/${typeId}`)}
-                            variant="ghost"
-                            className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </Button>
-                        <div>
-                            <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
-                                <span>{topicData.classType.year.year}</span>
-                                <ChevronRight className="w-3 h-3" />
-                                <span>{topicData.classType.name}</span>
-                                <ChevronRight className="w-3 h-3" />
-                                <span className="text-[#D4AF37] font-medium">{topicData.title}</span>
-                            </div>
-                            <h1 className="text-4xl font-bold text-white">
-                                Resources
-                            </h1>
-                            <p className="text-gray-400 mt-2 max-w-xl">
-                                Manage learning materials, videos, and quizzes for this topic.
-                            </p>
-                        </div>
-                    </div>
-
-                    <Button
-                        onClick={() => {
-                            setResourceType('VIDEO');
-                            setIsAddingResource(true);
-                        }}
-                        className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
-                    >
-                        <Plus className="w-5 h-5" />
-                        Add Resource
-                    </Button>
-                </div>
-            </motion.div>
-
-            {/* Tabs - Only show if there are resources */}
-            {availableTabs.length > 0 && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="flex border-b border-gray-200">
-                        {availableTabs.map((tab) => {
-                            const Icon = tab.icon;
-                            const isActive = activeTab === tab.id;
-                            const count = topicData.resources.filter(r => r.type === tab.id).length;
-
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id as ResourceType)}
-                                    className={`flex-1 relative px-6 py-4 font-medium transition-colors ${isActive
-                                        ? 'text-gray-900'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                        }`}
-                                >
-                                    <div className="flex items-center justify-center gap-2">
-                                        <Icon className={`w-5 h-5 ${isActive ? tab.color : ''}`} />
-                                        <span>{tab.label}</span>
-                                        <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? `${tab.bgColor} text-white` : 'bg-gray-100 text-gray-600'
-                                            }`}>
-                                            {count}
-                                        </span>
-                                    </div>
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="activeTab"
-                                            className={`absolute bottom-0 left-0 right-0 h-0.5 ${tab.bgColor}`}
-                                            transition={{ type: "spring", duration: 0.5 }}
-                                        />
-                                    )}
-                                </button>
-                            );
-                        })}
-                    </div>
-
-                    {/* Tab Content */}
-                    <div className="p-6">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={activeTab || 'empty'}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.2 }}
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="flex items-center gap-6">
+                            <Button
+                                onClick={() => router.push(`/admin/classes/${yearId}/${typeId}`)}
+                                variant="ghost"
+                                className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
                             >
-                                {currentTabResources.length === 0 && activeTab ? (
-                                    <div className="text-center py-16">
-                                        <TabIcon className={`w-16 h-16 mx-auto mb-4 ${currentTab?.color} opacity-20`} />
-                                        <p className="text-gray-500 text-lg">No {currentTab?.label.toLowerCase()} added yet</p>
-                                        <p className="text-gray-400 text-sm mt-2">Click "Add {currentTab?.label.slice(0, -1)}" to get started</p>
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {currentTabResources.map((resource) => (
+                                <ArrowLeft className="w-5 h-5" />
+                            </Button>
+                            <div>
+                                <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                                    <span>{topicData.classType.year.year}</span>
+                                    <ChevronRight className="w-3 h-3" />
+                                    <span>{topicData.classType.name}</span>
+                                    <ChevronRight className="w-3 h-3" />
+                                    <span className="text-[#D4AF37] font-medium">{topicData.title}</span>
+                                </div>
+                                <h1 className="text-4xl font-bold text-white">
+                                    Resources
+                                </h1>
+                                <p className="text-gray-400 mt-2 max-w-xl">
+                                    Manage learning materials, videos, and quizzes for this topic.
+                                </p>
+                            </div>
+                        </div>
+
+                        <Button
+                            onClick={() => {
+                                setResourceType('VIDEO');
+                                setIsAddingResource(true);
+                            }}
+                            className="bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Add Resource
+                        </Button>
+                    </div>
+                </motion.div>
+
+                {/* Tabs - Only show if there are resources */}
+                {availableTabs.length > 0 && (
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="flex border-b border-gray-200">
+                            {availableTabs.map((tab) => {
+                                const Icon = tab.icon;
+                                const isActive = activeTab === tab.id;
+                                const count = topicData.resources.filter(r => r.type === tab.id).length;
+
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id as ResourceType)}
+                                        className={`flex-1 relative px-6 py-4 font-medium transition-colors ${isActive
+                                            ? 'text-gray-900'
+                                            : 'text-gray-500 hover:text-gray-700'
+                                            }`}
+                                    >
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Icon className={`w-5 h-5 ${isActive ? tab.color : ''}`} />
+                                            <span>{tab.label}</span>
+                                            <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? `${tab.bgColor} text-white` : 'bg-gray-100 text-gray-600'
+                                                }`}>
+                                                {count}
+                                            </span>
+                                        </div>
+                                        {isActive && (
                                             <motion.div
-                                                key={resource.id}
-                                                initial={{ opacity: 0, scale: 0.95 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                className="bg-gray-50 p-4 rounded-xl hover:shadow-md transition-all group cursor-pointer border border-gray-100"
-                                                onClick={() => handleResourceClick(resource)}
-                                            >
-                                                <div className="flex items-start justify-between gap-3">
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <h3 className="font-semibold text-gray-900 truncate">{resource.title}</h3>
-                                                            {resource.type === 'VIDEO' && (
-                                                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
-                                                                    <Play className="w-4 h-4 text-red-500" />
+                                                layoutId="activeTab"
+                                                className={`absolute bottom-0 left-0 right-0 h-0.5 ${tab.bgColor}`}
+                                                transition={{ type: "spring", duration: 0.5 }}
+                                            />
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Tab Content */}
+                        <div className="p-6">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeTab || 'empty'}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    {currentTabResources.length === 0 && activeTab ? (
+                                        <div className="text-center py-16">
+                                            <TabIcon className={`w-16 h-16 mx-auto mb-4 ${currentTab?.color} opacity-20`} />
+                                            <p className="text-gray-500 text-lg">No {currentTab?.label.toLowerCase()} added yet</p>
+                                            <p className="text-gray-400 text-sm mt-2">Click "Add {currentTab?.label.slice(0, -1)}" to get started</p>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            {currentTabResources.map((resource) => (
+                                                <motion.div
+                                                    key={resource.id}
+                                                    initial={{ opacity: 0, scale: 0.95 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    className="bg-gray-50 p-4 rounded-xl hover:shadow-md transition-all group cursor-pointer border border-gray-100"
+                                                    onClick={() => handleResourceClick(resource)}
+                                                >
+                                                    <div className="flex items-start justify-between gap-3">
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <h3 className="font-semibold text-gray-900 truncate">{resource.title}</h3>
+                                                                {resource.type === 'VIDEO' && (
+                                                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                                                                        <Play className="w-4 h-4 text-red-500" />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            {resource.description && (
+                                                                <p className="text-sm text-gray-500 line-clamp-2 mb-2">{resource.description}</p>
+                                                            )}
+                                                            {resource.type !== 'VIDEO' && (
+                                                                <div className="text-xs text-[#D4AF37] hover:underline inline-flex items-center gap-1">
+                                                                    Open Link <ExternalLink className="w-3 h-3" />
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        {resource.description && (
-                                                            <p className="text-sm text-gray-500 line-clamp-2 mb-2">{resource.description}</p>
-                                                        )}
-                                                        {resource.type !== 'VIDEO' && (
-                                                            <div className="text-xs text-[#D4AF37] hover:underline inline-flex items-center gap-1">
-                                                                Open Link <ExternalLink className="w-3 h-3" />
-                                                            </div>
-                                                        )}
+                                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleEdit(resource);
+                                                                }}
+                                                                className="p-2 text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg transition-colors"
+                                                            >
+                                                                <Edit2 className="w-4 h-4" />
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleDeleteClick(resource.id, resource.title);
+                                                                }}
+                                                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                            >
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleEdit(resource);
-                                                            }}
-                                                            className="p-2 text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg transition-colors"
-                                                        >
-                                                            <Edit2 className="w-4 h-4" />
-                                                        </button>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleDeleteClick(resource.id, resource.title);
-                                                            }}
-                                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                )}
-                            </motion.div>
-                        </AnimatePresence>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {/* Empty State when no resources exist */}
-            {availableTabs.length === 0 && (
-                <div className="text-center py-20 bg-white rounded-2xl border border-gray-200 border-dashed">
-                    <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Plus className="w-10 h-10 text-gray-400" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">No resources yet</h3>
-                    <p className="text-gray-500 mb-8 max-w-md mx-auto">
-                        Get started by adding videos, PDFs, past papers, or quizzes to this topic.
-                    </p>
-                    <Button
-                        onClick={() => setIsAddingResource(true)}
-                        className="bg-[#1a1a1a] hover:bg-black text-white gap-2 h-12 px-8 rounded-xl"
-                    >
-                        <Plus className="w-5 h-5" />
-                        Add First Resource
-                    </Button>
-                </div>
-            )}
-
-            {/* Add/Edit Resource Modal */}
-            <AnimatePresence>
-                {isAddingResource && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-                        onClick={closeModal}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            transition={{ type: "spring", duration: 0.5 }}
-                            className="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden"
-                            onClick={e => e.stopPropagation()}
+                {/* Empty State when no resources exist */}
+                {availableTabs.length === 0 && (
+                    <div className="text-center py-20 bg-white rounded-2xl border border-gray-200 border-dashed">
+                        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Plus className="w-10 h-10 text-gray-400" />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">No resources yet</h3>
+                        <p className="text-gray-500 mb-8 max-w-md mx-auto">
+                            Get started by adding videos, PDFs, past papers, or quizzes to this topic.
+                        </p>
+                        <Button
+                            onClick={() => setIsAddingResource(true)}
+                            className="bg-[#1a1a1a] hover:bg-black text-white gap-2 h-12 px-8 rounded-xl"
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
-                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
+                            <Plus className="w-5 h-5" />
+                            Add First Resource
+                        </Button>
+                    </div>
+                )}
 
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-4 mb-8">
-                                    <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg`}>
-                                        {editingResource ? <Edit2 className="w-6 h-6 text-[#1a1a1a]" /> : <Plus className="w-6 h-6 text-[#1a1a1a]" />}
-                                    </div>
-                                    <div>
-                                        <h2 className="text-2xl font-bold text-white">
-                                            {editingResource ? 'Edit Resource' : 'Add Resource'}
-                                        </h2>
-                                        <p className="text-gray-400 text-sm">
-                                            {editingResource ? 'Update resource details' : 'Select type and add details'}
-                                        </p>
-                                    </div>
-                                </div>
+                {/* Add/Edit Resource Modal */}
+                <AnimatePresence>
+                    {isAddingResource && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                            onClick={closeModal}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                                transition={{ type: "spring", duration: 0.5 }}
+                                className="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-3xl p-8 max-w-md w-full shadow-2xl relative overflow-hidden"
+                                onClick={e => e.stopPropagation()}
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                                <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
 
-                                <form onSubmit={handleSubmit} className="space-y-5">
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-300 ml-1">Resource Type</Label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {TABS.map((tab) => {
-                                                const Icon = tab.icon;
-                                                const isSelected = resourceType === tab.id;
-                                                return (
-                                                    <button
-                                                        key={tab.id}
-                                                        type="button"
-                                                        onClick={() => setResourceType(tab.id as ResourceType)}
-                                                        className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${isSelected
-                                                            ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
-                                                            : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                                                            }`}
-                                                    >
-                                                        <Icon className="w-4 h-4" />
-                                                        <span className="text-sm font-medium">{tab.label}</span>
-                                                    </button>
-                                                );
-                                            })}
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className={`h-12 w-12 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg`}>
+                                            {editingResource ? <Edit2 className="w-6 h-6 text-[#1a1a1a]" /> : <Plus className="w-6 h-6 text-[#1a1a1a]" />}
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-bold text-white">
+                                                {editingResource ? 'Edit Resource' : 'Add Resource'}
+                                            </h2>
+                                            <p className="text-gray-400 text-sm">
+                                                {editingResource ? 'Update resource details' : 'Select type and add details'}
+                                            </p>
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-300 ml-1">Title</Label>
-                                        <Input
-                                            placeholder="e.g. Introduction to Economics"
-                                            value={title}
-                                            onChange={e => setTitle(e.target.value)}
-                                            required
-                                            className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                        />
-                                    </div>
 
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-300 ml-1">URL</Label>
-                                        <Input
-                                            placeholder="https://..."
-                                            value={url}
-                                            onChange={e => setUrl(e.target.value)}
-                                            required
-                                            type="url"
-                                            className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                        />
-                                    </div>
+                                    <form onSubmit={handleSubmit} className="space-y-5">
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300 ml-1">Resource Type</Label>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {TABS.map((tab) => {
+                                                    const Icon = tab.icon;
+                                                    const isSelected = resourceType === tab.id;
+                                                    return (
+                                                        <button
+                                                            key={tab.id}
+                                                            type="button"
+                                                            onClick={() => setResourceType(tab.id as ResourceType)}
+                                                            className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${isSelected
+                                                                ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
+                                                                : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                                                                }`}
+                                                        >
+                                                            <Icon className="w-4 h-4" />
+                                                            <span className="text-sm font-medium">{tab.label}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300 ml-1">Title</Label>
+                                            <Input
+                                                placeholder="e.g. Introduction to Economics"
+                                                value={title}
+                                                onChange={e => setTitle(e.target.value)}
+                                                required
+                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                            />
+                                        </div>
 
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-300 ml-1">Description <span className="text-gray-600 text-xs">(Optional)</span></Label>
-                                        <Input
-                                            placeholder="Brief description..."
-                                            value={description}
-                                            onChange={e => setDescription(e.target.value)}
-                                            className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                        />
-                                    </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300 ml-1">URL</Label>
+                                            <Input
+                                                placeholder="https://..."
+                                                value={url}
+                                                onChange={e => setUrl(e.target.value)}
+                                                required
+                                                type="url"
+                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                            />
+                                        </div>
 
-                                    <div className="flex gap-3 pt-6">
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            className="flex-1 text-gray-400 hover:text-white hover:bg-white/5 h-12 rounded-xl"
-                                            onClick={closeModal}
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            type="submit"
-                                            className="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting ? (editingResource ? 'Updating...' : 'Adding...') : (editingResource ? 'Update' : 'Add Resource')}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300 ml-1">Description <span className="text-gray-600 text-xs">(Optional)</span></Label>
+                                            <Input
+                                                placeholder="Brief description..."
+                                                value={description}
+                                                onChange={e => setDescription(e.target.value)}
+                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                            />
+                                        </div>
+
+                                        <div className="flex gap-3 pt-6">
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                className="flex-1 text-gray-400 hover:text-white hover:bg-white/5 h-12 rounded-xl"
+                                                onClick={closeModal}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                type="submit"
+                                                className="flex-1 bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
+                                                disabled={isSubmitting}
+                                            >
+                                                {isSubmitting ? (editingResource ? 'Updating...' : 'Adding...') : (editingResource ? 'Update' : 'Add Resource')}
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    )}
+                </AnimatePresence>
 
-            {/* Delete Confirmation Dialog */}
-            <AlertDialog
-                isOpen={deleteAlert.isOpen}
-                onClose={() => setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '' })}
-                onConfirm={handleDeleteConfirm}
-                title="Delete Resource"
-                description={`Are you sure you want to delete "${deleteAlert.resourceTitle}"? This action cannot be undone.`}
-                type="error"
-                confirmText="Delete"
-                cancelText="Cancel"
-            />
+                {/* Delete Confirmation Dialog */}
+                <AlertDialog
+                    isOpen={deleteAlert.isOpen}
+                    onClose={() => setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '' })}
+                    onConfirm={handleDeleteConfirm}
+                    title="Delete Resource"
+                    description={`Are you sure you want to delete "${deleteAlert.resourceTitle}"? This action cannot be undone.`}
+                    type="error"
+                    confirmText="Delete"
+                    cancelText="Cancel"
+                />
 
-            {/* Error Alert */}
-            <AlertDialog
-                isOpen={errorAlert.isOpen}
-                onClose={() => setErrorAlert({ isOpen: false, message: '' })}
-                title="Error"
-                description={errorAlert.message}
-                type="error"
-                cancelText="Close"
-            />
+                {/* Error Alert */}
+                <AlertDialog
+                    isOpen={errorAlert.isOpen}
+                    onClose={() => setErrorAlert({ isOpen: false, message: '' })}
+                    title="Error"
+                    description={errorAlert.message}
+                    type="error"
+                    cancelText="Close"
+                />
 
-            {/* Video Player */}
-            <VideoPlayer
-                isOpen={videoPlayer.isOpen}
-                onClose={() => setVideoPlayer({ isOpen: false, url: '', title: '' })}
-                videoUrl={videoPlayer.url}
-                title={videoPlayer.title}
-            />
+                {/* Video Player */}
+                <VideoPlayer
+                    isOpen={videoPlayer.isOpen}
+                    onClose={() => setVideoPlayer({ isOpen: false, url: '', title: '' })}
+                    videoUrl={videoPlayer.url}
+                    title={videoPlayer.title}
+                />
+            </div>
         </div>
     );
 }
