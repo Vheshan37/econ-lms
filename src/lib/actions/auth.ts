@@ -4,7 +4,6 @@ import { prisma } from '@/lib/prisma';
 import { sendOTPEmail } from '@/lib/email';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
-import bcrypt from 'bcryptjs';
 
 const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || 'your-secret-key-change-in-production'
@@ -250,7 +249,7 @@ export async function logout() {
 }
 
 // Create teacher account (for initial setup)
-export async function createTeacher(name: string, email: string, password: string) {
+export async function createTeacher(name: string, email: string) {
     try {
         // Check if teacher already exists
         const existing = await prisma.teacher.findUnique({
@@ -261,15 +260,11 @@ export async function createTeacher(name: string, email: string, password: strin
             return { success: false, error: 'Teacher account already exists' };
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
         // Create teacher
         const teacher = await prisma.teacher.create({
             data: {
                 name,
                 email,
-                password: hashedPassword,
                 isActive: true
             },
             select: {

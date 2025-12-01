@@ -84,9 +84,8 @@ model Student {
   school          String
   dateOfBirth     DateTime
   
-  // Account Credentials
+  // Account
   email           String              @unique
-  password        String              // Hashed with bcrypt
   
   // Status
   isActive        Boolean             @default(true)
@@ -149,7 +148,6 @@ model Teacher {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
-  password  String   // Hashed with bcrypt
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

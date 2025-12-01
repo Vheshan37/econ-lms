@@ -16,7 +16,18 @@ interface SessionPayload {
 async function verifyToken(token: string): Promise<SessionPayload | null> {
     try {
         const { payload } = await jwtVerify(token, JWT_SECRET);
-        return payload as SessionPayload;
+
+        // Validate that payload has required fields
+        if (
+            typeof payload.userId === 'string' &&
+            typeof payload.email === 'string' &&
+            (payload.role === 'student' || payload.role === 'teacher') &&
+            typeof payload.name === 'string'
+        ) {
+            return payload as SessionPayload;
+        }
+
+        return null;
     } catch {
         return null;
     }
