@@ -145,3 +145,25 @@ model Timetable {
   @@index([instituteId])
 }
 
+model Teacher {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String   // Hashed with bcrypt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OTP {
+  id         String   @id @default(uuid())
+  email      String
+  code       String   // 6-digit OTP
+  userType   String   // 'student' or 'teacher'
+  expiresAt  DateTime
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([email, userType])
+  @@index([expiresAt])
+}
