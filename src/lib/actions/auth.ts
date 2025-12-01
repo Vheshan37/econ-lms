@@ -3,13 +3,13 @@
 import { prisma } from '@/lib/prisma';
 import { sendOTPEmail } from '@/lib/email';
 import { cookies } from 'next/headers';
-import { SignJWT, jwtVerify } from 'jose';
+import { SignJWT, jwtVerify, JWTPayload } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 );
 
-interface SessionPayload {
+interface SessionPayload extends JWTPayload {
     userId: string;
     email: string;
     role: 'student' | 'teacher';

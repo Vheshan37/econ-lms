@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { jwtVerify } from 'jose';
+import { jwtVerify, JWTPayload } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 );
 
-interface SessionPayload {
+interface SessionPayload extends JWTPayload {
     userId: string;
     email: string;
     role: 'student' | 'teacher';
