@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import bcrypt from 'bcryptjs';
+
 
 export async function getStudents(filters?: {
     search?: string;
@@ -101,7 +101,6 @@ export async function createStudent(data: {
     school: string;
     dateOfBirth: string;
     email: string;
-    password: string;
     classTypeIds: string[];
 }) {
     try {
@@ -114,9 +113,6 @@ export async function createStudent(data: {
             return { success: false, error: 'Email already exists' };
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(data.password, 10);
-
         // Create student with class assignments
         const student = await (prisma as any).student.create({
             data: {
@@ -124,7 +120,6 @@ export async function createStudent(data: {
                 school: data.school,
                 dateOfBirth: new Date(data.dateOfBirth),
                 email: data.email,
-                password: hashedPassword,
                 classAssignments: {
                     create: data.classTypeIds.map(classTypeId => ({
                         classTypeId
@@ -142,6 +137,13 @@ export async function createStudent(data: {
                     }
                 }
             }
+        });
+
+        // Send invitation email
+        const { sendInvitationEmail } = await import('@/lib/email');
+        await sendInvitationEmail({
+            to: student.email,
+            userName: student.name
         });
 
         revalidatePath('/admin/students');
@@ -254,11 +256,4 @@ export async function removeClassType(studentId: string, classTypeId: string) {
     }
 }
 
-export async function generatePassword(length: number = 8): Promise<string> {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let password = '';
-    for (let i = 0; i < length; i++) {
-        password += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-    return password;
-}
+

@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, Edit2, Trash2, UserPlus, X, Check, ChevronRight, Eye, EyeOff, RefreshCw, Calendar, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { Plus, Search, Filter, Edit2, Trash2, UserPlus, X, Check, ChevronRight, Calendar, ChevronDown, ChevronUp, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog } from '@/components/ui/alert-dialog';
-import { getStudents, createStudent, updateStudent, deleteStudent, assignClassTypes, removeClassType, generatePassword } from '@/lib/actions/student';
+import { getStudents, createStudent, updateStudent, deleteStudent, assignClassTypes, removeClassType } from '@/lib/actions/student';
 import { getYears } from '@/lib/actions/year';
 
 interface Student {
@@ -56,15 +56,13 @@ export default function StudentsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
     const [registrationStep, setRegistrationStep] = useState(1);
-    const [showPassword, setShowPassword] = useState(false);
+
 
     // Form State
     const [name, setName] = useState('');
     const [school, setSchool] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [selectedClassTypes, setSelectedClassTypes] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -110,26 +108,19 @@ export default function StudentsPage() {
         setIsLoading(false);
     };
 
-    const handleGeneratePassword = async () => {
-        const generated = await generatePassword();
-        setPassword(generated);
-        setConfirmPassword(generated);
-    };
-
     const handleEdit = (student: Student) => {
         setEditingStudent(student);
         setName(student.name);
         setSchool(student.school);
         setDateOfBirth(new Date(student.dateOfBirth).toISOString().split('T')[0]);
         setEmail(student.email);
-        setPassword('');
-        setConfirmPassword('');
         setSelectedClassTypes(student.classAssignments.map(a => a.classType.id));
         setRegistrationStep(1);
         setIsModalOpen(true);
     };
 
     const handleSubmit = async () => {
+
         if (registrationStep === 1) {
             if (!name || !school || !dateOfBirth) {
                 setErrorAlert({ isOpen: true, message: 'Please fill in all personal information' });
@@ -137,25 +128,11 @@ export default function StudentsPage() {
             }
             setRegistrationStep(2);
         } else if (registrationStep === 2) {
-            // For editing, password is optional
-            if (editingStudent) {
-                if (password && password !== confirmPassword) {
-                    setErrorAlert({ isOpen: true, message: 'Passwords do not match' });
-                    return;
-                }
-                setRegistrationStep(3);
-            } else {
-                // For new students, password is required
-                if (!email || !password || !confirmPassword) {
-                    setErrorAlert({ isOpen: true, message: 'Please fill in all credentials' });
-                    return;
-                }
-                if (password !== confirmPassword) {
-                    setErrorAlert({ isOpen: true, message: 'Passwords do not match' });
-                    return;
-                }
-                setRegistrationStep(3);
+            if (!email) {
+                setErrorAlert({ isOpen: true, message: 'Please enter an email address' });
+                return;
             }
+            setRegistrationStep(3);
         } else if (registrationStep === 3) {
             if (selectedClassTypes.length === 0) {
                 setErrorAlert({ isOpen: true, message: 'Please select at least one class type' });
@@ -203,7 +180,6 @@ export default function StudentsPage() {
                     school,
                     dateOfBirth,
                     email,
-                    password,
                     classTypeIds: selectedClassTypes
                 });
 
@@ -262,8 +238,6 @@ export default function StudentsPage() {
         setSchool('');
         setDateOfBirth('');
         setEmail('');
-        setPassword('');
-        setConfirmPassword('');
         setSelectedClassTypes([]);
     };
 
@@ -419,8 +393,8 @@ export default function StudentsPage() {
                                 </tr>
                             ) : (
                                 filteredStudents.map((student) => (
-                                    <>
-                                        <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                                    <React.Fragment key={student.id}>
+                                        <tr className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4">
                                                 <div className="font-medium text-gray-900">{student.name}</div>
                                             </td>
@@ -471,7 +445,7 @@ export default function StudentsPage() {
                                             </td>
                                         </tr>
                                         {expandedRows.has(student.id) && (
-                                            <tr key={`${student.id}-expanded`}>
+                                            <tr>
                                                 <td colSpan={6} className="px-6 py-4 bg-gray-50">
                                                     <div className="flex flex-wrap gap-2">
                                                         {student.classAssignments.map(assignment => (
@@ -486,7 +460,7 @@ export default function StudentsPage() {
                                                 </td>
                                             </tr>
                                         )}
-                                    </>
+                                    </React.Fragment>
                                 ))
                             )}
                         </tbody>
@@ -614,68 +588,13 @@ export default function StudentsPage() {
                                                 className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600 disabled:opacity-50"
                                             />
                                             {editingStudent && (
-                                                <p className="text-xs text-gray-500">Email cannot be changed</p>
+                                                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                                                    <p className="text-sm text-gray-400">
+                                                        Email cannot be changed once registered.
+                                                    </p>
+                                                </div>
                                             )}
                                         </div>
-
-                                        {!editingStudent && (
-                                            <>
-                                                <div className="space-y-2">
-                                                    <div className="flex items-center justify-between">
-                                                        <Label className="text-gray-300 ml-1">Password</Label>
-                                                        <button
-                                                            type="button"
-                                                            onClick={handleGeneratePassword}
-                                                            className="text-xs text-[#D4AF37] hover:text-[#B5952F] flex items-center gap-1"
-                                                        >
-                                                            <RefreshCw className="w-3 h-3" />
-                                                            Generate
-                                                        </button>
-                                                    </div>
-                                                    <div className="relative">
-                                                        <Input
-                                                            type={showPassword ? "text" : "password"}
-                                                            placeholder="Enter password"
-                                                            value={password}
-                                                            onChange={e => setPassword(e.target.value)}
-                                                            required
-                                                            className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600 pr-10"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setShowPassword(!showPassword)}
-                                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                                                        >
-                                                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-300 ml-1">Confirm Password</Label>
-                                                    <Input
-                                                        type={showPassword ? "text" : "password"}
-                                                        placeholder="Confirm password"
-                                                        value={confirmPassword}
-                                                        onChange={e => setConfirmPassword(e.target.value)}
-                                                        required
-                                                        className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                                    />
-                                                </div>
-
-                                                {password && confirmPassword && password !== confirmPassword && (
-                                                    <p className="text-red-400 text-sm">Passwords do not match</p>
-                                                )}
-                                            </>
-                                        )}
-
-                                        {editingStudent && (
-                                            <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                                                <p className="text-sm text-gray-400">
-                                                    Password cannot be changed from this screen. Contact system administrator to reset password.
-                                                </p>
-                                            </div>
-                                        )}
                                     </motion.div>
                                 )}
 

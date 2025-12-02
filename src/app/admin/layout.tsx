@@ -32,9 +32,9 @@ export default function AdminLayout({
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Classes', href: '/admin/classes', icon: BookOpen },
         { name: 'Students', href: '/admin/students', icon: Users },
+        { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
         { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
-        { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
     ];
 
     return (
@@ -167,6 +167,7 @@ export default function AdminLayout({
 
                 {/* Main Content */}
                 <motion.main
+                    id="admin-dashboard"
                     animate={{ marginLeft: isCollapsed ? 80 : 256 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="flex-1 p-8 hidden md:block"
