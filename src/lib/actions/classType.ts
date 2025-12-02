@@ -97,6 +97,35 @@ export async function getClassTypeById(id: string) {
     }
 }
 
+// Default Theory Topics
+const THEORY_TOPICS = [
+    "Introduction to Economics",
+    "Demand",
+    "Supply",
+    "Elasticity of Demand",
+    "Elasticity of Supply",
+    "Market and Market Equilibrium",
+    "Government Intervention in the Market",
+    "Theory of Production",
+    "Theory of Costs",
+    "Market Structures",
+    "Perfect Competition",
+    "Factor Markets",
+    "Basic Macroeconomic Concepts",
+    "Money",
+    "Banking and Financial System",
+    "Price Level and Inflation",
+    "Public Finance",
+    "Fiscal Policy",
+    "International Trade",
+    "Foreign Finance",
+    "Economic Growth",
+    "Economic Development",
+    "Structure of the Sri Lankan Economy",
+    "Economic Policies of Sri Lanka",
+    "Contemporary Economic Issues in Sri Lanka"
+];
+
 // Ensure default class types exist for a year
 export async function ensureClassTypes(yearId: string) {
     try {
@@ -109,7 +138,7 @@ export async function ensureClassTypes(yearId: string) {
             });
 
             if (!existing) {
-                await prisma.classType.create({
+                const newClassType = await prisma.classType.create({
                     data: {
                         // @ts-ignore
                         name,
@@ -117,6 +146,22 @@ export async function ensureClassTypes(yearId: string) {
                         isActive: false, // Create as inactive by default
                     },
                 });
+
+                // If creating Theory class, populate default topics
+                if (name === 'Theory') {
+                    console.log('Populating default topics for Theory class...');
+                    for (let i = 0; i < THEORY_TOPICS.length; i++) {
+                        await prisma.topic.create({
+                            data: {
+                                title: THEORY_TOPICS[i],
+                                classTypeId: newClassType.id,
+                                order: i,
+                                // @ts-ignore
+                                isActive: true
+                            }
+                        });
+                    }
+                }
             }
         }
 

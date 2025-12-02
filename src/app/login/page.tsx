@@ -356,20 +356,6 @@ export default function LoginPage() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
-
-                        <div className="pt-6 border-t border-gray-100">
-                            <div className="text-center space-y-2">
-                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Demo Credentials</p>
-                                <div className="flex justify-center gap-4 text-sm text-gray-600">
-                                    <span className="px-3 py-1 bg-gray-50 rounded-full border border-gray-100">
-                                        Teacher: <span className="font-medium text-[#1a1a1a]">teacher@econ.lk</span>
-                                    </span>
-                                    <span className="px-3 py-1 bg-gray-50 rounded-full border border-gray-100">
-                                        Student: <span className="font-medium text-[#1a1a1a]">kamal@student.lk</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </motion.div>

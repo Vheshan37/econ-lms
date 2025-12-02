@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { ensureClassTypes } from './classType';
 
 export async function getYears() {
     try {
@@ -39,6 +40,9 @@ export async function createYear(data: { year: string; description?: string }) {
                 isActive: true,
             },
         });
+
+        // Ensure default class types (and topics) are created
+        await ensureClassTypes(newYear.id);
 
         revalidatePath('/admin/classes');
         return { success: true, data: newYear };
