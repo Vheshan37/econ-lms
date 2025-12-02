@@ -1,10 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useStore } from "@/lib/store";
-import { LayoutDashboard, BookOpen, LogOut } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, BookOpen, LogOut, GraduationCap, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { logout } from "@/lib/actions/auth";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function StudentLayout({
     children,
@@ -12,70 +20,159 @@ export default function StudentLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const { logout, currentUser } = useStore();
+    const router = useRouter();
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    const handleLogout = async () => {
+        await logout();
+        router.push('/login');
+    };
 
     const navigation = [
         { name: 'Dashboard', href: '/student/dashboard', icon: LayoutDashboard },
-        { name: 'My Resources', href: '/student/resources', icon: BookOpen },
+        { name: 'My Classes', href: '/student/classes', icon: GraduationCap },
+        { name: 'All Resources', href: '/student/resources', icon: BookOpen },
+        { name: 'Profile', href: '/student/profile', icon: User },
     ];
 
     return (
-        <div className="min-h-screen bg-[#FAFAFA] flex flex-col md:flex-row">
-            {/* Sidebar */}
-            <aside className="w-full md:w-64 bg-[#1a1a1a] border-r border-gray-800 md:fixed h-auto md:h-full z-10 flex flex-col">
-                <div className="p-6 border-b border-gray-800 flex justify-between items-center md:block">
-                    <div>
-                        <div className="flex items-center gap-3 mb-1">
-                            <div className="h-8 w-8 rounded-lg bg-[#D4AF37] flex items-center justify-center">
+        <TooltipProvider delayDuration={0}>
+            <div className="min-h-screen bg-[#FAFAFA] flex">
+                {/* Sidebar */}
+                <motion.aside
+                    initial={{ width: 256 }}
+                    animate={{ width: isCollapsed ? 80 : 256 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="bg-[#1a1a1a] border-r border-gray-800 fixed h-full z-20 hidden md:flex flex-col shadow-2xl"
+                >
+                    <div className={`p-6 border-b border-gray-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+                        {!isCollapsed && (
+                            <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
+                                    <span className="text-[#1a1a1a] font-bold text-lg">E</span>
+                                </div>
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                >
+                                    <h1 className="text-xl font-bold text-white">Econ LMS</h1>
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">Student Portal</p>
+                                </motion.div>
+                            </div>
+                        )}
+                        {isCollapsed && (
+                            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
                                 <span className="text-[#1a1a1a] font-bold text-lg">E</span>
                             </div>
-                            <h1 className="text-xl font-bold text-white">Econ LMS</h1>
-                        </div>
-                        <p className="text-xs text-gray-400 mt-2 ml-1">Student Portal</p>
+                        )}
                     </div>
-                    <div className="md:hidden">
-                        {/* Mobile menu toggle could go here */}
-                    </div>
-                </div>
 
-                <div className="p-4 border-b border-gray-800 md:hidden">
-                    <p className="text-sm font-medium text-gray-300">Hi, {currentUser?.name}</p>
-                </div>
+                    <nav className={`flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar ${isCollapsed ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : ''}`}>
+                        {navigation.map((item) => {
+                            const isActive = pathname === item.href;
+                            const LinkButton = (
+                                <Link href={item.href} className="block w-full">
+                                    <Button
+                                        variant="ghost"
+                                        className={`w-full transition-all duration-200 relative group ${isCollapsed ? 'justify-center px-2' : 'justify-start gap-3'}
+                                            ${isActive
+                                                ? 'bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/20'
+                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                            }`}
+                                    >
+                                        <item.icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-[#D4AF37]' : 'text-gray-400 group-hover:text-white'}`} />
+                                        {!isCollapsed && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -10 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="truncate"
+                                            >
+                                                {item.name}
+                                            </motion.span>
+                                        )}
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="activeTab"
+                                                className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#D4AF37] rounded-r-full"
+                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                            />
+                                        )}
+                                    </Button>
+                                </Link>
+                            );
 
-                <nav className="flex-1 p-4 space-y-2">
-                    {navigation.map((item) => {
-                        const isActive = pathname === item.href;
-                        return (
-                            <Link key={item.name} href={item.href}>
-                                <Button
-                                    variant="ghost"
-                                    className={`w-full justify-start gap-3 transition-all duration-200 ${isActive
-                                            ? 'bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/20 hover:text-[#D4AF37]'
-                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                        }`}
-                                >
-                                    <item.icon className={`h-5 w-5 ${isActive ? 'text-[#D4AF37]' : 'text-gray-400'}`} />
-                                    {item.name}
-                                </Button>
-                            </Link>
-                        );
-                    })}
-                </nav>
+                            if (isCollapsed) {
+                                return (
+                                    <Tooltip key={item.name}>
+                                        <TooltipTrigger asChild>
+                                            {LinkButton}
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right" className="bg-[#D4AF37] text-[#1a1a1a] border-none">
+                                            {item.name}
+                                        </TooltipContent>
+                                    </Tooltip>
+                                );
+                            }
 
-                <div className="p-4 border-t border-gray-800">
-                    <Link href="/">
-                        <Button variant="ghost" className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10" onClick={logout}>
-                            <LogOut className="h-5 w-5" />
-                            Logout
+                            return <div key={item.name}>{LinkButton}</div>;
+                        })}
+                    </nav>
+
+                    <div className="p-4 border-t border-gray-800 space-y-2">
+                        {isCollapsed ? (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={handleLogout}
+                                        className="w-full justify-center px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                    >
+                                        <LogOut className="h-5 w-5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="right" className="bg-[#D4AF37] text-[#1a1a1a] border-none">
+                                    Logout
+                                </TooltipContent>
+                            </Tooltip>
+                        ) : (
+                            <Button
+                                variant="ghost"
+                                onClick={handleLogout}
+                                className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            >
+                                <LogOut className="h-5 w-5" />
+                                <span>Logout</span>
+                            </Button>
+                        )}
+
+                        <Button
+                            variant="ghost"
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                            className="w-full justify-center text-gray-400 hover:text-white hover:bg-white/5"
+                        >
+                            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
                         </Button>
-                    </Link>
-                </div>
-            </aside>
+                    </div>
+                </motion.aside>
 
-            {/* Main Content */}
-            <main className="flex-1 md:ml-64 p-4 md:p-8">
-                {children}
-            </main>
-        </div>
+                {/* Mobile Sidebar */}
+                <div className="md:hidden fixed top-0 left-0 right-0 bg-[#1a1a1a] border-b border-gray-800 z-10 p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
+                            <span className="text-[#1a1a1a] font-bold text-lg">E</span>
+                        </div>
+                        <h1 className="text-xl font-bold text-white">Econ LMS</h1>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-64'} pt-16 md:pt-0 p-4 md:p-8`}>
+                    {children}
+                </main>
+            </div>
+        </TooltipProvider>
     );
 }

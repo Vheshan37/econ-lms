@@ -277,7 +277,7 @@ export async function createTeacher(name: string, email: string) {
         return { success: true, teacher };
 
     } catch (error) {
-        console.error('Create teacher error:', error);
+        console.error('Error creating teacher:', error);
         return { success: false, error: 'Failed to create teacher account' };
     }
 }
