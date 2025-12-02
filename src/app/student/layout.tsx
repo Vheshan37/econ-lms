@@ -68,7 +68,7 @@ export default function StudentLayout({
                         )}
                     </div>
 
-                    <nav className={`flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar ${isCollapsed ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : ''}`}>
+                    <nav className={`flex-1 p-4 space-y-2 overflow-y-auto overflow-x-hidden custom-scrollbar ${isCollapsed ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : ''}`}>
                         {navigation.map((item) => {
                             const isActive = pathname === item.href;
                             const LinkButton = (

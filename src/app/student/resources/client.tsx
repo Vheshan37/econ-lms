@@ -130,7 +130,7 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                                 </div>
                                 {isActive && (
                                     <motion.div
-                                        layoutId="activeTab"
+                                        layoutId="resourceTab"
                                         className={`absolute bottom-0 left-0 right-0 h-0.5 ${tab.bgColor}`}
                                         transition={{ type: "spring", duration: 0.5 }}
                                     />
