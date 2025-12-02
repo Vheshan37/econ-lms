@@ -13,6 +13,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 
 export default function AdminLayout({
     children,
@@ -22,6 +23,7 @@ export default function AdminLayout({
     const pathname = usePathname();
     const router = useRouter();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
     const handleLogout = async () => {
         await logout();
@@ -145,7 +147,7 @@ export default function AdminLayout({
                                     <Button
                                         variant="ghost"
                                         className="w-full text-red-400 hover:text-red-300 hover:bg-red-500/10 justify-center"
-                                        onClick={handleLogout}
+                                        onClick={() => setIsLogoutDialogOpen(true)}
                                     >
                                         <LogOut className="h-5 w-5" />
                                     </Button>
@@ -156,7 +158,7 @@ export default function AdminLayout({
                             <Button
                                 variant="ghost"
                                 className="w-full text-red-400 hover:text-red-300 hover:bg-red-500/10 justify-start gap-3"
-                                onClick={handleLogout}
+                                onClick={() => setIsLogoutDialogOpen(true)}
                             >
                                 <LogOut className="h-5 w-5" />
                                 <span>Logout</span>
@@ -164,6 +166,18 @@ export default function AdminLayout({
                         )}
                     </div>
                 </motion.aside>
+
+                <AlertDialog
+                    isOpen={isLogoutDialogOpen}
+                    onClose={() => setIsLogoutDialogOpen(false)}
+                    onConfirm={handleLogout}
+                    title="Sign out?"
+                    description="Are you sure you want to sign out of your account?"
+                    confirmText="Sign out"
+                    cancelText="Cancel"
+                    type="error"
+                />
+
 
                 {/* Main Content */}
                 <motion.main
@@ -187,7 +201,7 @@ export default function AdminLayout({
                     </div>
                     {children}
                 </main>
-            </div>
-        </TooltipProvider>
+            </div >
+        </TooltipProvider >
     );
 }

@@ -13,6 +13,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 
 export default function StudentLayout({
     children,
@@ -22,6 +23,7 @@ export default function StudentLayout({
     const pathname = usePathname();
     const router = useRouter();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
     const handleLogout = async () => {
         await logout();
@@ -155,7 +157,7 @@ export default function StudentLayout({
                                 <TooltipTrigger asChild>
                                     <Button
                                         variant="ghost"
-                                        onClick={handleLogout}
+                                        onClick={() => setIsLogoutDialogOpen(true)}
                                         className="w-full justify-center px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                                     >
                                         <LogOut className="h-5 w-5" />
@@ -168,7 +170,7 @@ export default function StudentLayout({
                         ) : (
                             <Button
                                 variant="ghost"
-                                onClick={handleLogout}
+                                onClick={() => setIsLogoutDialogOpen(true)}
                                 className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                             >
                                 <LogOut className="h-5 w-5" />
@@ -177,6 +179,18 @@ export default function StudentLayout({
                         )}
                     </div>
                 </motion.aside>
+
+                <AlertDialog
+                    isOpen={isLogoutDialogOpen}
+                    onClose={() => setIsLogoutDialogOpen(false)}
+                    onConfirm={handleLogout}
+                    title="Sign out?"
+                    description="Are you sure you want to sign out of your account?"
+                    confirmText="Sign out"
+                    cancelText="Cancel"
+                    type="error"
+                />
+
 
                 {/* Mobile Sidebar */}
                 <div className="md:hidden fixed top-0 left-0 right-0 bg-[#1a1a1a] border-b border-gray-800 z-10 p-4">
@@ -192,7 +206,7 @@ export default function StudentLayout({
                 <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-64'} pt-20 md:pt-8 p-4 md:p-8`}>
                     {children}
                 </main>
-            </div>
-        </TooltipProvider>
+            </div >
+        </TooltipProvider >
     );
 }
