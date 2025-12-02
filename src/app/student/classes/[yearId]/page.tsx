@@ -2,7 +2,7 @@ import { getCurrentUser } from '@/lib/actions/auth';
 import { getStudentClassTypes } from '@/lib/actions/studentData';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, Layers, RotateCcw, FileEdit, Sparkles } from 'lucide-react';
+import { ArrowLeft, BookOpen, Layers, RotateCcw, FileEdit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const DEFAULT_TYPES = {
@@ -25,16 +25,17 @@ const CUSTOM_TYPE_CONFIG = {
     description: 'Specialized course module',
 };
 
-export default async function StudentClassTypesPage({ params }: { params: { yearId: string } }) {
+export default async function StudentClassTypesPage({ params }: { params: Promise<{ yearId: string }> }) {
     const session = await getCurrentUser();
 
     if (!session || session.role !== 'student') {
         redirect('/login');
     }
 
-    const result = await getStudentClassTypes(session.userId, params.yearId);
+    const { yearId } = await params;
+    const result = await getStudentClassTypes(session.userId, yearId);
     const classTypes = result.success ? result.data : [];
-    const yearName = classTypes.length > 0 ? classTypes[0].year.year : '';
+    const yearName = classTypes.length > 0 ? classTypes[0].year.year : 'Academic Year';
 
     return (
         <div className="space-y-8">
@@ -84,7 +85,7 @@ export default async function StudentClassTypesPage({ params }: { params: { year
                             return (
                                 <Link
                                     key={classType.id}
-                                    href={`/student/classes/${params.yearId}/${classType.id}`}
+                                    href={`/student/classes/${yearId}/${classType.id}`}
                                     className="relative group overflow-hidden rounded-3xl transition-all bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] cursor-pointer hover:shadow-2xl hover:shadow-[#D4AF37]/20"
                                 >
                                     {/* Decorative glow effect */}

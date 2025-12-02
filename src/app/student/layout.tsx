@@ -169,7 +169,7 @@ export default function StudentLayout({
                 </div>
 
                 {/* Main Content */}
-                <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-64'} pt-16 md:pt-0 p-4 md:p-8`}>
+                <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-64'} pt-20 md:pt-8 p-4 md:p-8`}>
                     {children}
                 </main>
             </div>

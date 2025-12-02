@@ -2,7 +2,7 @@ import { getCurrentUser } from '@/lib/actions/auth';
 import { getTopicResources } from '@/lib/actions/studentData';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Video, FileText, File, ClipboardList, Play, ExternalLink, Download, FileQuestion } from 'lucide-react';
+import { ArrowLeft, Video, FileText, File, ClipboardList, Play, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const RESOURCE_CONFIG = {
@@ -12,14 +12,15 @@ const RESOURCE_CONFIG = {
     'QUIZ': { icon: ClipboardList, color: 'text-green-500', bgColor: 'bg-green-500', label: 'Quizzes' },
 };
 
-export default async function StudentTopicResourcesPage({ params }: { params: { yearId: string; typeId: string; topicId: string } }) {
+export default async function StudentTopicResourcesPage({ params }: { params: Promise<{ yearId: string; typeId: string; topicId: string }> }) {
     const session = await getCurrentUser();
 
     if (!session || session.role !== 'student') {
         redirect('/login');
     }
 
-    const result = await getTopicResources(params.topicId);
+    const { yearId, typeId, topicId } = await params;
+    const result = await getTopicResources(topicId);
     const resources = result.success ? result.data : [];
 
     // Group resources by type
@@ -40,7 +41,7 @@ export default async function StudentTopicResourcesPage({ params }: { params: { 
 
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="flex items-center gap-6">
-                            <Link href={`/student/classes/${params.yearId}/${params.typeId}`}>
+                            <Link href={`/student/classes/${yearId}/${typeId}`}>
                                 <Button
                                     variant="ghost"
                                     className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"

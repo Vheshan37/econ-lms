@@ -2,23 +2,19 @@ import { getCurrentUser } from '@/lib/actions/auth';
 import { getStudentTopics } from '@/lib/actions/studentData';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, ChevronRight, Layers, FileText } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Layers, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default async function StudentTopicsPage({ params }: { params: { yearId: string; typeId: string } }) {
+export default async function StudentTopicsPage({ params }: { params: Promise<{ yearId: string; typeId: string }> }) {
     const session = await getCurrentUser();
 
     if (!session || session.role !== 'student') {
         redirect('/login');
     }
 
-    const result = await getStudentTopics(params.typeId);
+    const { yearId, typeId } = await params;
+    const result = await getStudentTopics(typeId);
     const topics = result.success ? result.data : [];
-
-    // We can get the class type name from the first topic if available, or fetch it separately if needed.
-    // For now, let's assume we want to show a generic header or fetch it.
-    // Ideally, getStudentTopics should return the class type info too.
-    // But let's stick to the design first.
 
     return (
         <div className="space-y-8">
@@ -30,7 +26,7 @@ export default async function StudentTopicsPage({ params }: { params: { yearId: 
 
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="flex items-center gap-6">
-                            <Link href={`/student/classes/${params.yearId}`}>
+                            <Link href={`/student/classes/${yearId}`}>
                                 <Button
                                     variant="ghost"
                                     className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
@@ -56,10 +52,10 @@ export default async function StudentTopicsPage({ params }: { params: { yearId: 
                 {/* Topics List */}
                 <div className="grid gap-4">
                     {topics.length > 0 ? (
-                        topics.map((topic: any, index: number) => (
+                        topics.map((topic: any) => (
                             <Link
                                 key={topic.id}
-                                href={`/student/classes/${params.yearId}/${params.typeId}/${topic.id}`}
+                                href={`/student/classes/${yearId}/${typeId}/${topic.id}`}
                                 className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-[#D4AF37]/30 transition-all cursor-pointer relative overflow-hidden block"
                             >
                                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#D4AF37] to-[#B5952F] opacity-0 group-hover:opacity-100 transition-opacity" />
