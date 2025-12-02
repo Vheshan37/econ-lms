@@ -166,3 +166,32 @@ model OTP {
   @@index([email, userType])
   @@index([expiresAt])
 }
+
+model LandingPageContent {
+  id          String   @id @default(uuid())
+  section     String   @unique // "hero", "about", "contact"
+  content     Json     // Flexible JSON storage
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  content   String   @db.Text
+  imageUrl  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ModernFeature {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  icon        String   // Lucide icon name
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

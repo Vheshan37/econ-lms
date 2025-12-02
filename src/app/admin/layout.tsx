@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { logout } from "@/lib/actions/auth";
@@ -37,6 +37,7 @@ export default function AdminLayout({
         { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
         { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
+        { name: 'Site Content', href: '/admin/content', icon: Layers },
     ];
 
     return (
