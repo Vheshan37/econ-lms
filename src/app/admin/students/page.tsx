@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, Edit2, Trash2, UserPlus, X, Check, ChevronRight, Calendar, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { Edit2, Trash2, Users, Search, Mail, Calendar, BookOpen, X, UserPlus, Filter, ChevronUp, ChevronDown, Check, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

@@ -71,10 +71,6 @@ export default function TimetablePage() {
         message: ''
     });
 
-    useEffect(() => {
-        fetchInstitutes();
-    }, []);
-
     const fetchInstitutes = async () => {
         setIsLoading(true);
         const result = await getInstitutes();
@@ -85,6 +81,10 @@ export default function TimetablePage() {
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        fetchInstitutes();
+    }, []);
 
     const toggleInstitute = (instituteId: string) => {
         setExpandedInstitutes(prev => {

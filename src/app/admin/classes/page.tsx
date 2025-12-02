@@ -46,10 +46,6 @@ export default function YearsPage() {
     const [description, setDescription] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    useEffect(() => {
-        fetchYears();
-    }, []);
-
     const fetchYears = async () => {
         setIsLoading(true);
         const result = await getYears();
@@ -60,6 +56,10 @@ export default function YearsPage() {
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        fetchYears();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

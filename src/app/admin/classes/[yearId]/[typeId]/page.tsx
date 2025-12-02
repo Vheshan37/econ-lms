@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Plus, Edit2, Trash2, Layers, FileText, ChevronRight, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Plus, Edit2, Trash2, Layers, ChevronRight, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -62,20 +62,21 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
         message: ''
     });
 
-    useEffect(() => {
-        fetchClassTypeData();
-    }, [typeId]);
-
     const fetchClassTypeData = async () => {
         setIsLoading(true);
         const result = await getClassTypeById(typeId);
         if (result.success && result.data) {
+            // @ts-expect-error - Prisma returns isActive but TypeScript can't infer it properly
             setClassTypeData(result.data);
         } else {
             setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch class type data' });
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        fetchClassTypeData();
+    }, [typeId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

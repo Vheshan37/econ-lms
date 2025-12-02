@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, BookOpen, Clock, Trophy, Building2, GraduationCap, ArrowRight, Sparkles } from 'lucide-react';
+import { Users, BookOpen, Building2, GraduationCap, ArrowRight, Sparkles, Trophy } from 'lucide-react';
 import { getDashboardStats } from '@/lib/actions/dashboard';
 import Link from 'next/link';
 

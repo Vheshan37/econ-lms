@@ -88,10 +88,6 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
         title: ''
     });
 
-    useEffect(() => {
-        fetchTopicData();
-    }, [topicId]);
-
     const fetchTopicData = async () => {
         setIsLoading(true);
         const result = await getTopicById(topicId);
@@ -116,6 +112,10 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        fetchTopicData();
+    }, [topicId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

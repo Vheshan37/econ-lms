@@ -59,10 +59,6 @@ export default function FreeResourcesPage() {
         title: ''
     });
 
-    useEffect(() => {
-        fetchResources();
-    }, []);
-
     const fetchResources = async () => {
         setIsLoading(true);
         const result = await getFreeResources();
@@ -73,6 +69,10 @@ export default function FreeResourcesPage() {
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        fetchResources();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

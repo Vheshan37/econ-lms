@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BookOpen, RotateCcw, FileEdit, Power, Sparkles, Plus, Layers, ChevronRight, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, BookOpen, ArrowLeft, Sparkles, Power, Layers, RotateCcw, FileEdit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -91,10 +91,6 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
         name: ''
     });
 
-    useEffect(() => {
-        fetchYearData();
-    }, [yearId]);
-
     const fetchYearData = async () => {
         setIsLoading(true);
 
@@ -109,6 +105,10 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        fetchYearData();
+    }, [yearId]);
 
     const handleCreateType = async (e: React.FormEvent) => {
         e.preventDefault();

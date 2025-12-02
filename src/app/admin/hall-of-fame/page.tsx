@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Trophy, Award, MapPin, Calendar, X, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, Trophy, Award, MapPin, Calendar, X, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,10 +46,6 @@ export default function HallOfFamePage() {
         message: ''
     });
 
-    useEffect(() => {
-        fetchAlumni();
-    }, []);
-
     const fetchAlumni = async () => {
         setIsLoading(true);
         const result = await getHallOfFame();
@@ -60,6 +56,10 @@ export default function HallOfFamePage() {
         }
         setIsLoading(false);
     };
+
+    useEffect(() => {
+        fetchAlumni();
+    }, []);
 
     const handleEdit = (alumnus: Alumni) => {
         setEditingAlumni(alumnus);
