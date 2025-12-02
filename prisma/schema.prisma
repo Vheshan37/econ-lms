@@ -48,6 +48,7 @@ model Topic {
   classType   ClassType   @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  isActive    Boolean     @default(true)
   resources   Resource[]
 
   @@index([classTypeId])

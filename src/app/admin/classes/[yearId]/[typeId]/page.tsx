@@ -7,6 +7,7 @@ import { ArrowLeft, Plus, Edit2, Trash2, Layers, FileText, ChevronRight, MoreVer
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { getClassTypeById } from '@/lib/actions/classType';
 import { createTopic, updateTopic, deleteTopic } from '@/lib/actions/topic';
@@ -16,6 +17,7 @@ interface Topic {
     title: string;
     description: string | null;
     order: number;
+    isActive: boolean;
     _count?: {
         resources: number;
     };
@@ -46,6 +48,7 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
     // Form State
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [isActive, setIsActive] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Alert Dialog State
@@ -79,8 +82,8 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
         setIsSubmitting(true);
 
         const result = editingTopic
-            ? await updateTopic(editingTopic.id, { title, description })
-            : await createTopic({ classTypeId: typeId, title, description });
+            ? await updateTopic(editingTopic.id, { title, description, isActive })
+            : await createTopic({ classTypeId: typeId, title, description, isActive });
 
         if (result.success) {
             await fetchClassTypeData();
@@ -95,6 +98,7 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
         setEditingTopic(topic);
         setTitle(topic.title);
         setDescription(topic.description || '');
+        setIsActive(topic.isActive);
         setIsAdding(true);
     };
 
@@ -118,6 +122,7 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
         setEditingTopic(null);
         setTitle('');
         setDescription('');
+        setIsActive(true);
     };
 
     if (isLoading) {
@@ -206,8 +211,9 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
 
                                     <div className="flex items-center justify-between">
                                         <div className="flex-1">
-                                            <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-[#D4AF37] transition-colors">
+                                            <h3 className={`text-xl font-bold mb-1 transition-colors ${topic.isActive ? 'text-gray-900 group-hover:text-[#D4AF37]' : 'text-gray-400'}`}>
                                                 {topic.title}
+                                                {!topic.isActive && <span className="ml-2 text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Inactive</span>}
                                             </h3>
                                             {topic.description && (
                                                 <p className="text-gray-500 text-sm mb-3">{topic.description}</p>
@@ -285,25 +291,38 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
                                     </div>
 
                                     <form onSubmit={handleSubmit} className="space-y-5">
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-300 ml-1">Topic Title</Label>
-                                            <Input
-                                                placeholder="e.g. Market Equilibrium"
-                                                value={title}
-                                                onChange={e => setTitle(e.target.value)}
-                                                required
-                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                            />
-                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-gray-300 ml-1">Topic Title</Label>
+                                                <Input
+                                                    placeholder="e.g. Market Equilibrium"
+                                                    value={title}
+                                                    onChange={e => setTitle(e.target.value)}
+                                                    required
+                                                    className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                                />
+                                            </div>
 
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-300 ml-1">Description <span className="text-gray-600 text-xs">(Optional)</span></Label>
-                                            <Input
-                                                placeholder="Brief description..."
-                                                value={description}
-                                                onChange={e => setDescription(e.target.value)}
-                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                            />
+                                            <div className="space-y-2">
+                                                <Label className="text-gray-300 ml-1">Description <span className="text-gray-600 text-xs">(Optional)</span></Label>
+                                                <Input
+                                                    placeholder="Brief description..."
+                                                    value={description}
+                                                    onChange={e => setDescription(e.target.value)}
+                                                    className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+                                                <div className="space-y-0.5">
+                                                    <Label className="text-gray-200">Active Status</Label>
+                                                    <p className="text-xs text-gray-500">Enable or disable this topic for students</p>
+                                                </div>
+                                                <Switch
+                                                    checked={isActive}
+                                                    onCheckedChange={setIsActive}
+                                                />
+                                            </div>
                                         </div>
 
                                         <div className="flex gap-3 pt-6">

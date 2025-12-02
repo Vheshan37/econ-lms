@@ -26,6 +26,7 @@ export async function createTopic(data: {
     classTypeId: string;
     title: string;
     description?: string;
+    isActive?: boolean;
 }) {
     try {
         // Get highest order to append to end
@@ -41,7 +42,8 @@ export async function createTopic(data: {
                 title: data.title,
                 description: data.description,
                 classTypeId: data.classTypeId,
-                order: newOrder
+                order: newOrder,
+                isActive: data.isActive ?? true
             }
         });
 
@@ -65,13 +67,15 @@ export async function createTopic(data: {
 export async function updateTopic(id: string, data: {
     title: string;
     description?: string;
+    isActive?: boolean;
 }) {
     try {
         const topic = await (prisma as any).topic.update({
             where: { id },
             data: {
                 title: data.title,
-                description: data.description
+                description: data.description,
+                isActive: data.isActive
             }
         });
 
