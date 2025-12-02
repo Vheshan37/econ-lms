@@ -122,6 +122,34 @@ export default function StudentLayout({
                     </nav>
 
                     <div className="p-4 border-t border-gray-800 space-y-2">
+                        {/* Collapse Button - Now on top */}
+                        {isCollapsed ? (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => setIsCollapsed(!isCollapsed)}
+                                        className="w-full justify-center text-gray-400 hover:text-white hover:bg-white/5"
+                                    >
+                                        <ChevronRight className="h-5 w-5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="right" className="bg-[#D4AF37] text-[#1a1a1a] border-none">
+                                    Expand Sidebar
+                                </TooltipContent>
+                            </Tooltip>
+                        ) : (
+                            <Button
+                                variant="ghost"
+                                onClick={() => setIsCollapsed(!isCollapsed)}
+                                className="w-full justify-start gap-3 text-gray-400 hover:text-white hover:bg-white/5"
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                                <span>Collapse Sidebar</span>
+                            </Button>
+                        )}
+
+                        {/* Logout Button - Now at bottom */}
                         {isCollapsed ? (
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -147,14 +175,6 @@ export default function StudentLayout({
                                 <span>Logout</span>
                             </Button>
                         )}
-
-                        <Button
-                            variant="ghost"
-                            onClick={() => setIsCollapsed(!isCollapsed)}
-                            className="w-full justify-center text-gray-400 hover:text-white hover:bg-white/5"
-                        >
-                            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-                        </Button>
                     </div>
                 </motion.aside>
 

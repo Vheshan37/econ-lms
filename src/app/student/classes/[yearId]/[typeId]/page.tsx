@@ -14,7 +14,7 @@ export default async function StudentTopicsPage({ params }: { params: Promise<{ 
 
     const { yearId, typeId } = await params;
     const result = await getStudentTopics(typeId);
-    const topics = result.success ? result.data : [];
+    const topics = (result.success && result.data) ? result.data : [];
 
     return (
         <div className="space-y-8">

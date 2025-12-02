@@ -21,7 +21,7 @@ export default async function StudentTopicResourcesPage({ params }: { params: Pr
 
     const { yearId, typeId, topicId } = await params;
     const result = await getTopicResources(topicId);
-    const resources = result.success ? result.data : [];
+    const resources = (result.success && result.data) ? result.data : [];
 
     // Group resources by type
     const resourcesByType = Object.keys(RESOURCE_CONFIG).map(type => ({

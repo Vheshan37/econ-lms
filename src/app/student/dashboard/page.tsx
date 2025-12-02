@@ -17,7 +17,7 @@ export default async function StudentDashboard() {
     ]);
 
     const stats = statsResult.success ? statsResult.data : null;
-    const years = yearsResult.success ? yearsResult.data : [];
+    const years = (yearsResult.success && yearsResult.data) ? yearsResult.data : [];
 
     if (!stats) {
         return <div className="p-8">Error loading dashboard data</div>;
