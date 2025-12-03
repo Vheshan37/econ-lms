@@ -230,16 +230,16 @@ export default function ContentManagementPage() {
                         </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label>Title</Label>
-                                <Input value={heroContent.title} onChange={e => setHeroContent({ ...heroContent, title: e.target.value })} />
+                                <Label className="text-black">Title</Label>
+                                <Input className="bg-white border-black text-black" value={heroContent.title} onChange={e => setHeroContent({ ...heroContent, title: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <Label>Subtitle</Label>
-                                <Textarea value={heroContent.subtitle} onChange={e => setHeroContent({ ...heroContent, subtitle: e.target.value })} />
+                                <Label className="text-black">Subtitle</Label>
+                                <Textarea className="bg-white border-black text-black" value={heroContent.subtitle} onChange={e => setHeroContent({ ...heroContent, subtitle: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <Label>CTA Text</Label>
-                                <Input value={heroContent.ctaText} onChange={e => setHeroContent({ ...heroContent, ctaText: e.target.value })} />
+                                <Label className="text-black">CTA Text</Label>
+                                <Input className="bg-white border-black text-black" value={heroContent.ctaText} onChange={e => setHeroContent({ ...heroContent, ctaText: e.target.value })} />
                             </div>
                         </div>
                     </div>
@@ -253,12 +253,12 @@ export default function ContentManagementPage() {
                         </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label>Title</Label>
-                                <Input value={aboutContent.title} onChange={e => setAboutContent({ ...aboutContent, title: e.target.value })} />
+                                <Label className="text-black">Title</Label>
+                                <Input className="bg-white border-black text-black" value={aboutContent.title} onChange={e => setAboutContent({ ...aboutContent, title: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <Label>Description</Label>
-                                <Textarea value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={5} />
+                                <Label className="text-black">Description</Label>
+                                <Textarea className="bg-white border-black text-black" value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={5} />
                             </div>
                         </div>
                     </div>
@@ -287,7 +287,7 @@ export default function ContentManagementPage() {
                                         </button>
                                     </div>
                                 </div>
-                                <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
+                                <h3 className="font-bold text-lg mb-2 text-black">{feature.title}</h3>
                                 <p className="text-gray-600 text-sm">{feature.description}</p>
                             </div>
                         ))}
@@ -340,16 +340,16 @@ export default function ContentManagementPage() {
                         </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label>Email Address</Label>
-                                <Input value={contactContent.email} onChange={e => setContactContent({ ...contactContent, email: e.target.value })} />
+                                <Label className="text-black">Email Address</Label>
+                                <Input className="bg-white border-black text-black" value={contactContent.email} onChange={e => setContactContent({ ...contactContent, email: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <Label>Phone Number</Label>
-                                <Input value={contactContent.phone} onChange={e => setContactContent({ ...contactContent, phone: e.target.value })} />
+                                <Label className="text-black">Phone Number</Label>
+                                <Input className="bg-white border-black text-black" value={contactContent.phone} onChange={e => setContactContent({ ...contactContent, phone: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <Label>Address</Label>
-                                <Textarea value={contactContent.address} onChange={e => setContactContent({ ...contactContent, address: e.target.value })} />
+                                <Label className="text-black">Address</Label>
+                                <Textarea className="bg-white border-black text-black" value={contactContent.address} onChange={e => setContactContent({ ...contactContent, address: e.target.value })} />
                             </div>
                         </div>
                     </div>
@@ -374,25 +374,25 @@ export default function ContentManagementPage() {
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-bold">{editingFeature ? 'Edit Feature' : 'Add Feature'}</h2>
+                                <h2 className="text-xl font-bold text-black">{editingFeature ? 'Edit Feature' : 'Add Feature'}</h2>
                                 <button onClick={() => setIsFeatureModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
                             </div>
                             <form onSubmit={handleFeatureSubmit} className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label>Title</Label>
-                                    <Input value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} required />
+                                    <Label className="text-black">Title</Label>
+                                    <Input className="bg-white border-black text-black" value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Description</Label>
-                                    <Textarea value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} required />
+                                    <Label className="text-black">Description</Label>
+                                    <Textarea className="bg-white border-black text-black" value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Icon Name (Lucide React)</Label>
-                                    <Input value={featureForm.icon} onChange={e => setFeatureForm({ ...featureForm, icon: e.target.value })} placeholder="e.g. Zap, Book, Users" required />
+                                    <Label className="text-black">Icon Name (Lucide React)</Label>
+                                    <Input className="bg-white border-black text-black" value={featureForm.icon} onChange={e => setFeatureForm({ ...featureForm, icon: e.target.value })} placeholder="e.g. Zap, Book, Users" required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Order</Label>
-                                    <Input type="number" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
+                                    <Label className="text-black">Order</Label>
+                                    <Input className="bg-white border-black text-black" type="number" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
                                 </div>
                                 <Button type="submit" className="w-full bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] font-bold">
                                     {editingFeature ? 'Update Feature' : 'Add Feature'}
@@ -421,25 +421,25 @@ export default function ContentManagementPage() {
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-bold">{editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}</h2>
+                                <h2 className="text-xl font-bold text-black">{editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}</h2>
                                 <button onClick={() => setIsTestimonialModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
                             </div>
                             <form onSubmit={handleTestimonialSubmit} className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label>Name</Label>
-                                    <Input value={testimonialForm.name} onChange={e => setTestimonialForm({ ...testimonialForm, name: e.target.value })} required />
+                                    <Label className="text-black">Name</Label>
+                                    <Input className="bg-white border-black text-black" value={testimonialForm.name} onChange={e => setTestimonialForm({ ...testimonialForm, name: e.target.value })} required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Role</Label>
-                                    <Input value={testimonialForm.role} onChange={e => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="e.g. 2023 A/L Student" required />
+                                    <Label className="text-black">Role</Label>
+                                    <Input className="bg-white border-black text-black" value={testimonialForm.role} onChange={e => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="e.g. 2023 A/L Student" required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Content</Label>
-                                    <Textarea value={testimonialForm.content} onChange={e => setTestimonialForm({ ...testimonialForm, content: e.target.value })} required rows={4} />
+                                    <Label className="text-black">Content</Label>
+                                    <Textarea className="bg-white border-black text-black" value={testimonialForm.content} onChange={e => setTestimonialForm({ ...testimonialForm, content: e.target.value })} required rows={4} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Image URL (Optional)</Label>
-                                    <Input value={testimonialForm.imageUrl} onChange={e => setTestimonialForm({ ...testimonialForm, imageUrl: e.target.value })} />
+                                    <Label className="text-black">Image URL (Optional)</Label>
+                                    <Input className="bg-white border-black text-black" value={testimonialForm.imageUrl} onChange={e => setTestimonialForm({ ...testimonialForm, imageUrl: e.target.value })} />
                                 </div>
                                 <Button type="submit" className="w-full bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] font-bold">
                                     {editingTestimonial ? 'Update Testimonial' : 'Add Testimonial'}
