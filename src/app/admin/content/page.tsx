@@ -380,48 +380,48 @@ export default function ContentManagementPage() {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Section Subtitle</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.sectionSubtitle} onChange={e => setHeroContent({ ...heroContent, sectionSubtitle: e.target.value })} placeholder="#1 ECONOMICS CLASS IN SRI LANKA" />
+                                    <Label className="text-gray-800">Section Subtitle</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.sectionSubtitle} onChange={e => setHeroContent({ ...heroContent, sectionSubtitle: e.target.value })} placeholder="#1 ECONOMICS CLASS IN SRI LANKA" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Section Title</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.sectionTitle} onChange={e => setHeroContent({ ...heroContent, sectionTitle: e.target.value })} placeholder="Quality ම Econ" />
+                                    <Label className="text-gray-800">Section Title</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.sectionTitle} onChange={e => setHeroContent({ ...heroContent, sectionTitle: e.target.value })} placeholder="Quality ම Econ" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Secondary Subtitle</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.secondarySubtitle} onChange={e => setHeroContent({ ...heroContent, secondarySubtitle: e.target.value })} placeholder="For A/L Students" />
+                                    <Label className="text-gray-800">Secondary Subtitle</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.secondarySubtitle} onChange={e => setHeroContent({ ...heroContent, secondarySubtitle: e.target.value })} placeholder="For A/L Students" />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Description</Label>
-                                <Textarea className="bg-white border-black text-black" value={heroContent.description} onChange={e => setHeroContent({ ...heroContent, description: e.target.value })} rows={3} placeholder="දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන්..." />
+                                <Label className="text-gray-800">Description</Label>
+                                <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.description} onChange={e => setHeroContent({ ...heroContent, description: e.target.value })} rows={3} placeholder="දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන්..." />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Student Count</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.studentCount} onChange={e => setHeroContent({ ...heroContent, studentCount: e.target.value })} placeholder="500+" />
+                                    <Label className="text-gray-800">Student Count</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.studentCount} onChange={e => setHeroContent({ ...heroContent, studentCount: e.target.value })} placeholder="500+" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Rank Count</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.rankCount} onChange={e => setHeroContent({ ...heroContent, rankCount: e.target.value })} placeholder="50+" />
+                                    <Label className="text-gray-800">Rank Count</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.rankCount} onChange={e => setHeroContent({ ...heroContent, rankCount: e.target.value })} placeholder="50+" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Experience Count</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.expCount} onChange={e => setHeroContent({ ...heroContent, expCount: e.target.value })} placeholder="10+" />
+                                    <Label className="text-gray-800">Experience Count</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.expCount} onChange={e => setHeroContent({ ...heroContent, expCount: e.target.value })} placeholder="10+" />
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Teacher Name</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.teacherName} onChange={e => setHeroContent({ ...heroContent, teacherName: e.target.value })} />
+                                    <Label className="text-gray-800">Teacher Name</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.teacherName} onChange={e => setHeroContent({ ...heroContent, teacherName: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Teacher Title</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.teacherTitle} onChange={e => setHeroContent({ ...heroContent, teacherTitle: e.target.value })} />
+                                    <Label className="text-gray-800">Teacher Title</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.teacherTitle} onChange={e => setHeroContent({ ...heroContent, teacherTitle: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Teacher Image URL</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.teacherImage} onChange={e => setHeroContent({ ...heroContent, teacherImage: e.target.value })} />
+                                    <Label className="text-gray-800">Teacher Image URL</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.teacherImage} onChange={e => setHeroContent({ ...heroContent, teacherImage: e.target.value })} />
                                 </div>
                             </div>
                         </div>
@@ -437,25 +437,25 @@ export default function ContentManagementPage() {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Section Subtitle</Label>
-                                    <Input className="bg-white border-black text-black" value={aboutContent.sectionSubtitle} onChange={e => setAboutContent({ ...aboutContent, sectionSubtitle: e.target.value })} placeholder="ABOUT THE MENTOR" />
+                                    <Label className="text-gray-800">Section Subtitle</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.sectionSubtitle} onChange={e => setAboutContent({ ...aboutContent, sectionSubtitle: e.target.value })} placeholder="ABOUT THE MENTOR" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Section Title</Label>
-                                    <Input className="bg-white border-black text-black" value={aboutContent.sectionTitle} onChange={e => setAboutContent({ ...aboutContent, sectionTitle: e.target.value })} placeholder="Why Choose Quality Econ" />
+                                    <Label className="text-gray-800">Section Title</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.sectionTitle} onChange={e => setAboutContent({ ...aboutContent, sectionTitle: e.target.value })} placeholder="Why Choose Quality Econ" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Secondary Subtitle</Label>
-                                    <Input className="bg-white border-black text-black" value={aboutContent.secondarySubtitle} onChange={e => setAboutContent({ ...aboutContent, secondarySubtitle: e.target.value })} placeholder="සංකීර්ණතාවය සරල බවට..." />
+                                    <Label className="text-gray-800">Secondary Subtitle</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.secondarySubtitle} onChange={e => setAboutContent({ ...aboutContent, secondarySubtitle: e.target.value })} placeholder="සංකීර්ණතාවය සරල බවට..." />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Description</Label>
-                                <Textarea className="bg-white border-black text-black" value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={4} placeholder="දශකයකට වැඩි ගුරු අත්දැකීම්..." />
+                                <Label className="text-gray-800">Description</Label>
+                                <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={4} placeholder="දශකයකට වැඩි ගුරු අත්දැකීම්..." />
                             </div>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <Label className="text-black">Features List</Label>
+                                    <Label className="text-gray-800">Features List</Label>
                                     <Button
                                         type="button"
                                         onClick={() => setAboutContent({ ...aboutContent, features: [...aboutContent.features, ''] })}
@@ -468,7 +468,7 @@ export default function ContentManagementPage() {
                                     {aboutContent.features.map((feature, index) => (
                                         <div key={index} className="flex gap-2">
                                             <Input
-                                                className="bg-white border-black text-black flex-1"
+                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] flex-1"
                                                 value={feature}
                                                 onChange={e => {
                                                     const newFeatures = [...aboutContent.features];
@@ -497,17 +497,17 @@ export default function ContentManagementPage() {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Quote</Label>
-                                    <Input className="bg-white border-black text-black" value={aboutContent.quote} onChange={e => setAboutContent({ ...aboutContent, quote: e.target.value })} />
+                                    <Label className="text-gray-800">Quote</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.quote} onChange={e => setAboutContent({ ...aboutContent, quote: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Quote Author</Label>
-                                    <Input className="bg-white border-black text-black" value={aboutContent.quoteAuthor} onChange={e => setAboutContent({ ...aboutContent, quoteAuthor: e.target.value })} />
+                                    <Label className="text-gray-800">Quote Author</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.quoteAuthor} onChange={e => setAboutContent({ ...aboutContent, quoteAuthor: e.target.value })} />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Video URL</Label>
-                                <Input className="bg-white border-black text-black" value={aboutContent.videoUrl} onChange={e => setAboutContent({ ...aboutContent, videoUrl: e.target.value })} placeholder="https://..." />
+                                <Label className="text-gray-800">Video URL</Label>
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.videoUrl} onChange={e => setAboutContent({ ...aboutContent, videoUrl: e.target.value })} placeholder="https://..." />
                             </div>
                         </div>
                     </div>
@@ -526,26 +526,26 @@ export default function ContentManagementPage() {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Subtitle</Label>
-                                    <Input className="bg-white border-black text-black" value={freeLessonsContent.subtitle} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, subtitle: e.target.value })} />
+                                    <Label className="text-gray-800">Subtitle</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.subtitle} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, subtitle: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Title</Label>
-                                    <Input className="bg-white border-black text-black" value={freeLessonsContent.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, title: e.target.value })} />
+                                    <Label className="text-gray-800">Title</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, title: e.target.value })} />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Description</Label>
-                                <Textarea className="bg-white border-black text-black" value={freeLessonsContent.description} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, description: e.target.value })} />
+                                <Label className="text-gray-800">Description</Label>
+                                <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.description} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, description: e.target.value })} />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">CTA Text</Label>
-                                    <Input className="bg-white border-black text-black" value={freeLessonsContent.ctaText} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, ctaText: e.target.value })} />
+                                    <Label className="text-gray-800">CTA Text</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.ctaText} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, ctaText: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">CTA Note</Label>
-                                    <Input className="bg-white border-black text-black" value={freeLessonsContent.ctaNote} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, ctaNote: e.target.value })} />
+                                    <Label className="text-gray-800">CTA Note</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.ctaNote} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, ctaNote: e.target.value })} />
                                 </div>
                             </div>
                         </div>
@@ -559,24 +559,24 @@ export default function ContentManagementPage() {
                                 <div key={idx} className="p-4 border border-gray-200 rounded-xl space-y-3">
                                     <h3 className="font-semibold text-gray-700">{cat.title} Card</h3>
                                     <div className="space-y-2">
-                                        <Label className="text-black">Title</Label>
-                                        <Input className="bg-white border-black text-black" value={cat.title} onChange={e => {
+                                        <Label className="text-gray-800">Title</Label>
+                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={cat.title} onChange={e => {
                                             const newCats = [...freeLessonsContent.categories];
                                             newCats[idx].title = e.target.value;
                                             setFreeLessonsContent({ ...freeLessonsContent, categories: newCats });
                                         }} />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-black">Count Text</Label>
-                                        <Input className="bg-white border-black text-black" value={cat.count} onChange={e => {
+                                        <Label className="text-gray-800">Count Text</Label>
+                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={cat.count} onChange={e => {
                                             const newCats = [...freeLessonsContent.categories];
                                             newCats[idx].count = e.target.value;
                                             setFreeLessonsContent({ ...freeLessonsContent, categories: newCats });
                                         }} />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-black">Description</Label>
-                                        <Textarea className="bg-white border-black text-black" value={cat.description} onChange={e => {
+                                        <Label className="text-gray-800">Description</Label>
+                                        <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={cat.description} onChange={e => {
                                             const newCats = [...freeLessonsContent.categories];
                                             newCats[idx].description = e.target.value;
                                             setFreeLessonsContent({ ...freeLessonsContent, categories: newCats });
@@ -594,22 +594,22 @@ export default function ContentManagementPage() {
                             {/* Video */}
                             <div className="space-y-3">
                                 <h3 className="font-semibold text-gray-700">Video Preview</h3>
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredVideo.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, title: e.target.value } })} placeholder="Title" />
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredVideo.duration} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, duration: e.target.value } })} placeholder="Duration" />
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredVideo.views} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, views: e.target.value } })} placeholder="Views" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredVideo.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, title: e.target.value } })} placeholder="Title" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredVideo.duration} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, duration: e.target.value } })} placeholder="Duration" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredVideo.views} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, views: e.target.value } })} placeholder="Views" />
                             </div>
                             {/* Doc */}
                             <div className="space-y-3">
                                 <h3 className="font-semibold text-gray-700">Document Preview</h3>
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredDoc.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredDoc: { ...freeLessonsContent.featuredDoc, title: e.target.value } })} placeholder="Title" />
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredDoc.subtitle} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredDoc: { ...freeLessonsContent.featuredDoc, subtitle: e.target.value } })} placeholder="Subtitle" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredDoc.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredDoc: { ...freeLessonsContent.featuredDoc, title: e.target.value } })} placeholder="Title" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredDoc.subtitle} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredDoc: { ...freeLessonsContent.featuredDoc, subtitle: e.target.value } })} placeholder="Subtitle" />
                             </div>
                             {/* Quiz */}
                             <div className="space-y-3">
                                 <h3 className="font-semibold text-gray-700">Quiz Preview</h3>
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredQuiz.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, title: e.target.value } })} placeholder="Title" />
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredQuiz.duration} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, duration: e.target.value } })} placeholder="Duration" />
-                                <Input className="bg-white border-black text-black" value={freeLessonsContent.featuredQuiz.questionCount} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, questionCount: e.target.value } })} placeholder="Questions" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredQuiz.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, title: e.target.value } })} placeholder="Title" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredQuiz.duration} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, duration: e.target.value } })} placeholder="Duration" />
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredQuiz.questionCount} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, questionCount: e.target.value } })} placeholder="Questions" />
                             </div>
                         </div>
                     </div>
@@ -675,7 +675,7 @@ export default function ContentManagementPage() {
                                         </button>
                                     </div>
                                 </div>
-                                <h3 className="font-bold text-lg mb-2 text-black">{feature.title}</h3>
+                                <h3 className="font-bold text-lg mb-2 text-gray-800">{feature.title}</h3>
                                 <p className="text-gray-600 text-sm">{feature.description}</p>
                             </div>
                         ))}
@@ -732,39 +732,39 @@ export default function ContentManagementPage() {
                         </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label className="text-black">Form Title</Label>
-                                <Input className="bg-white border-black text-black" value={contactContent.formTitle} onChange={e => setContactContent({ ...contactContent, formTitle: e.target.value })} placeholder="Start Your AL Economics Journey Today" />
+                                <Label className="text-gray-800">Form Title</Label>
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.formTitle} onChange={e => setContactContent({ ...contactContent, formTitle: e.target.value })} placeholder="Start Your AL Economics Journey Today" />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Map URL</Label>
-                                <Input className="bg-white border-black text-black" value={contactContent.mapUrl} onChange={e => setContactContent({ ...contactContent, mapUrl: e.target.value })} placeholder="https://maps.google.com/..." />
+                                <Label className="text-gray-800">Map URL</Label>
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.mapUrl} onChange={e => setContactContent({ ...contactContent, mapUrl: e.target.value })} placeholder="https://maps.google.com/..." />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Email Address</Label>
-                                    <Input className="bg-white border-black text-black" value={contactContent.email} onChange={e => setContactContent({ ...contactContent, email: e.target.value })} />
+                                    <Label className="text-gray-800">Email Address</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.email} onChange={e => setContactContent({ ...contactContent, email: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Phone Number</Label>
-                                    <Input className="bg-white border-black text-black" value={contactContent.phone} onChange={e => setContactContent({ ...contactContent, phone: e.target.value })} />
+                                    <Label className="text-gray-800">Phone Number</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.phone} onChange={e => setContactContent({ ...contactContent, phone: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Address</Label>
-                                    <Input className="bg-white border-black text-black" value={contactContent.address} onChange={e => setContactContent({ ...contactContent, address: e.target.value })} />
+                                    <Label className="text-gray-800">Address</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.address} onChange={e => setContactContent({ ...contactContent, address: e.target.value })} />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Office Hours Title</Label>
-                                <Input className="bg-white border-black text-black" value={contactContent.officeHours.title} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, title: e.target.value } })} placeholder="Office Hours" />
+                                <Label className="text-gray-800">Office Hours Title</Label>
+                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.officeHours.title} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, title: e.target.value } })} placeholder="Office Hours" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Weekdays Hours</Label>
-                                    <Input className="bg-white border-black text-black" value={contactContent.officeHours.weekdays} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, weekdays: e.target.value } })} placeholder="Monday - Friday: 9:00 AM - 6:00 PM" />
+                                    <Label className="text-gray-800">Weekdays Hours</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.officeHours.weekdays} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, weekdays: e.target.value } })} placeholder="Monday - Friday: 9:00 AM - 6:00 PM" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Weekends Hours</Label>
-                                    <Input className="bg-white border-black text-black" value={contactContent.officeHours.weekends} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, weekends: e.target.value } })} placeholder="Saturday: 9:00 AM - 4:00 PM" />
+                                    <Label className="text-gray-800">Weekends Hours</Label>
+                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.officeHours.weekends} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, weekends: e.target.value } })} placeholder="Saturday: 9:00 AM - 4:00 PM" />
                                 </div>
                             </div>
                         </div>
@@ -785,31 +785,31 @@ export default function ContentManagementPage() {
                             </div>
                             <form onSubmit={handleTestimonialSubmit} className="p-6 space-y-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Student Name</Label>
-                                    <Input required className="bg-white border-black text-black" value={testimonialForm.name} onChange={e => setTestimonialForm({ ...testimonialForm, name: e.target.value })} />
+                                    <Label className="text-gray-800">Student Name</Label>
+                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.name} onChange={e => setTestimonialForm({ ...testimonialForm, name: e.target.value })} />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label className="text-black">Role/Achievement</Label>
-                                        <Input required className="bg-white border-black text-black" value={testimonialForm.role} onChange={e => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="District Rank 1" />
+                                        <Label className="text-gray-800">Role/Achievement</Label>
+                                        <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.role} onChange={e => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="District Rank 1" />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-black">Institute</Label>
-                                        <Input className="bg-white border-black text-black" value={testimonialForm.institute} onChange={e => setTestimonialForm({ ...testimonialForm, institute: e.target.value })} placeholder="Colombo" />
+                                        <Label className="text-gray-800">Institute</Label>
+                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.institute} onChange={e => setTestimonialForm({ ...testimonialForm, institute: e.target.value })} placeholder="Colombo" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Testimonial Content</Label>
-                                    <Textarea required className="bg-white border-black text-black" value={testimonialForm.content} onChange={e => setTestimonialForm({ ...testimonialForm, content: e.target.value })} rows={4} />
+                                    <Label className="text-gray-800">Testimonial Content</Label>
+                                    <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.content} onChange={e => setTestimonialForm({ ...testimonialForm, content: e.target.value })} rows={4} />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label className="text-black">Image URL</Label>
-                                        <Input className="bg-white border-black text-black" value={testimonialForm.imageUrl} onChange={e => setTestimonialForm({ ...testimonialForm, imageUrl: e.target.value })} placeholder="https://..." />
+                                        <Label className="text-gray-800">Image URL</Label>
+                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.imageUrl} onChange={e => setTestimonialForm({ ...testimonialForm, imageUrl: e.target.value })} placeholder="https://..." />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-black">Rating (1-5)</Label>
-                                        <Input type="number" min="1" max="5" required className="bg-white border-black text-black" value={testimonialForm.rating} onChange={e => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })} />
+                                        <Label className="text-gray-800">Rating (1-5)</Label>
+                                        <Input type="number" min="1" max="5" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.rating} onChange={e => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })} />
                                     </div>
                                 </div>
                                 <div className="flex justify-end gap-3 pt-4">
@@ -837,17 +837,17 @@ export default function ContentManagementPage() {
                             </div>
                             <form onSubmit={handleFeatureSubmit} className="p-6 space-y-6">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Feature Title</Label>
-                                    <Input required className="bg-white border-black text-black" value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} />
+                                    <Label className="text-gray-800">Feature Title</Label>
+                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Description</Label>
-                                    <Textarea required className="bg-white border-black text-black" value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} rows={3} />
+                                    <Label className="text-gray-800">Description</Label>
+                                    <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} rows={3} />
                                 </div>
 
                                 {/* Icon Picker */}
                                 <div className="space-y-3">
-                                    <Label className="text-black">Select Icon</Label>
+                                    <Label className="text-gray-800">Select Icon</Label>
                                     <div className="grid grid-cols-7 gap-2">
                                         {FEATURE_ICONS.map((iconItem) => {
                                             const IconComponent = iconItem.icon;
@@ -875,7 +875,7 @@ export default function ContentManagementPage() {
 
                                 {/* Color Picker */}
                                 <div className="space-y-3">
-                                    <Label className="text-black">Select Gradient Color</Label>
+                                    <Label className="text-gray-800">Select Gradient Color</Label>
                                     <div className="grid grid-cols-3 gap-3">
                                         {GRADIENT_COLORS.map((colorItem) => {
                                             const isSelected = featureForm.color === colorItem.value;
@@ -905,7 +905,7 @@ export default function ContentManagementPage() {
                                 {/* Preview */}
                                 {featureForm.icon && featureForm.color && (
                                     <div className="space-y-2">
-                                        <Label className="text-black">Preview</Label>
+                                        <Label className="text-gray-800">Preview</Label>
                                         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                             <div className="flex items-start gap-4">
                                                 <div className={`p-3 rounded-xl bg-gradient-to-r ${featureForm.color}`}>
@@ -924,8 +924,8 @@ export default function ContentManagementPage() {
                                 )}
 
                                 <div className="space-y-2">
-                                    <Label className="text-black">Order</Label>
-                                    <Input type="number" required className="bg-white border-black text-black" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
+                                    <Label className="text-gray-800">Order</Label>
+                                    <Input type="number" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
                                 </div>
                                 <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                                     <Button type="button" variant="outline" onClick={() => setIsFeatureModalOpen(false)}>Cancel</Button>
@@ -954,14 +954,14 @@ export default function ContentManagementPage() {
                             </div>
                             <form onSubmit={handleFreeResourceSubmit} className="p-6 space-y-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Title</Label>
-                                    <Input required className="bg-white border-black text-black" value={freeResourceForm.title} onChange={e => setFreeResourceForm({ ...freeResourceForm, title: e.target.value })} />
+                                    <Label className="text-gray-800">Title</Label>
+                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeResourceForm.title} onChange={e => setFreeResourceForm({ ...freeResourceForm, title: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Type</Label>
+                                    <Label className="text-gray-800">Type</Label>
                                     <select
                                         required
-                                        className="w-full px-3 py-2 bg-white border border-black text-black rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                                        className="w-full px-3 py-2 bg-white border border-gray-300 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                                         value={freeResourceForm.type}
                                         onChange={(e) => setFreeResourceForm({ ...freeResourceForm, type: e.target.value as 'VIDEO' | 'PDF' | 'PAST_PAPER' | 'QUIZ' })}
                                     >
@@ -972,12 +972,12 @@ export default function ContentManagementPage() {
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">URL</Label>
-                                    <Input required className="bg-white border-black text-black" value={freeResourceForm.url} onChange={e => setFreeResourceForm({ ...freeResourceForm, url: e.target.value })} placeholder="https://..." />
+                                    <Label className="text-gray-800">URL</Label>
+                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeResourceForm.url} onChange={e => setFreeResourceForm({ ...freeResourceForm, url: e.target.value })} placeholder="https://..." />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Description</Label>
-                                    <Textarea className="bg-white border-black text-black" value={freeResourceForm.description} onChange={e => setFreeResourceForm({ ...freeResourceForm, description: e.target.value })} rows={3} />
+                                    <Label className="text-gray-800">Description</Label>
+                                    <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeResourceForm.description} onChange={e => setFreeResourceForm({ ...freeResourceForm, description: e.target.value })} rows={3} />
                                 </div>
                                 <div className="flex justify-end gap-3 pt-4">
                                     <Button type="button" variant="outline" onClick={() => setIsFreeResourceModalOpen(false)}>Cancel</Button>
