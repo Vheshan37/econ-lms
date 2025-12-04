@@ -29,6 +29,10 @@ import {
 import { PreviewModal } from '@/components/landing/preview/PreviewModal';
 import { HeroPreview } from '@/components/landing/preview/HeroPreview';
 import { AboutPreview } from '@/components/landing/preview/AboutPreview';
+import { ModernFeaturesPreview } from '@/components/landing/preview/ModernFeaturesPreview';
+import { TestimonialsPreview } from '@/components/landing/preview/TestimonialsPreview';
+import { FreeLessonsPreview } from '@/components/landing/preview/FreeLessonsPreview';
+import { ContactPreview } from '@/components/landing/preview/ContactPreview';
 
 export default function ContentManagementPage() {
     const [activeTab, setActiveTab] = useState('general');
@@ -115,7 +119,7 @@ export default function ContentManagementPage() {
     const [freeResourceForm, setFreeResourceForm] = useState({ title: '', type: 'VIDEO', url: '', description: '' });
 
     // Preview Modal State
-    const [previewModal, setPreviewModal] = useState<{ isOpen: boolean; type: 'hero' | 'about' | null }>({
+    const [previewModal, setPreviewModal] = useState<{ isOpen: boolean; type: 'hero' | 'about' | 'features' | 'testimonials' | 'freeLessons' | 'contact' | null }>({
         isOpen: false,
         type: null
     });
@@ -546,9 +550,18 @@ export default function ContentManagementPage() {
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">General Settings</h2>
-                            <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Changes
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    onClick={() => setPreviewModal({ isOpen: true, type: 'freeLessons' })}
+                                    variant="outline"
+                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" /> Preview Section
+                                </Button>
+                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                    <Save className="w-4 h-4 mr-2" /> Save Changes
+                                </Button>
+                            </div>
                         </div>
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -681,7 +694,14 @@ export default function ContentManagementPage() {
 
                 {/* Features Tab */}
                 <TabsContent value="features" className="space-y-6">
-                    <div className="flex justify-end">
+                    <div className="flex justify-between items-center">
+                        <Button
+                            onClick={() => setPreviewModal({ isOpen: true, type: 'features' })}
+                            variant="outline"
+                            className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                        >
+                            <Eye className="w-4 h-4 mr-2" /> Preview Section
+                        </Button>
                         <Button onClick={() => { setEditingFeature(null); setFeatureForm({ title: '', description: '', icon: '', color: '', order: features.length }); setIsFeatureModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
                             <Plus className="w-4 h-4 mr-2" /> Add Feature
                         </Button>
@@ -711,7 +731,14 @@ export default function ContentManagementPage() {
 
                 {/* Testimonials Tab */}
                 <TabsContent value="testimonials" className="space-y-6">
-                    <div className="flex justify-end">
+                    <div className="flex justify-between items-center">
+                        <Button
+                            onClick={() => setPreviewModal({ isOpen: true, type: 'testimonials' })}
+                            variant="outline"
+                            className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                        >
+                            <Eye className="w-4 h-4 mr-2" /> Preview Section
+                        </Button>
                         <Button onClick={() => { setEditingTestimonial(null); setTestimonialForm({ name: '', role: '', content: '', imageUrl: '', rating: 5, institute: '' }); setIsTestimonialModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
                             <Plus className="w-4 h-4 mr-2" /> Add Testimonial
                         </Button>
@@ -753,9 +780,18 @@ export default function ContentManagementPage() {
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Contact Information</h2>
-                            <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Changes
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    onClick={() => setPreviewModal({ isOpen: true, type: 'contact' })}
+                                    variant="outline"
+                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" /> Preview Section
+                                </Button>
+                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                    <Save className="w-4 h-4 mr-2" /> Save Changes
+                                </Button>
+                            </div>
                         </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
@@ -1062,6 +1098,38 @@ export default function ContentManagementPage() {
                 title="About Section"
             >
                 <AboutPreview data={aboutContent} />
+            </PreviewModal>
+
+            <PreviewModal
+                isOpen={previewModal.isOpen && previewModal.type === 'features'}
+                onClose={() => setPreviewModal({ isOpen: false, type: null })}
+                title="Modern Features Section"
+            >
+                <ModernFeaturesPreview data={features} />
+            </PreviewModal>
+
+            <PreviewModal
+                isOpen={previewModal.isOpen && previewModal.type === 'testimonials'}
+                onClose={() => setPreviewModal({ isOpen: false, type: null })}
+                title="Testimonials Section"
+            >
+                <TestimonialsPreview data={testimonials} />
+            </PreviewModal>
+
+            <PreviewModal
+                isOpen={previewModal.isOpen && previewModal.type === 'freeLessons'}
+                onClose={() => setPreviewModal({ isOpen: false, type: null })}
+                title="Free Lessons Section"
+            >
+                <FreeLessonsPreview data={freeLessonsContent} freeResources={freeResources} />
+            </PreviewModal>
+
+            <PreviewModal
+                isOpen={previewModal.isOpen && previewModal.type === 'contact'}
+                onClose={() => setPreviewModal({ isOpen: false, type: null })}
+                title="Contact Section"
+            >
+                <ContactPreview data={contactContent} />
             </PreviewModal>
         </div>
     );
