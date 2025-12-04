@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck } from 'lucide-react';
+import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck, Video, Users, Award, Target, TrendingUp, Lightbulb, CheckCircle, Star, GraduationCap, Brain, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,6 +31,33 @@ export default function ContentManagementPage() {
     const [activeTab, setActiveTab] = useState('general');
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+
+    // Icon and Color options for Features
+    const FEATURE_ICONS = [
+        { name: 'BookOpen', icon: BookOpen, label: 'Book' },
+        { name: 'GraduationCap', icon: GraduationCap, label: 'Graduation' },
+        { name: 'Video', icon: Video, label: 'Video' },
+        { name: 'FileText', icon: FileText, label: 'Document' },
+        { name: 'Users', icon: Users, label: 'Users' },
+        { name: 'Award', icon: Award, label: 'Award' },
+        { name: 'Target', icon: Target, label: 'Target' },
+        { name: 'TrendingUp', icon: TrendingUp, label: 'Growth' },
+        { name: 'Lightbulb', icon: Lightbulb, label: 'Idea' },
+        { name: 'CheckCircle', icon: CheckCircle, label: 'Check' },
+        { name: 'Star', icon: Star, label: 'Star' },
+        { name: 'Zap', icon: Zap, label: 'Lightning' },
+        { name: 'Brain', icon: Brain, label: 'Brain' },
+        { name: 'Sparkles', icon: Sparkles, label: 'Sparkles' }
+    ];
+
+    const GRADIENT_COLORS = [
+        { name: 'Blue', value: 'from-blue-500 to-blue-600', preview: 'bg-gradient-to-r from-blue-500 to-blue-600' },
+        { name: 'Purple', value: 'from-purple-500 to-purple-600', preview: 'bg-gradient-to-r from-purple-500 to-purple-600' },
+        { name: 'Green', value: 'from-green-500 to-green-600', preview: 'bg-gradient-to-r from-green-500 to-green-600' },
+        { name: 'Red', value: 'from-red-500 to-red-600', preview: 'bg-gradient-to-r from-red-500 to-red-600' },
+        { name: 'Yellow', value: 'from-yellow-500 to-yellow-600', preview: 'bg-gradient-to-r from-yellow-500 to-yellow-600' },
+        { name: 'Pink', value: 'from-pink-500 to-pink-600', preview: 'bg-gradient-to-r from-pink-500 to-pink-600' }
+    ];
 
     // General Content State
     const [heroContent, setHeroContent] = useState({
@@ -426,9 +453,47 @@ export default function ContentManagementPage() {
                                 <Label className="text-black">Description</Label>
                                 <Textarea className="bg-white border-black text-black" value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={4} placeholder="දශකයකට වැඩි ගුරු අත්දැකීම්..." />
                             </div>
-                            <div className="space-y-2">
-                                <Label className="text-black">Features (One per line)</Label>
-                                <Textarea className="bg-white border-black text-black" value={aboutContent.features.join('\n')} onChange={e => setAboutContent({ ...aboutContent, features: e.target.value.split('\n').filter(f => f.trim()) })} rows={5} placeholder="Comprehensive Theory Coverage&#10;Past Paper Analysis&#10;Real-world Economic Examples&#10;Personalized Attention" />
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <Label className="text-black">Features List</Label>
+                                    <Button
+                                        type="button"
+                                        onClick={() => setAboutContent({ ...aboutContent, features: [...aboutContent.features, ''] })}
+                                        className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] h-8 px-3 text-sm"
+                                    >
+                                        <Plus className="w-4 h-4 mr-1" /> Add Feature
+                                    </Button>
+                                </div>
+                                <div className="space-y-2">
+                                    {aboutContent.features.map((feature, index) => (
+                                        <div key={index} className="flex gap-2">
+                                            <Input
+                                                className="bg-white border-black text-black flex-1"
+                                                value={feature}
+                                                onChange={e => {
+                                                    const newFeatures = [...aboutContent.features];
+                                                    newFeatures[index] = e.target.value;
+                                                    setAboutContent({ ...aboutContent, features: newFeatures });
+                                                }}
+                                                placeholder={`Feature ${index + 1}`}
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                onClick={() => {
+                                                    const newFeatures = aboutContent.features.filter((_, i) => i !== index);
+                                                    setAboutContent({ ...aboutContent, features: newFeatures });
+                                                }}
+                                                className="h-10 px-3 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    {aboutContent.features.length === 0 && (
+                                        <p className="text-sm text-gray-500 italic">Click "Add Feature" to add features</p>
+                                    )}
+                                </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
@@ -763,14 +828,14 @@ export default function ContentManagementPage() {
             <AnimatePresence>
                 {isFeatureModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+                            <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
                                 <h2 className="text-xl font-bold text-gray-900">{editingFeature ? 'Edit Feature' : 'Add Feature'}</h2>
                                 <button onClick={() => setIsFeatureModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <form onSubmit={handleFeatureSubmit} className="p-6 space-y-4">
+                            <form onSubmit={handleFeatureSubmit} className="p-6 space-y-6">
                                 <div className="space-y-2">
                                     <Label className="text-black">Feature Title</Label>
                                     <Input required className="bg-white border-black text-black" value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} />
@@ -779,21 +844,90 @@ export default function ContentManagementPage() {
                                     <Label className="text-black">Description</Label>
                                     <Textarea required className="bg-white border-black text-black" value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} rows={3} />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-black">Icon Name (Lucide)</Label>
-                                        <Input required className="bg-white border-black text-black" value={featureForm.icon} onChange={e => setFeatureForm({ ...featureForm, icon: e.target.value })} placeholder="Zap" />
+
+                                {/* Icon Picker */}
+                                <div className="space-y-3">
+                                    <Label className="text-black">Select Icon</Label>
+                                    <div className="grid grid-cols-7 gap-2">
+                                        {FEATURE_ICONS.map((iconItem) => {
+                                            const IconComponent = iconItem.icon;
+                                            const isSelected = featureForm.icon === iconItem.name;
+                                            return (
+                                                <button
+                                                    key={iconItem.name}
+                                                    type="button"
+                                                    onClick={() => setFeatureForm({ ...featureForm, icon: iconItem.name })}
+                                                    className={`p-3 rounded-lg border-2 transition-all hover:scale-110 ${isSelected
+                                                        ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg'
+                                                        : 'border-gray-200 hover:border-[#D4AF37]/50'
+                                                        }`}
+                                                    title={iconItem.label}
+                                                >
+                                                    <IconComponent className={`w-6 h-6 ${isSelected ? 'text-[#D4AF37]' : 'text-gray-600'}`} />
+                                                </button>
+                                            );
+                                        })}
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-black">Color (Tailwind Gradient)</Label>
-                                        <Input className="bg-white border-black text-black" value={featureForm.color} onChange={e => setFeatureForm({ ...featureForm, color: e.target.value })} placeholder="from-blue-500 to-cyan-500" />
+                                    {featureForm.icon && (
+                                        <p className="text-sm text-gray-600">Selected: {FEATURE_ICONS.find(i => i.name === featureForm.icon)?.label}</p>
+                                    )}
+                                </div>
+
+                                {/* Color Picker */}
+                                <div className="space-y-3">
+                                    <Label className="text-black">Select Gradient Color</Label>
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {GRADIENT_COLORS.map((colorItem) => {
+                                            const isSelected = featureForm.color === colorItem.value;
+                                            return (
+                                                <button
+                                                    key={colorItem.value}
+                                                    type="button"
+                                                    onClick={() => setFeatureForm({ ...featureForm, color: colorItem.value })}
+                                                    className={`relative p-4 rounded-xl border-2 transition-all hover:scale-105 ${isSelected
+                                                        ? 'border-[#D4AF37] shadow-lg'
+                                                        : 'border-gray-200 hover:border-gray-300'
+                                                        }`}
+                                                >
+                                                    <div className={`h-12 rounded-lg ${colorItem.preview}`} />
+                                                    <p className="text-xs font-medium text-gray-700 mt-2 text-center">{colorItem.name}</p>
+                                                    {isSelected && (
+                                                        <div className="absolute top-2 right-2 bg-[#D4AF37] rounded-full p-1">
+                                                            <CheckCircle className="w-4 h-4 text-white" />
+                                                        </div>
+                                                    )}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 </div>
+
+                                {/* Preview */}
+                                {featureForm.icon && featureForm.color && (
+                                    <div className="space-y-2">
+                                        <Label className="text-black">Preview</Label>
+                                        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                                            <div className="flex items-start gap-4">
+                                                <div className={`p-3 rounded-xl bg-gradient-to-r ${featureForm.color}`}>
+                                                    {(() => {
+                                                        const IconComponent = FEATURE_ICONS.find(i => i.name === featureForm.icon)?.icon;
+                                                        return IconComponent ? <IconComponent className="w-6 h-6 text-white" /> : null;
+                                                    })()}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <h3 className="font-bold text-gray-900">{featureForm.title || 'Feature Title'}</h3>
+                                                    <p className="text-sm text-gray-600 mt-1">{featureForm.description || 'Feature description'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="space-y-2">
                                     <Label className="text-black">Order</Label>
                                     <Input type="number" required className="bg-white border-black text-black" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
                                 </div>
-                                <div className="flex justify-end gap-3 pt-4">
+                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                                     <Button type="button" variant="outline" onClick={() => setIsFeatureModalOpen(false)}>Cancel</Button>
                                     <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
                                         {isSaving ? 'Saving...' : (editingFeature ? 'Update Feature' : 'Add Feature')}
