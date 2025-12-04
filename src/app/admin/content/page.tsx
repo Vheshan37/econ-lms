@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck, Video, Users, Award, Target, TrendingUp, Lightbulb, CheckCircle, Star, GraduationCap, Brain, Sparkles } from 'lucide-react';
+import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck, Video, Users, Award, Target, TrendingUp, Lightbulb, CheckCircle, Star, GraduationCap, Brain, Sparkles, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,6 +26,9 @@ import {
     updateFreeResource,
     deleteFreeResource
 } from '@/lib/actions/content';
+import { PreviewModal } from '@/components/landing/preview/PreviewModal';
+import { HeroPreview } from '@/components/landing/preview/HeroPreview';
+import { AboutPreview } from '@/components/landing/preview/AboutPreview';
 
 export default function ContentManagementPage() {
     const [activeTab, setActiveTab] = useState('general');
@@ -110,6 +113,12 @@ export default function ContentManagementPage() {
     const [isFreeResourceModalOpen, setIsFreeResourceModalOpen] = useState(false);
     const [editingFreeResource, setEditingFreeResource] = useState<any | null>(null);
     const [freeResourceForm, setFreeResourceForm] = useState({ title: '', type: 'VIDEO', url: '', description: '' });
+
+    // Preview Modal State
+    const [previewModal, setPreviewModal] = useState<{ isOpen: boolean; type: 'hero' | 'about' | null }>({
+        isOpen: false,
+        type: null
+    });
 
     // Alert State
     const [alert, setAlert] = useState<{ isOpen: boolean; title: string; description: string; type: 'success' | 'error' | 'confirm'; onConfirm?: () => void }>({
@@ -373,9 +382,18 @@ export default function ContentManagementPage() {
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Hero Section</h2>
-                            <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Changes
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    onClick={() => setPreviewModal({ isOpen: true, type: 'hero' })}
+                                    variant="outline"
+                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" /> Preview
+                                </Button>
+                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                    <Save className="w-4 h-4 mr-2" /> Save Changes
+                                </Button>
+                            </div>
                         </div>
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -430,9 +448,18 @@ export default function ContentManagementPage() {
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">About Section</h2>
-                            <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Changes
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    onClick={() => setPreviewModal({ isOpen: true, type: 'about' })}
+                                    variant="outline"
+                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" /> Preview
+                                </Button>
+                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                    <Save className="w-4 h-4 mr-2" /> Save Changes
+                                </Button>
+                            </div>
                         </div>
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1019,6 +1046,23 @@ export default function ContentManagementPage() {
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* Preview Modals */}
+            <PreviewModal
+                isOpen={previewModal.isOpen && previewModal.type === 'hero'}
+                onClose={() => setPreviewModal({ isOpen: false, type: null })}
+                title="Hero Section"
+            >
+                <HeroPreview data={heroContent} />
+            </PreviewModal>
+
+            <PreviewModal
+                isOpen={previewModal.isOpen && previewModal.type === 'about'}
+                onClose={() => setPreviewModal({ isOpen: false, type: null })}
+                title="About Section"
+            >
+                <AboutPreview data={aboutContent} />
+            </PreviewModal>
         </div>
     );
 }
