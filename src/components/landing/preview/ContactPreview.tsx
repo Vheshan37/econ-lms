@@ -25,27 +25,28 @@ interface ContactPreviewProps {
 
 export function ContactPreview({ data }: ContactPreviewProps) {
     return (
-        <section className="py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute top-0 left-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-[150px]" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[150px]" />
+        <section className="py-24 bg-black text-white relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+            </div>
+
+            {/* Gradient Blobs */}
+            <div className="absolute top-1/4 left-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-[120px]" />
+            <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
 
             <div className="container mx-auto px-4 relative z-10">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <span className="text-yellow-500 font-semibold text-sm uppercase tracking-wider mb-4 block">
-                        {data.subtitle || "Get In Touch"}
-                    </span>
                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
-                        {data.title || "Start Your Journey Today"}
+                        {data.title || "Start Your AL Economics Journey Today"}
                     </h2>
-                    <div className="h-1 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6" />
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-                        {data.description || "අපගේ කණ්ඩායම සමඟ සම්බන්ධ වන්න සහ ඔබගේ ශාස්ත්‍රීය ගමන ආරම්භ කරන්න"}
+                        {data.description || "ප්‍රශ්න තිබේද? ලියාපදිංචි වීමට අවශ්‍යද? අප සමඟ සම්බන්ධ වී ඔබගේ ශාස්ත්‍රීය ඉලක්ක කරා පළමු පියවර තබන්න."}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
                     {/* Contact Form */}
                     <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800">
                         <h3 className="text-2xl font-bold text-white mb-6">{data.formTitle || "Send Us a Message"}</h3>
