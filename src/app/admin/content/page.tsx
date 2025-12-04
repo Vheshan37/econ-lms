@@ -34,19 +34,19 @@ export default function ContentManagementPage() {
 
     // General Content State
     const [heroContent, setHeroContent] = useState({
-        badge: '',
-        title: '',
-        subtitle: '',
-        description: '',
+        sectionSubtitle: '', // "#1 ECONOMICS CLASS IN SRI LANKA"
+        sectionTitle: '', // "Quality ම Econ"
+        secondarySubtitle: '', // "For A/L Students"
+        description: '', // Sinhala description
         studentCount: '', rankCount: '', expCount: '',
         teacherName: '', teacherTitle: '', teacherImage: ''
     });
     const [aboutContent, setAboutContent] = useState({
-        sectionSubtitle: '',
-        mainTitle: '',
-        secondaryTitle: '',
-        description: '',
-        features: [] as string[],
+        sectionSubtitle: '', // "ABOUT THE MENTOR"
+        sectionTitle: '', // "Why Choose Quality Econ"
+        secondarySubtitle: '', // "සංකීර්ණතාවය සරල බවට පරිවර්තනය කිරීම"
+        description: '', // Sinhala description
+        features: [] as string[], // Array of feature strings
         quote: '', quoteAuthor: '',
         videoUrl: ''
     });
@@ -342,6 +342,7 @@ export default function ContentManagementPage() {
 
                 {/* General Tab */}
                 <TabsContent value="general" className="space-y-6">
+                    {/* Hero Section */}
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Hero Section</h2>
@@ -350,39 +351,39 @@ export default function ContentManagementPage() {
                             </Button>
                         </div>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-black">Badge Text</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.badge} onChange={e => setHeroContent({ ...heroContent, badge: e.target.value })} placeholder="#1 Economics Class..." />
+                                    <Label className="text-black">Section Subtitle</Label>
+                                    <Input className="bg-white border-black text-black" value={heroContent.sectionSubtitle} onChange={e => setHeroContent({ ...heroContent, sectionSubtitle: e.target.value })} placeholder="#1 ECONOMICS CLASS IN SRI LANKA" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Title</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.title} onChange={e => setHeroContent({ ...heroContent, title: e.target.value })} />
+                                    <Label className="text-black">Section Title</Label>
+                                    <Input className="bg-white border-black text-black" value={heroContent.sectionTitle} onChange={e => setHeroContent({ ...heroContent, sectionTitle: e.target.value })} placeholder="Quality ම Econ" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-black">Secondary Subtitle</Label>
+                                    <Input className="bg-white border-black text-black" value={heroContent.secondarySubtitle} onChange={e => setHeroContent({ ...heroContent, secondarySubtitle: e.target.value })} placeholder="For A/L Students" />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Subtitle (Description)</Label>
-                                <Textarea className="bg-white border-black text-black" value={heroContent.subtitle} onChange={e => setHeroContent({ ...heroContent, subtitle: e.target.value })} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-black">CTA Text</Label>
-                                <Input className="bg-white border-black text-black" value={heroContent.ctaText} onChange={e => setHeroContent({ ...heroContent, ctaText: e.target.value })} />
+                                <Label className="text-black">Description</Label>
+                                <Textarea className="bg-white border-black text-black" value={heroContent.description} onChange={e => setHeroContent({ ...heroContent, description: e.target.value })} rows={3} placeholder="දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන්..." />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label className="text-black">Student Count</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.studentCount} onChange={e => setHeroContent({ ...heroContent, studentCount: e.target.value })} placeholder="5000+" />
+                                    <Input className="bg-white border-black text-black" value={heroContent.studentCount} onChange={e => setHeroContent({ ...heroContent, studentCount: e.target.value })} placeholder="500+" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-black">Rank Count</Label>
-                                    <Input className="bg-white border-black text-black" value={heroContent.rankCount} onChange={e => setHeroContent({ ...heroContent, rankCount: e.target.value })} placeholder="100+" />
+                                    <Input className="bg-white border-black text-black" value={heroContent.rankCount} onChange={e => setHeroContent({ ...heroContent, rankCount: e.target.value })} placeholder="50+" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-black">Experience Count</Label>
                                     <Input className="bg-white border-black text-black" value={heroContent.expCount} onChange={e => setHeroContent({ ...heroContent, expCount: e.target.value })} placeholder="10+" />
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label className="text-black">Teacher Name</Label>
                                     <Input className="bg-white border-black text-black" value={heroContent.teacherName} onChange={e => setHeroContent({ ...heroContent, teacherName: e.target.value })} />
@@ -407,23 +408,27 @@ export default function ContentManagementPage() {
                             </Button>
                         </div>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label className="text-black">Section Subtitle</Label>
-                                    <Input className="bg-white border-black text-black" value={aboutContent.subtitle} onChange={e => setAboutContent({ ...aboutContent, subtitle: e.target.value })} placeholder="About The Mentor" />
+                                    <Input className="bg-white border-black text-black" value={aboutContent.sectionSubtitle} onChange={e => setAboutContent({ ...aboutContent, sectionSubtitle: e.target.value })} placeholder="ABOUT THE MENTOR" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-black">Main Title</Label>
-                                    <Input className="bg-white border-black text-black" value={aboutContent.title} onChange={e => setAboutContent({ ...aboutContent, title: e.target.value })} />
+                                    <Label className="text-black">Section Title</Label>
+                                    <Input className="bg-white border-black text-black" value={aboutContent.sectionTitle} onChange={e => setAboutContent({ ...aboutContent, sectionTitle: e.target.value })} placeholder="Why Choose Quality Econ" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-black">Secondary Subtitle</Label>
+                                    <Input className="bg-white border-black text-black" value={aboutContent.secondarySubtitle} onChange={e => setAboutContent({ ...aboutContent, secondarySubtitle: e.target.value })} placeholder="සංකීර්ණතාවය සරල බවට..." />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-black">Description</Label>
-                                <Textarea className="bg-white border-black text-black" value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={5} />
+                                <Textarea className="bg-white border-black text-black" value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={4} placeholder="දශකයකට වැඩි ගුරු අත්දැකීම්..." />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Features List (One per line)</Label>
-                                <Textarea className="bg-white border-black text-black" value={aboutContent.features} onChange={e => setAboutContent({ ...aboutContent, features: e.target.value })} rows={4} placeholder="Feature 1&#10;Feature 2&#10;Feature 3" />
+                                <Label className="text-black">Features (One per line)</Label>
+                                <Textarea className="bg-white border-black text-black" value={aboutContent.features.join('\n')} onChange={e => setAboutContent({ ...aboutContent, features: e.target.value.split('\n').filter(f => f.trim()) })} rows={5} placeholder="Comprehensive Theory Coverage&#10;Past Paper Analysis&#10;Real-world Economic Examples&#10;Personalized Attention" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
@@ -436,8 +441,8 @@ export default function ContentManagementPage() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-black">Video/Image Placeholder URL</Label>
-                                <Input className="bg-white border-black text-black" value={aboutContent.videoPlaceholder} onChange={e => setAboutContent({ ...aboutContent, videoPlaceholder: e.target.value })} />
+                                <Label className="text-black">Video URL</Label>
+                                <Input className="bg-white border-black text-black" value={aboutContent.videoUrl} onChange={e => setAboutContent({ ...aboutContent, videoUrl: e.target.value })} placeholder="https://..." />
                             </div>
                         </div>
                     </div>
