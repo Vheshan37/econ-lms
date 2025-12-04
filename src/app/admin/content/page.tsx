@@ -21,16 +21,6 @@ import {
     createModernFeature,
     updateModernFeature,
     deleteModernFeature,
-    getCourses,
-    createCourse,
-    updateCourse,
-    deleteCourse,
-    getInstitutes,
-    createInstitute,
-    updateInstitute,
-    deleteInstitute,
-    createTimetable,
-    deleteTimetable,
     getFreeResources,
     createFreeResource,
     updateFreeResource,
@@ -44,13 +34,21 @@ export default function ContentManagementPage() {
 
     // General Content State
     const [heroContent, setHeroContent] = useState({
-        title: '', subtitle: '', ctaText: '',
-        badge: '', studentCount: '', rankCount: '', expCount: '',
+        badge: '',
+        title: '',
+        subtitle: '',
+        description: '',
+        studentCount: '', rankCount: '', expCount: '',
         teacherName: '', teacherTitle: '', teacherImage: ''
     });
     const [aboutContent, setAboutContent] = useState({
-        title: '', description: '',
-        subtitle: '', features: '', quote: '', quoteAuthor: '', videoPlaceholder: ''
+        sectionSubtitle: '',
+        mainTitle: '',
+        secondaryTitle: '',
+        description: '',
+        features: [] as string[],
+        quote: '', quoteAuthor: '',
+        videoUrl: ''
     });
     const [contactContent, setContactContent] = useState({
         email: '', phone: '', address: '',
@@ -78,21 +76,7 @@ export default function ContentManagementPage() {
     const [editingFeature, setEditingFeature] = useState<any | null>(null);
     const [featureForm, setFeatureForm] = useState({ title: '', description: '', icon: '', color: '', order: 0 });
 
-    // Courses State
-    const [courses, setCourses] = useState<any[]>([]);
-    const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
-    const [editingCourse, setEditingCourse] = useState<any | null>(null);
-    const [courseForm, setCourseForm] = useState({ year: '', title: '', status: '', description: '', schedule: '', color: '', order: 0 });
-
-    // Institutes & Timetable State
-    const [institutes, setInstitutes] = useState<any[]>([]);
-    const [isInstituteModalOpen, setIsInstituteModalOpen] = useState(false);
-    const [editingInstitute, setEditingInstitute] = useState<any | null>(null);
-    const [instituteForm, setInstituteForm] = useState({ name: '', location: '' });
-
-    // Timetable Modal (Add Class)
-    const [isTimetableModalOpen, setIsTimetableModalOpen] = useState(false);
-    const [timetableForm, setTimetableForm] = useState({ instituteId: '', day: '', startTime: '', endTime: '', academicYear: '' });
+    // Courses and Timetable are managed in dedicated pages, not here
 
     // Free Resources State
     const [freeResources, setFreeResources] = useState<any[]>([]);
@@ -130,12 +114,10 @@ export default function ContentManagementPage() {
     const fetchContent = async () => {
         setIsLoading(true);
         try {
-            const [landingData, testimonialData, featureData, courseData, instituteData, freeResourceData] = await Promise.all([
+            const [landingData, testimonialData, featureData, freeResourceData] = await Promise.all([
                 getLandingPageContent(),
                 getTestimonials(),
                 getModernFeatures(),
-                getCourses(),
-                getInstitutes(),
                 getFreeResources()
             ]);
 
@@ -150,8 +132,6 @@ export default function ContentManagementPage() {
 
             if (testimonialData.success) setTestimonials(testimonialData.data || []);
             if (featureData.success) setFeatures(featureData.data || []);
-            if (courseData.success) setCourses(courseData.data || []);
-            if (instituteData.success) setInstitutes(instituteData.data || []);
             if (freeResourceData.success) setFreeResources(freeResourceData.data || []);
         } catch (error) {
             console.error('Error fetching content:', error);
@@ -307,120 +287,7 @@ export default function ContentManagementPage() {
         });
     };
 
-    // --- Course Handlers ---
-
-    const handleCourseSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true);
-
-        const result = editingCourse
-            ? await updateCourse(editingCourse.id, courseForm)
-            : await createCourse(courseForm);
-
-        if (result.success) {
-            await fetchContent();
-            setIsCourseModalOpen(false);
-            setEditingCourse(null);
-            setCourseForm({ year: '', title: '', status: '', description: '', schedule: '', color: '', order: 0 });
-            showAlert('Success', 'Course saved successfully', 'success');
-        } else {
-            showAlert('Error', 'Failed to save course', 'error');
-        }
-        setIsSaving(false);
-    };
-
-    const handleDeleteCourse = (id: string) => {
-        setAlert({
-            isOpen: true,
-            title: 'Delete Course',
-            description: 'Are you sure you want to delete this course?',
-            type: 'confirm',
-            onConfirm: async () => {
-                const result = await deleteCourse(id);
-                if (result.success) {
-                    await fetchContent();
-                    showAlert('Success', 'Course deleted successfully', 'success');
-                } else {
-                    showAlert('Error', 'Failed to delete course', 'error');
-                }
-            }
-        });
-    };
-
-    // --- Institute & Timetable Handlers ---
-
-    const handleInstituteSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true);
-
-        const result = editingInstitute
-            ? await updateInstitute(editingInstitute.id, instituteForm)
-            : await createInstitute(instituteForm);
-
-        if (result.success) {
-            await fetchContent();
-            setIsInstituteModalOpen(false);
-            setEditingInstitute(null);
-            setInstituteForm({ name: '', location: '' });
-            showAlert('Success', 'Institute saved successfully', 'success');
-        } else {
-            showAlert('Error', 'Failed to save institute', 'error');
-        }
-        setIsSaving(false);
-    };
-
-    const handleDeleteInstitute = (id: string) => {
-        setAlert({
-            isOpen: true,
-            title: 'Delete Institute',
-            description: 'Are you sure you want to delete this institute? This will delete all associated timetables.',
-            type: 'confirm',
-            onConfirm: async () => {
-                const result = await deleteInstitute(id);
-                if (result.success) {
-                    await fetchContent();
-                    showAlert('Success', 'Institute deleted successfully', 'success');
-                } else {
-                    showAlert('Error', 'Failed to delete institute', 'error');
-                }
-            }
-        });
-    };
-
-    const handleTimetableSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true);
-
-        const result = await createTimetable(timetableForm);
-
-        if (result.success) {
-            await fetchContent();
-            setIsTimetableModalOpen(false);
-            setTimetableForm({ instituteId: '', day: '', startTime: '', endTime: '', academicYear: '' });
-            showAlert('Success', 'Class added successfully', 'success');
-        } else {
-            showAlert('Error', 'Failed to add class', 'error');
-        }
-        setIsSaving(false);
-    };
-
-    const handleDeleteTimetable = (id: string) => {
-        setAlert({
-            isOpen: true,
-            title: 'Delete Class',
-            description: 'Are you sure you want to delete this class?',
-            type: 'confirm',
-            onConfirm: async () => {
-                const result = await deleteTimetable(id);
-                if (result.success) {
-                    await fetchContent();
-                    showAlert('Success', 'Class deleted successfully', 'success');
-                } else {
-                    showAlert('Error', 'Failed to delete class', 'error');
-                }
-            }
-        });
-    };
+    // Course and Timetable handlers removed - managed in dedicated pages
 
     const showAlert = (title: string, description: string, type: 'success' | 'error' | 'confirm') => {
         setAlert(prev => ({ ...prev, isOpen: true, title, description, type }));
@@ -458,12 +325,6 @@ export default function ContentManagementPage() {
                 <TabsList className="bg-white p-1 rounded-xl border border-gray-200 shadow-sm h-14">
                     <TabsTrigger value="general" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
                         <Layers className="w-4 h-4" /> General
-                    </TabsTrigger>
-                    <TabsTrigger value="courses" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <BookOpen className="w-4 h-4" /> Courses
-                    </TabsTrigger>
-                    <TabsTrigger value="timetable" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <Calendar className="w-4 h-4" /> Timetable
                     </TabsTrigger>
                     <TabsTrigger value="free-lessons" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
                         <BookOpen className="w-4 h-4" /> Free Lessons
@@ -579,102 +440,6 @@ export default function ContentManagementPage() {
                                 <Input className="bg-white border-black text-black" value={aboutContent.videoPlaceholder} onChange={e => setAboutContent({ ...aboutContent, videoPlaceholder: e.target.value })} />
                             </div>
                         </div>
-                    </div>
-                </TabsContent>
-
-                {/* Courses Tab */}
-                <TabsContent value="courses" className="space-y-6">
-                    <div className="flex justify-end">
-                        <Button onClick={() => { setEditingCourse(null); setCourseForm({ year: '', title: '', status: '', description: '', schedule: '', color: '', order: courses.length }); setIsCourseModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                            <Plus className="w-4 h-4 mr-2" /> Add Course
-                        </Button>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {courses.map((course) => (
-                            <div key={course.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all">
-                                <div className={`h-2 bg-gradient-to-r ${course.color}`} />
-                                <div className="p-6">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div>
-                                            <h3 className="font-bold text-2xl text-black">{course.year}</h3>
-                                            <p className="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">{course.title}</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => { setEditingCourse(course); setCourseForm(course); setIsCourseModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-                                                <Edit2 className="w-4 h-4" />
-                                            </button>
-                                            <button onClick={() => handleDeleteCourse(course.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <div className="inline-block px-2 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
-                                            {course.status}
-                                        </div>
-                                        <p className="text-gray-600 text-sm line-clamp-2">{course.description}</p>
-                                        <div className="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t border-gray-100">
-                                            <Calendar className="h-3 w-3" />
-                                            {course.schedule}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </TabsContent>
-
-                {/* Timetable Tab */}
-                <TabsContent value="timetable" className="space-y-6">
-                    <div className="flex justify-end">
-                        <Button onClick={() => { setEditingInstitute(null); setInstituteForm({ name: '', location: '' }); setIsInstituteModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                            <Plus className="w-4 h-4 mr-2" /> Add Institute
-                        </Button>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {institutes.map((institute) => (
-                            <div key={institute.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="w-4 h-4 text-[#D4AF37]" />
-                                        <div>
-                                            <h3 className="font-bold text-lg text-black">{institute.name}</h3>
-                                            <p className="text-xs text-gray-500">{institute.location}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => { setEditingInstitute(institute); setInstituteForm(institute); setIsInstituteModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        <button onClick={() => handleDeleteInstitute(institute.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3 mb-4">
-                                    {institute.timetables && institute.timetables.map((cls: any) => (
-                                        <div key={cls.id} className="bg-gray-50 rounded-lg p-3 border border-gray-100 relative group">
-                                            <button onClick={() => handleDeleteTimetable(cls.id)} className="absolute top-2 right-2 p-1 text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <X className="w-3 h-3" />
-                                            </button>
-                                            <div className="flex justify-between items-center mb-1">
-                                                <span className="font-semibold text-sm text-gray-900">{cls.day}</span>
-                                                <span className="text-[10px] bg-[#D4AF37]/10 text-[#D4AF37] px-1.5 py-0.5 rounded-full">{cls.academicYear}</span>
-                                            </div>
-                                            <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                                                <Clock className="w-3 h-3" />
-                                                {cls.startTime} - {cls.endTime}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <Button variant="outline" size="sm" className="w-full border-dashed border-gray-300 text-gray-500 hover:text-[#D4AF37] hover:border-[#D4AF37]" onClick={() => { setTimetableForm({ ...timetableForm, instituteId: institute.id }); setIsTimetableModalOpen(true); }}>
-                                    <Plus className="w-3 h-3 mr-1" /> Add Class
-                                </Button>
-                            </div>
-                        ))}
                     </div>
                 </TabsContent>
 
@@ -1035,135 +800,7 @@ export default function ContentManagementPage() {
                 )}
             </AnimatePresence>
 
-            {/* Course Modal */}
-            <AnimatePresence>
-                {isCourseModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-gray-900">{editingCourse ? 'Edit Course' : 'Add Course'}</h2>
-                                <button onClick={() => setIsCourseModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <form onSubmit={handleCourseSubmit} className="p-6 space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-black">Year</Label>
-                                        <Input required className="bg-white border-black text-black" value={courseForm.year} onChange={e => setCourseForm({ ...courseForm, year: e.target.value })} placeholder="2025" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-black">Title</Label>
-                                        <Input required className="bg-white border-black text-black" value={courseForm.title} onChange={e => setCourseForm({ ...courseForm, title: e.target.value })} placeholder="Advanced Level" />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-black">Status/Tag</Label>
-                                    <Input required className="bg-white border-black text-black" value={courseForm.status} onChange={e => setCourseForm({ ...courseForm, status: e.target.value })} placeholder="Revision & Paper Class" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-black">Description</Label>
-                                    <Textarea required className="bg-white border-black text-black" value={courseForm.description} onChange={e => setCourseForm({ ...courseForm, description: e.target.value })} rows={3} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-black">Schedule</Label>
-                                    <Input required className="bg-white border-black text-black" value={courseForm.schedule} onChange={e => setCourseForm({ ...courseForm, schedule: e.target.value })} placeholder="Saturday 8:00 AM" />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-black">Color (Tailwind Gradient)</Label>
-                                        <Input required className="bg-white border-black text-black" value={courseForm.color} onChange={e => setCourseForm({ ...courseForm, color: e.target.value })} placeholder="from-yellow-400 to-yellow-600" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-black">Order</Label>
-                                        <Input type="number" required className="bg-white border-black text-black" value={courseForm.order} onChange={e => setCourseForm({ ...courseForm, order: parseInt(e.target.value) })} />
-                                    </div>
-                                </div>
-                                <div className="flex justify-end gap-3 pt-4">
-                                    <Button type="button" variant="outline" onClick={() => setIsCourseModalOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                        {isSaving ? 'Saving...' : (editingCourse ? 'Update Course' : 'Add Course')}
-                                    </Button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            {/* Institute Modal */}
-            <AnimatePresence>
-                {isInstituteModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-gray-900">{editingInstitute ? 'Edit Institute' : 'Add Institute'}</h2>
-                                <button onClick={() => setIsInstituteModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <form onSubmit={handleInstituteSubmit} className="p-6 space-y-4">
-                                <div className="space-y-2">
-                                    <Label className="text-black">Institute Name</Label>
-                                    <Input required className="bg-white border-black text-black" value={instituteForm.name} onChange={e => setInstituteForm({ ...instituteForm, name: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-black">Location</Label>
-                                    <Input required className="bg-white border-black text-black" value={instituteForm.location} onChange={e => setInstituteForm({ ...instituteForm, location: e.target.value })} />
-                                </div>
-                                <div className="flex justify-end gap-3 pt-4">
-                                    <Button type="button" variant="outline" onClick={() => setIsInstituteModalOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                        {isSaving ? 'Saving...' : (editingInstitute ? 'Update Institute' : 'Add Institute')}
-                                    </Button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            {/* Timetable (Class) Modal */}
-            <AnimatePresence>
-                {isTimetableModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-gray-900">Add Class</h2>
-                                <button onClick={() => setIsTimetableModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <form onSubmit={handleTimetableSubmit} className="p-6 space-y-4">
-                                <div className="space-y-2">
-                                    <Label className="text-black">Academic Year</Label>
-                                    <Input required className="bg-white border-black text-black" value={timetableForm.academicYear} onChange={e => setTimetableForm({ ...timetableForm, academicYear: e.target.value })} placeholder="2025 A/L" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-black">Day</Label>
-                                    <Input required className="bg-white border-black text-black" value={timetableForm.day} onChange={e => setTimetableForm({ ...timetableForm, day: e.target.value })} placeholder="Saturday" />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-black">Start Time</Label>
-                                        <Input required className="bg-white border-black text-black" value={timetableForm.startTime} onChange={e => setTimetableForm({ ...timetableForm, startTime: e.target.value })} placeholder="08:00 AM" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-black">End Time</Label>
-                                        <Input required className="bg-white border-black text-black" value={timetableForm.endTime} onChange={e => setTimetableForm({ ...timetableForm, endTime: e.target.value })} placeholder="12:00 PM" />
-                                    </div>
-                                </div>
-                                <div className="flex justify-end gap-3 pt-4">
-                                    <Button type="button" variant="outline" onClick={() => setIsTimetableModalOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                        {isSaving ? 'Saving...' : 'Add Class'}
-                                    </Button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+            {/* Course, Institute, and Timetable modals removed - managed in dedicated pages */}
 
             {/* Free Resource Modal */}
             <AnimatePresence>
