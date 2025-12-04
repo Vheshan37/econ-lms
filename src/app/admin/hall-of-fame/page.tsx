@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Trophy, Award, MapPin, Calendar, X, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, Trophy, Award, MapPin, Calendar, X, Image as ImageIcon, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { getHallOfFame, createAlumni, updateAlumni, deleteAlumni } from '@/lib/actions/hallOfFame';
+import { PreviewModal } from '@/components/landing/preview/PreviewModal';
+import { ResultsPreview } from '@/components/landing/preview/ResultsPreview';
 
 interface Alumni {
     id: string;
@@ -24,6 +26,7 @@ export default function HallOfFamePage() {
     const [alumni, setAlumni] = useState<Alumni[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
     const [editingAlumni, setEditingAlumni] = useState<Alumni | null>(null);
 
     // Form State
@@ -161,6 +164,13 @@ export default function HallOfFamePage() {
                     >
                         <Plus className="w-5 h-5" />
                         Add Alumni
+                    </Button>
+                    <Button
+                        onClick={() => setIsPreviewOpen(true)}
+                        className="bg-gray-800 hover:bg-gray-700 text-white gap-2 h-12 px-6 font-bold shadow-lg ml-4"
+                    >
+                        <Eye className="w-5 h-5" />
+                        Preview
                     </Button>
                 </div>
             </div>
@@ -419,6 +429,14 @@ export default function HallOfFamePage() {
                 type="error"
                 cancelText="Close"
             />
+            {/* Preview Modal */}
+            <PreviewModal
+                isOpen={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+                title="Hall of Fame Preview"
+            >
+                <ResultsPreview data={alumni} />
+            </PreviewModal>
         </div>
     );
 }

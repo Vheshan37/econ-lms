@@ -3,18 +3,21 @@
 import { Trophy, ChevronRight } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
 
-export function ResultsSection() {
-    const rankers = [
-        { name: "Kasun Perera", rank: "Island 1st", district: "Colombo", year: "2023", image: "https://placehold.co/100x100/333/FFF?text=K" },
-        { name: "Amaya Silva", rank: "Island 3rd", district: "Gampaha", year: "2023", image: "https://placehold.co/100x100/333/FFF?text=A" },
-        { name: "Nimali De Silva", rank: "Island 5th", district: "Kandy", year: "2022", image: "https://placehold.co/100x100/333/FFF?text=N" },
-        { name: "Ruwan Fernando", rank: "Island 9th", district: "Galle", year: "2022", image: "https://placehold.co/100x100/333/FFF?text=R" },
-        { name: "Sanduni Wickramasinghe", rank: "Island 7th", district: "Kurunegala", year: "2023", image: "https://placehold.co/100x100/333/FFF?text=S" },
-        { name: "Tharindu Jayawardena", rank: "Island 12th", district: "Colombo", year: "2022", image: "https://placehold.co/100x100/333/FFF?text=T" },
-        { name: "Chathurika Bandara", rank: "Island 15th", district: "Ratnapura", year: "2023", image: "https://placehold.co/100x100/333/FFF?text=C" },
-        { name: "Dinesh Rajapaksha", rank: "Island 18th", district: "Matara", year: "2022", image: "https://placehold.co/100x100/333/FFF?text=D" },
-    ];
+interface HallOfFameStudent {
+    id?: string;
+    name: string;
+    district: string;
+    academicYear: string;
+    islandRank?: number | null;
+    districtRank?: number | null;
+    imageUrl?: string | null;
+}
 
+interface ResultsPreviewProps {
+    data: HallOfFameStudent[];
+}
+
+export function ResultsPreview({ data }: ResultsPreviewProps) {
     return (
         <section className="py-24 bg-[#0a0a0a] text-white relative">
             {/* Background Pattern */}
@@ -32,24 +35,35 @@ export function ResultsSection() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {rankers.map((student, index) => (
-                        <div key={index} className="flex flex-col items-center text-center group">
+                    {data.map((student, index) => (
+                        <div key={student.id || index} className="flex flex-col items-center text-center group">
                             <div className="relative mb-6">
                                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-800 group-hover:border-yellow-500 transition-colors duration-300 relative z-10">
-                                    <img src={student.image} alt={student.name} className="w-full h-full object-cover" />
+                                    <img
+                                        src={student.imageUrl || `https://placehold.co/100x100/333/FFF?text=${student.name.charAt(0)}`}
+                                        alt={student.name}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
                                 <div className="absolute inset-0 rounded-full bg-yellow-500 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider z-20">
-                                    {student.rank}
+                                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider z-20 whitespace-nowrap">
+                                    {student.islandRank ? `Island ${student.islandRank}${getOrdinalSuffix(student.islandRank)}` :
+                                        student.districtRank ? `District ${student.districtRank}${getOrdinalSuffix(student.districtRank)}` : 'Ranked'}
                                 </div>
                             </div>
 
                             <h3 className="text-xl font-bold text-white mb-1">{student.name}</h3>
                             <p className="text-sm text-gray-400">{student.district} District</p>
-                            <p className="text-xs text-gray-500 mt-1">{student.year} A/L</p>
+                            <p className="text-xs text-gray-500 mt-1">{student.academicYear}</p>
                         </div>
                     ))}
                 </div>
+
+                {data.length === 0 && (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 text-lg">No students added yet. Add students from the Hall of Fame tab.</p>
+                    </div>
+                )}
 
                 {/* View More Button */}
                 <div className="flex justify-center mt-12">
@@ -91,4 +105,19 @@ export function ResultsSection() {
             </div>
         </section>
     );
+}
+
+function getOrdinalSuffix(i: number) {
+    var j = i % 10,
+        k = i % 100;
+    if (j == 1 && k != 11) {
+        return "st";
+    }
+    if (j == 2 && k != 12) {
+        return "nd";
+    }
+    if (j == 3 && k != 13) {
+        return "rd";
+    }
+    return "th";
 }

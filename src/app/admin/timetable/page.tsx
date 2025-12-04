@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, MapPin, Clock, Calendar, Building2, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Edit2, Trash2, MapPin, Clock, Calendar, Building2, X, ChevronDown, ChevronUp, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,8 @@ import {
     updateTimetable,
     deleteTimetable
 } from '@/lib/actions/timetable';
+import { PreviewModal } from '@/components/landing/preview/PreviewModal';
+import { TimetablePreview } from '@/components/landing/preview/TimetablePreview';
 
 interface Timetable {
     id: string;
@@ -38,6 +40,7 @@ export default function TimetablePage() {
     const [institutes, setInstitutes] = useState<Institute[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [expandedInstitutes, setExpandedInstitutes] = useState<Set<string>>(new Set());
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     // Institute Modal State
     const [isInstituteModalOpen, setIsInstituteModalOpen] = useState(false);
@@ -241,6 +244,13 @@ export default function TimetablePage() {
                     >
                         <Plus className="w-5 h-5" />
                         Add Institute
+                    </Button>
+                    <Button
+                        onClick={() => setIsPreviewOpen(true)}
+                        className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30 ml-4"
+                    >
+                        <Eye className="w-5 h-5" />
+                        Preview
                     </Button>
                 </div>
             </div>
@@ -571,6 +581,23 @@ export default function TimetablePage() {
                 type="error"
                 cancelText="Close"
             />
+            <AlertDialog
+                isOpen={errorAlert.isOpen}
+                onClose={() => setErrorAlert({ isOpen: false, message: '' })}
+                title="Error"
+                description={errorAlert.message}
+                type="error"
+                cancelText="Close"
+            />
+
+            {/* Preview Modal */}
+            <PreviewModal
+                isOpen={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+                title="Timetable Preview"
+            >
+                <TimetablePreview data={institutes} />
+            </PreviewModal>
         </div>
     );
 }

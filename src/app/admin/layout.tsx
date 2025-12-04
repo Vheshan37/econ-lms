@@ -14,6 +14,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AlertDialog } from "@/components/ui/alert-dialog";
+import { NotificationBubble } from "@/components/admin/NotificationBubble";
 
 export default function AdminLayout({
     children,
@@ -202,6 +203,7 @@ export default function AdminLayout({
                     </div>
                     {children}
                 </main>
+                <NotificationBubble />
             </div >
         </TooltipProvider >
     );
