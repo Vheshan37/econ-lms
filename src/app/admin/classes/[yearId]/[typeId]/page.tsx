@@ -66,7 +66,6 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
         setIsLoading(true);
         const result = await getClassTypeById(typeId);
         if (result.success && result.data) {
-            // @ts-expect-error - Prisma returns isActive but TypeScript can't infer it properly
             setClassTypeData(result.data);
         } else {
             setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch class type data' });

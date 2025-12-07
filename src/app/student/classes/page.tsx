@@ -12,7 +12,7 @@ export default async function StudentClassesPage() {
     }
 
     const result = await getStudentYears(session.userId);
-    const years = result.success ? result.data : [];
+    const years = result.success && result.data ? result.data : [];
 
     return (
         <div className="space-y-8">

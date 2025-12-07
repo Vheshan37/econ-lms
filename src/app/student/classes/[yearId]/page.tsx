@@ -34,7 +34,7 @@ export default async function StudentClassTypesPage({ params }: { params: Promis
 
     const { yearId } = await params;
     const result = await getStudentClassTypes(session.userId, yearId);
-    const classTypes = result.success ? result.data : [];
+    const classTypes = result.success && result.data ? result.data : [];
     const yearName = classTypes.length > 0 ? classTypes[0].year.year : 'Academic Year';
 
     return (

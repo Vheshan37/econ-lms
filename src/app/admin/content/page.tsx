@@ -85,6 +85,9 @@ export default function ContentManagementPage() {
         videoUrl: ''
     });
     const [contactContent, setContactContent] = useState({
+        subtitle: '',
+        title: '',
+        description: '',
         email: '', phone: '', address: '',
         formTitle: '', mapUrl: '',
         officeHours: { title: '', weekdays: '', weekends: '' }
