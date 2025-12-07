@@ -45,8 +45,9 @@ export function HeroSection() {
                             </Button>
                         </Link>
                         <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-gray-700/50 bg-gray-900/50 text-gray-300 hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-500 rounded-full w-full sm:w-auto transition-all duration-300">
-                            <Play className="mr-2 h-5 w-5" />
-                            Watch Intro
+                            {/* <Play className="mr-2 h-5 w-5" /> */}
+                            Join Free
+                            <ArrowRight className="ml-2 h-5 w-5" />
                         </Button>
                     </div>
 
