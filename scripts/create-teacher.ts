@@ -15,7 +15,7 @@ async function main() {
     }
 
     console.log('Creating teacher account...');
-    const result = await createTeacher(name, email, password);
+    const result = await createTeacher(name, email);
 
     if (result.success) {
         console.log('✅ Teacher account created successfully!');
