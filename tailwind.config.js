@@ -14,6 +14,9 @@ module.exports = {
             },
         },
         extend: {
+            fontFamily: {
+                "fm-gemunu": ["var(--font-fm-gemunu)", "sans-serif"],
+            },
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",

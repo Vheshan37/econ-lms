@@ -1,7 +1,43 @@
 import localFont from "next/font/local";
 
 export const fmGemunu = localFont({
-    src: "../../public/fonts/FM_Gemunu.ttf",
+    src: [
+        {
+            path: "../../public/fonts/GemunuLibre-ExtraLight.ttf",
+            weight: "200",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/GemunuLibre-Light.ttf",
+            weight: "300",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/GemunuLibre-Regular.ttf",
+            weight: "400",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/GemunuLibre-Medium.ttf",
+            weight: "500",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/GemunuLibre-SemiBold.ttf",
+            weight: "600",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/GemunuLibre-Bold.ttf",
+            weight: "700",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/GemunuLibre-ExtraBold.ttf",
+            weight: "800",
+            style: "normal",
+        },
+    ],
     variable: "--font-fm-gemunu",
-    weight: "400",
-}); 
+    display: "swap",
+});

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { fmGemunu } from "@/app/fonts";
 
 export function HeroSection() {
     return (
@@ -29,7 +28,7 @@ export function HeroSection() {
 
                     <h1 className="text-5xl md:text-7xl font-black leading-tight font-serif">
                         Quality <span className="text-yellow-500">
-                            <span className="font-fm-gemunu text-yellow-500">ම </span>
+                            <span className="font-fm-gemunu font-extrabold text-yellow-500">ම </span>
                             Econ</span> <br />
                         <span className="text-3xl md:text-4xl font-normal text-gray-300 block mt-4">
                             For A/L Students
