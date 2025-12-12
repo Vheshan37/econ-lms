@@ -19,7 +19,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             "transition-all duration-300",
             isTransparent
                 ? "bg-transparent border-b border-white/10"
-                : "border-b bg-white/80 backdrop-blur-md sticky top-0 z-50"
+                : "border-b border-white/10 backdrop-blur-md sticky top-0 z-50"
         )}>
             <div className="container mx-auto px-4 h-20 flex items-center justify-between">
                 <Link href="/" className="relative h-full min-w-[120px]">
@@ -30,6 +30,27 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                         className="object-contain"
                     />
                 </Link>
+
+                {/* Desktop Navigation */}
+                <div className="hidden md:flex items-center gap-8">
+                    {[
+                        { name: "Home", path: "/" },
+                        { name: "Hall of Fame", path: "/hall-of-fame" },
+                        { name: "Contact Us", path: "/contact" },
+                    ].map((item) => (
+                        <Link
+                            key={item.path}
+                            href={item.path}
+                            className={cn(
+                                "text-sm font-medium transition-colors hover:text-yellow-500 relative group",
+                                isTransparent ? "text-gray-300" : "text-gray-300"
+                            )}
+                        >
+                            {item.name}
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full" />
+                        </Link>
+                    ))}
+                </div>
 
                 <div className="flex items-center gap-4">
                     {currentUser ? (
@@ -62,7 +83,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                     ) : (
                         <Link href="/login">
                             <Button
-                                className={isTransparent ? "bg-yellow-500 text-black hover:bg-yellow-400" : ""}
+                                className="bg-yellow-500 text-black hover:bg-yellow-400"
                             >
                                 Login
                             </Button>
