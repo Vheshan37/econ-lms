@@ -17,19 +17,19 @@ export default function Home() {
     <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
       {/* Overlay Navbar for the landing page */}
       <div className="absolute top-0 left-0 right-0 z-50">
-        <Navbar isTransparent={true} />
+        <Navbar />
       </div>
 
       <main>
         <HeroSection />
         <AboutSection />
         <CoursesSection />
-        <ResultsSection />
+        {/* <ResultsSection /> */}
         <TimetableSection />
         <ModernFeaturesSection />
         <FreeLessonsSection />
         <TestimonialsSection />
-        <ContactSection />
+        {/* <ContactSection /> */}
       </main>
 
       <FooterSection />
