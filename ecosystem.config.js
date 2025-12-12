@@ -9,7 +9,8 @@ module.exports = {
       PORT: 3000,
       NODE_OPTIONS: '--max-old-space-size=1024'
     },
-    max_memory_restart: '800M',
+    node_args: '--optimize_for_size --gc_interval=100 --max-old-space-size=1024',
+    max_memory_restart: '900M',
     error_file: './logs/err.log',
     out_file: './logs/out.log',
     log_date_format: 'YYYY-MM-DD HH:mm:ss Z'
