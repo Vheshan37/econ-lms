@@ -2,6 +2,7 @@
 
 @theme {
   --font-fm-gemunu: var(--font-fm-gemunu), sans-serif;
+  --font-impact: var(--font-impact), sans-serif;
 }
 
 :root {

@@ -41,3 +41,15 @@ export const fmGemunu = localFont({
     variable: "--font-fm-gemunu",
     display: "swap",
 });
+
+export const impact = localFont({
+    src: [
+        {
+            path: "../../public/fonts/impact.ttf",
+            weight: "200",
+            style: "normal",
+        },
+    ],
+    variable: "--font-impact",
+    display: "swap",
+});
