@@ -86,7 +86,17 @@ export default function TimetablePage() {
     };
 
     useEffect(() => {
-        fetchInstitutes();
+        const fetchInstitutesData = async () => {
+            setIsLoading(true);
+            const result = await getInstitutes();
+            if (result.success && result.data) {
+                setInstitutes(result.data);
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch institutes' });
+            }
+            setIsLoading(false);
+        };
+        fetchInstitutesData();
     }, []);
 
     const toggleInstitute = (instituteId: string) => {

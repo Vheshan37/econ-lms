@@ -107,7 +107,22 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
     };
 
     useEffect(() => {
-        fetchYearData();
+        const fetchYear = async () => {
+            setIsLoading(true);
+
+            // Ensure default class types exist
+            await ensureClassTypes(yearId);
+
+            const result = await getYearById(yearId);
+            if (result.success && result.data) {
+                setYearData(result.data as YearData);
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch year data' });
+            }
+            setIsLoading(false);
+        };
+
+        fetchYear();
     }, [yearId]);
 
     const handleCreateType = async (e: React.FormEvent) => {

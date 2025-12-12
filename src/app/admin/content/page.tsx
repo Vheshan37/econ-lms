@@ -525,7 +525,7 @@ export default function ContentManagementPage() {
                                         </div>
                                     ))}
                                     {aboutContent.features.length === 0 && (
-                                        <p className="text-sm text-gray-500 italic">Click "Add Feature" to add features</p>
+                                        <p className="text-sm text-gray-500 italic">Click &quot;Add Feature&quot; to add features</p>
                                     )}
                                 </div>
                             </div>
@@ -771,7 +771,7 @@ export default function ContentManagementPage() {
                                 <div className="mb-2 flex text-yellow-500 text-xs">
                                     {'★'.repeat(testimonial.rating || 5)}
                                 </div>
-                                <p className="text-gray-600 text-sm italic mb-2">"{testimonial.content}"</p>
+                                <p className="text-gray-600 text-sm italic mb-2">&quot;{testimonial.content}&quot;</p>
                                 {testimonial.institute && <p className="text-xs text-gray-400 text-right">- {testimonial.institute}</p>}
                             </div>
                         ))}

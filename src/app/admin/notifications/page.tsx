@@ -39,7 +39,16 @@ export default function NotificationsPage() {
     };
 
     useEffect(() => {
-        fetchNotifications();
+        const fetchNotificationsData = async () => {
+            const result = await getNotifications();
+            if (result.success && result.data) {
+                setNotifications(result.data);
+            }
+            setLoading(false);
+            setRefreshing(false);
+        };
+
+        fetchNotificationsData();
     }, []);
 
     const handleRefresh = () => {

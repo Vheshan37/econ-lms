@@ -348,7 +348,7 @@ export default function LoginPage() {
                                                     disabled={isLoading}
                                                     className="text-sm text-gray-500 hover:text-[#D4AF37] transition-colors"
                                                 >
-                                                    Didn't receive code? Resend
+                                                    Didn&apos;t receive code? Resend
                                                 </button>
                                             </div>
                                         </div>

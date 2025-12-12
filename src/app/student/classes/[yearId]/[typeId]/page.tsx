@@ -88,7 +88,7 @@ export default async function StudentTopicsPage({ params }: { params: Promise<{ 
                         <div className="text-center py-16 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
                             <Layers className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                             <p className="text-gray-500 text-lg">No topics available</p>
-                            <p className="text-gray-400 text-sm mt-2">This class type doesn't have any topics yet</p>
+                            <p className="text-gray-400 text-sm mt-2">This class type doesn&apos;t have any topics yet</p>
                         </div>
                     )}
                 </div>

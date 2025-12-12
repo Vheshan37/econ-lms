@@ -131,7 +131,7 @@ export default async function StudentTopicResourcesPage({ params }: { params: Pr
                         <div className="text-center py-16 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
                             <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                             <p className="text-gray-500 text-lg">No resources found</p>
-                            <p className="text-gray-400 text-sm mt-2">This topic doesn't have any resources yet</p>
+                            <p className="text-gray-400 text-sm mt-2">This topic doesn&apos;t have any resources yet</p>
                         </div>
                     )}
                 </div>

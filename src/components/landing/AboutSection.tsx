@@ -73,7 +73,7 @@ export function AboutSection() {
                         <div className="pt-6">
                             <div className="p-6 bg-gray-900 rounded-xl border-l-4 border-yellow-500">
                                 <p className="italic text-gray-300">
-                                    "ආර්ථික විද්‍යාව සෑම තැනකම පවතී, එය තේරුම් ගැනීම ලෝකය තේරුම් ගැනීමයි."
+                                    <span>&quot;</span>ආර්ථික විද්‍යාව සෑම තැනකම පවතී, එය තේරුම් ගැනීම ලෝකය තේරුම් ගැනීමයි<span>&quot;</span>
                                 </p>
                                 <p className="mt-4 font-bold text-yellow-500">- Krishan Kasthuriarachchi</p>
                             </div>

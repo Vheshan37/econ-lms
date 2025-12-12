@@ -126,7 +126,7 @@ export default async function StudentClassTypesPage({ params }: { params: Promis
                         <div className="col-span-full text-center py-16 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
                             <Layers className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                             <p className="text-gray-500 text-lg">No class types found</p>
-                            <p className="text-gray-400 text-sm mt-2">This academic year doesn't have any class types yet</p>
+                            <p className="text-gray-400 text-sm mt-2">This academic year doesn&apos;t have any class types yet</p>
                         </div>
                     )}
                 </div>

@@ -71,7 +71,18 @@ export default function FreeResourcesPage() {
     };
 
     useEffect(() => {
-        fetchResources();
+        const fetchResourcesData = async () => {
+            setIsLoading(true);
+            const result = await getFreeResources();
+            if (result.success && result.data) {
+                setResources(result.data);
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch resources' });
+            }
+            setIsLoading(false);
+        };
+
+        fetchResourcesData();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -228,7 +239,7 @@ export default function FreeResourcesPage() {
                                 <div className="text-center py-16">
                                     <TabIcon className={`w-16 h-16 mx-auto mb-4 ${currentTab.color} opacity-20`} />
                                     <p className="text-gray-500 text-lg">No {currentTab.label.toLowerCase()} added yet</p>
-                                    <p className="text-gray-400 text-sm mt-2">Click "Add Resource" to get started</p>
+                                    <p className="text-gray-400 text-sm mt-2">Click &quot;Add Resource&quot; to get started</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -114,7 +114,26 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
     };
 
     useEffect(() => {
-        fetchTopicData();
+        const fetchData = async () => {
+            setIsLoading(true);
+            const result = await getTopicById(topicId);
+            if (result.success && result.data) {
+                setTopicData(result.data);
+
+                const availableTypes = new Set(result.data.resources.map(r => r.type));
+                if (availableTypes.size > 0) {
+                    const firstAvailableTab = TABS.find(t => availableTypes.has(t.id as ResourceType));
+                    if (firstAvailableTab) setActiveTab(firstAvailableTab.id as ResourceType);
+                } else {
+                    setActiveTab(null);
+                }
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch topic data' });
+            }
+            setIsLoading(false);
+        };
+
+        fetchData();
     }, [topicId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -302,7 +321,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                         <div className="text-center py-16">
                                             <TabIcon className={`w-16 h-16 mx-auto mb-4 ${currentTab?.color} opacity-20`} />
                                             <p className="text-gray-500 text-lg">No {currentTab?.label.toLowerCase()} added yet</p>
-                                            <p className="text-gray-400 text-sm mt-2">Click "Add {currentTab?.label.slice(0, -1)}" to get started</p>
+                                            <p className="text-gray-400 text-sm mt-2">Click &quot;Add {currentTab?.label.slice(0, -1)}&quot; to get started</p>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

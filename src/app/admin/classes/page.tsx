@@ -58,7 +58,18 @@ export default function YearsPage() {
     };
 
     useEffect(() => {
-        fetchYears();
+        const fetchYearsData = async () => {
+            setIsLoading(true);
+            const result = await getYears();
+            if (result.success && result.data) {
+                setYears(result.data);
+            } else {
+                setError(result.error || 'Failed to fetch years');
+            }
+            setIsLoading(false);
+        };
+
+        fetchYearsData();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {

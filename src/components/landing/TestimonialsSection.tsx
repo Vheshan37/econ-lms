@@ -98,7 +98,7 @@ export function TestimonialsSection() {
 
                             {/* Testimonial Text */}
                             <p className="text-gray-300 text-sm leading-relaxed mb-6 relative z-10">
-                                "{testimonial.text}"
+                                <span>&quot;</span>{testimonial.text}<span>&quot;</span>
                             </p>
 
                             {/* Student Info */}

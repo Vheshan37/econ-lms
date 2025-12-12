@@ -61,7 +61,17 @@ export default function HallOfFamePage() {
     };
 
     useEffect(() => {
-        fetchAlumni();
+        const fetchAlumniData = async () => {
+            setIsLoading(true);
+            const result = await getHallOfFame();
+            if (result.success && result.data) {
+                setAlumni(result.data);
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch alumni' });
+            }
+            setIsLoading(false);
+        };
+        fetchAlumniData();
     }, []);
 
     const handleEdit = (alumnus: Alumni) => {
@@ -379,7 +389,7 @@ export default function HallOfFamePage() {
                                                 onChange={e => setImageUrl(e.target.value)}
                                                 className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
                                             />
-                                            <p className="text-xs text-gray-500 ml-1">Paste a direct link to the student's image</p>
+                                            <p className="text-xs text-gray-500 ml-1">Paste a direct link to the student&apos;s image</p>
                                         </div>
                                     </div>
 

@@ -74,7 +74,18 @@ function TopicsPageClient({ yearId, typeId }: { yearId: string; typeId: string }
     };
 
     useEffect(() => {
-        fetchClassTypeData();
+        const fetchTypeData = async () => {
+            setIsLoading(true);
+            const result = await getClassTypeById(typeId);
+            if (result.success && result.data) {
+                setClassTypeData(result.data);
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch class type data' });
+            }
+            setIsLoading(false);
+        };
+
+        fetchTypeData();
     }, [typeId]);
 
     const handleSubmit = async (e: React.FormEvent) => {

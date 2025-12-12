@@ -16,7 +16,7 @@ export function FooterSection() {
                             <span className="font-bold text-xl">Quality Econ</span>
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            The premier Economics education platform for Advanced Level students in Sri Lanka. Shaping the future of the nation's economists.
+                            The premier Economics education platform for Advanced Level students in Sri Lanka. Shaping the future of the nation&apos;s economists.
                         </p>
                         <div className="flex gap-4">
                             <Link href="#" className="text-gray-400 hover:text-yellow-500 transition-colors"><Facebook className="h-5 w-5" /></Link>

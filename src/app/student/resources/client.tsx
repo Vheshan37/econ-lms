@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Youtube, FileText, File, ClipboardList, Play, ExternalLink, BookOpen, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 interface Resource {
     id: string;
@@ -48,7 +47,7 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
     });
 
     const currentTab = TABS.find(t => t.id === activeTab)!;
-    const TabIcon = currentTab.icon;
+    // const TabIcon = currentTab.icon;
 
     return (
         <div className="space-y-8">
