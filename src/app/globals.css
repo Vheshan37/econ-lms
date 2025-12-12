@@ -76,3 +76,7 @@
     color: hsl(var(--foreground));
   }
 }
+
+.font-fm-gemunu {
+    font-family: var(--font-fm-gemunu) !important;
+}

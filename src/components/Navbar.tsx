@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { useStore } from "@/lib/store";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface NavbarProps {
     isTransparent?: boolean;
@@ -21,19 +22,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 : "border-b bg-white/80 backdrop-blur-md sticky top-0 z-50"
         )}>
             <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-3">
-                    <div className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg transition-colors",
-                        isTransparent ? "bg-yellow-500 text-black" : "bg-blue-600 text-white"
-                    )}>
-                        KK
-                    </div>
-                    <span className={cn(
-                        "font-bold text-lg md:text-xl transition-colors",
-                        isTransparent ? "text-white" : "text-gray-900"
-                    )}>
-                        Krishan Kashthuriarachchi
-                    </span>
+                <Link href="/" className="relative h-full min-w-[120px]">
+                    <Image
+                        src="/logo_t.png"
+                        alt="Logo"
+                        fill
+                        className="object-contain"
+                    />
                 </Link>
 
                 <div className="flex items-center gap-4">
