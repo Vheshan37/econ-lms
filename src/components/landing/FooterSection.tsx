@@ -10,10 +10,7 @@ export function FooterSection() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div className="space-y-6">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center text-black font-bold">
-                                E
-                            </div>
-                            <span className="font-bold text-xl">Quality Econ</span>
+                            <img src="/logo_t.png" alt="Quality Econ" className="h-12 w-auto object-contain" />
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed">
                             The premier Economics education platform for Advanced Level students in Sri Lanka. Shaping the future of the nation&apos;s economists.
@@ -49,15 +46,15 @@ export function FooterSection() {
                         <h4 className="font-bold text-lg mb-6">Contact Us</h4>
                         <ul className="space-y-4 text-sm text-gray-400">
                             <li className="flex items-start gap-3">
-                                <MapPin className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                                <MapPin className="h-5 w-5 text-yellow-500 shrink-0" />
                                 <span>No. 123, High Level Road, Nugegoda, Sri Lanka</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Phone className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                                <Phone className="h-5 w-5 text-yellow-500 shrink-0" />
                                 <span>+94 77 123 4567</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Mail className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                                <Mail className="h-5 w-5 text-yellow-500 shrink-0" />
                                 <span>info@qualityecon.lk</span>
                             </li>
                         </ul>

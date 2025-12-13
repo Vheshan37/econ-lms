@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, Users } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { EnrollmentModal } from "./EnrollmentModal";
 
 export function CoursesSection() {
     const courses = [
@@ -31,6 +33,14 @@ export function CoursesSection() {
             color: "from-purple-600 to-purple-800"
         }
     ];
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedBatch, setSelectedBatch] = useState<string>("");
+
+    const handleEnroll = (batch: string) => {
+        setSelectedBatch(batch);
+        setIsModalOpen(true);
+    };
 
     return (
         <section className="py-24 bg-[#050505] text-white">
@@ -74,12 +84,14 @@ export function CoursesSection() {
                                         <Calendar className="h-4 w-4" />
                                         {course.schedule}
                                     </div>
-                                    <Link href="/login">
-                                        <Button size="sm" className="bg-white text-black hover:bg-gray-200 rounded-full">
-                                            Enroll
-                                            <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Button>
-                                    </Link>
+                                    <Button
+                                        size="sm"
+                                        className="bg-white text-black hover:bg-gray-200 rounded-full cursor-pointer"
+                                        onClick={() => handleEnroll(course.year)}
+                                    >
+                                        Enroll
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
                                 </div>
                             </div>
 
@@ -89,6 +101,12 @@ export function CoursesSection() {
                     ))}
                 </div>
             </div>
+
+            <EnrollmentModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                batch={selectedBatch}
+            />
         </section>
     );
 }

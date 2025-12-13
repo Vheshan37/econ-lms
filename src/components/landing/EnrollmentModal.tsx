@@ -2,7 +2,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 
 interface EnrollmentModalProps {
@@ -13,6 +14,11 @@ interface EnrollmentModalProps {
 
 export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps) {
     const [submitted, setSubmitted] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,7 +28,9 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
         }, 1000);
     };
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -32,7 +40,7 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-100"
                     />
 
                     {/* Modal */}
@@ -40,7 +48,7 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-50 px-4"
+                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-101 px-4"
                     >
                         <div className="bg-[#111] border border-gray-800 rounded-3xl overflow-hidden shadow-2xl relative">
                             {/* Close Button */}
@@ -129,6 +137,7 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }
