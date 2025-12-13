@@ -2,14 +2,13 @@
 
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/landing/HeroSection";
+import { BannerSection } from "@/components/landing/BannerSection";
 import { AboutSection } from "@/components/landing/AboutSection";
 import { CoursesSection } from "@/components/landing/CoursesSection";
-import { ResultsSection } from "@/components/landing/ResultsSection";
 import { TimetableSection } from "@/components/landing/TimetableSection";
 import { ModernFeaturesSection } from "@/components/landing/ModernFeaturesSection";
 import { FreeLessonsSection } from "@/components/landing/FreeLessonsSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
-import { ContactSection } from "@/components/landing/ContactSection";
 import { FooterSection } from "@/components/landing/FooterSection";
 
 export default function Home() {
@@ -22,14 +21,13 @@ export default function Home() {
 
       <main>
         <HeroSection />
+        <BannerSection />
         <AboutSection />
         <CoursesSection />
-        {/* <ResultsSection /> */}
         <TimetableSection />
         <ModernFeaturesSection />
         <FreeLessonsSection />
         <TestimonialsSection />
-        {/* <ContactSection /> */}
       </main>
 
       <FooterSection />

@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Quality Econ",
   description: "Advanced Level Economics Education Platform",
+  icons: {
+    icon: "/logo_t.png",
+  },
 };
 
 export default function RootLayout({
