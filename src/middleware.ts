@@ -2,9 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify, JWTPayload } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-);
+const JWT_SECRET_KEY = process.env.JWT_SECRET;
+
+// Note: Middleware runs on the edge/server, so we prefer fail-safe behavior.
+// However, for security, we must not use a default key.
+// If env is missing, verification will simply fail (which is secure).
+const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_KEY || '');
 
 interface SessionPayload extends JWTPayload {
     userId: string;
@@ -15,6 +18,7 @@ interface SessionPayload extends JWTPayload {
 
 async function verifyToken(token: string): Promise<SessionPayload | null> {
     try {
+        if (!process.env.JWT_SECRET) return null;
         const { payload } = await jwtVerify(token, JWT_SECRET);
 
         // Validate that payload has required fields

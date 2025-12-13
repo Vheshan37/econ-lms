@@ -6,11 +6,10 @@ import { createTeacher } from '@/lib/actions/auth';
 async function main() {
     const name = process.argv[2];
     const email = process.argv[3];
-    const password = process.argv[4];
 
-    if (!name || !email || !password) {
-        console.error('Usage: npm run create-teacher <name> <email> <password>');
-        console.error('Example: npm run create-teacher "John Doe" "teacher@econ.lk" "password123"');
+    if (!name || !email) {
+        console.error('Usage: npm run create-teacher <name> <email>');
+        console.error('Example: npm run create-teacher "John Doe" "teacher@econ.lk"');
         process.exit(1);
     }
 

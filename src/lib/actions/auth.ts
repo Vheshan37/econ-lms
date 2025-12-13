@@ -5,9 +5,12 @@ import { sendOTPEmail } from '@/lib/email';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify, JWTPayload } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-);
+const JWT_SECRET_KEY = process.env.JWT_SECRET;
+if (!JWT_SECRET_KEY) {
+    throw new Error('JWT_SECRET environment variable is not defined');
+}
+
+const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_KEY);
 
 interface SessionPayload extends JWTPayload {
     userId: string;
