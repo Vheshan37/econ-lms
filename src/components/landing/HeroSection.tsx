@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState } from "react";
+
 
 interface HeroSectionProps {
     content?: any;
+    timestamp?: number;
 }
 
-export function HeroSection({ content }: HeroSectionProps) {
+export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
     // Default values if content is missing
     const defaults = {
         description: 'දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන් බිහිකරන ලද ඔප්පු වූ ඉතිහාසයක් ඇති වඩාත්ම සවිස්තරාත්මක ආර්ථික විද්‍යා අධ්‍යාපනය අත්විඳින්න. විශිෂ්ටත්වයේ සම්මේලනයට එක්වන්න.',
@@ -24,9 +25,12 @@ export function HeroSection({ content }: HeroSectionProps) {
 
     const data = { ...defaults, ...content };
 
-    // Cache busting for teacher image - set once on mount
-    const [timestamp] = useState(new Date().getTime());
-    const teacherImageUrl = data.teacherImage ? `${data.teacherImage}?t=${timestamp}` : null;
+
+    // Cache busting for teacher image - use prop timestamp to ensure SSR match
+    // Fallback to empty string if timestamp is 0 (or allow browser caching if no update)
+    // Actually, if we want cache busting, page.tsx WILL pass a timestamp.
+    const teacherImageUrl = data.teacherImage ? `${data.teacherImage}${timestamp ? `?t=${timestamp}` : ''}` : null;
+
 
 
     return (

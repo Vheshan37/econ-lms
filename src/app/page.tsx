@@ -33,6 +33,8 @@ export default async function Home() {
     }
   });
 
+  // Generate consistent timestamp for hydration matching
+  const timestamp = new Date().getTime();
   const heroContent = await getLandingPageContent('hero');
   const heroData = heroContent.success ? heroContent.data : null;
 
@@ -44,7 +46,7 @@ export default async function Home() {
       </div>
 
       <main>
-        <HeroSection content={heroData} />
+        <HeroSection content={heroData} timestamp={timestamp} />
         <BannerSection />
         <AboutSection />
         <CoursesSection years={years} />
