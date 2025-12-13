@@ -28,13 +28,30 @@ export async function uploadImage(formData: FormData) {
             filename = `${uniqueId}-${originalName}`;
         }
 
-        // Ensure upload directory exists
-        const uploadDir = join(process.cwd(), 'public', 'uploads');
-        await mkdir(uploadDir, { recursive: true });
 
-        // Save file
-        const filepath = join(uploadDir, filename);
-        await writeFile(filepath, buffer);
+        // Determine upload directories
+        const currentDir = process.cwd();
+        const uploadDirs = [];
+
+        // 1. Standard/Runtime public uploads
+        const runtimeUploadDir = join(currentDir, 'public', 'uploads');
+        uploadDirs.push(runtimeUploadDir);
+
+        // 2. Persistent uploads (if running in standalone mode)
+        // Standalone runs in .next/standalone, so persistent root is two levels up
+        if (currentDir.includes('.next/standalone')) {
+            const persistentUploadDir = join(currentDir, '../../public/uploads');
+            uploadDirs.push(persistentUploadDir);
+        }
+
+        // Save file to all determined locations
+        for (const dir of uploadDirs) {
+            await mkdir(dir, { recursive: true });
+            const filepath = join(dir, filename);
+            await writeFile(filepath, buffer);
+            console.log(`Saved image to: ${filepath}`);
+        }
+
 
         // Return public path
         const publicPath = `/uploads/${filename}`;
