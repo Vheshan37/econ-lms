@@ -92,46 +92,73 @@ export function ModernFeaturesSection() {
                     ))}
                 </div>
 
-                {/* Student Benefits Section */}
-                <div className="mt-20 bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-3xl p-12 border border-yellow-500/20">
-                    <div className="grid md:grid-cols-2 gap-8 items-center">
-                        <div>
-                            <h3 className="text-3xl font-bold text-white mb-4">
-                                Student Benefits
-                            </h3>
-                            <p className="text-gray-300 mb-6">
-                                Our comprehensive learning platform is designed to give you every advantage in your A/L Economics journey.
-                            </p>
-                            <ul className="space-y-3">
-                                {[
-                                    "Flexible learning schedule that fits your lifestyle",
-                                    "Access to a vast library of educational resources",
-                                    "Personalized learning paths based on your progress",
-                                    "Direct communication with experienced teachers",
-                                    "Competitive environment that motivates excellence"
-                                ].map((benefit, idx) => (
-                                    <li key={idx} className="flex items-start gap-3 text-gray-300">
-                                        <div className="min-w-[24px] min-h-[24px] rounded-full bg-yellow-500 flex items-center justify-center mt-0.5">
-                                            <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                            </svg>
+                {/* Student Benefits Section - Redesigned */}
+                <div className="mt-24 relative">
+                    <div className="absolute inset-0 bg-yellow-500/5 blur-3xl rounded-full" />
+                    <div className="relative bg-black/40 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/10 overflow-hidden">
+                        {/* Inner stroke */}
+                        <div className="absolute inset-0 border border-white/5 rounded-3xl pointer-events-none" />
+
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h3 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
+                                    Why Students <span className="text-yellow-500">Love Us</span>
+                                </h3>
+                                <p className="text-gray-400 mb-8 text-lg leading-relaxed">
+                                    Our comprehensive learning platform is designed to give you every advantage in your A/L Economics journey, combining traditional teaching excellence with modern technology.
+                                </p>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Flexible learning schedule that fits your lifestyle",
+                                        "Access to a vast library of educational resources",
+                                        "Personalized learning paths based on your progress",
+                                        "Direct communication with experienced teachers",
+                                        "Competitive environment that motivates excellence"
+                                    ].map((benefit, idx) => (
+                                        <li key={idx} className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5 hover:border-yellow-500/30 hover:bg-white/10 transition-all duration-300 group">
+                                            <div className="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                                                <svg className="w-4 h-4 text-yellow-500 group-hover:text-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span className="text-gray-300 font-medium">{benefit}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className="relative">
+                                {/* Success Rate Card - Premium Design */}
+                                <div className="aspect-square max-w-md mx-auto relative">
+                                    {/* Rotating borders */}
+                                    <div className="absolute inset-0 border border-yellow-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
+                                    <div className="absolute inset-4 border border-dashed border-white/10 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
+
+                                    <div className="absolute inset-8 rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/10 flex flex-col items-center justify-center p-8 text-center shadow-2xl shadow-yellow-900/20">
+                                        <div className="w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-500/20">
+                                            <TrendingUp className="w-10 h-10 text-black" />
                                         </div>
-                                        <span>{benefit}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="relative">
-                            <div className="aspect-square rounded-2xl bg-gradient-to-br from-yellow-500/20 to-purple-500/20 backdrop-blur-sm border border-gray-700 flex items-center justify-center p-8">
-                                <div className="text-center">
-                                    <div className="text-6xl font-bold text-white mb-4">92%</div>
-                                    <div className="text-xl text-gray-300 mb-2">Success Rate</div>
-                                    <div className="text-sm text-gray-400">Our students achieve A grades</div>
+                                        <div className="text-7xl font-bold text-white mb-2 tracking-tighter">
+                                            92<span className="text-yellow-500 text-4xl">%</span>
+                                        </div>
+                                        <div className="text-xl text-gray-300 font-medium">Success Rate</div>
+                                        <div className="text-sm text-gray-500 mt-2">of our students achieve<br />A or B grades</div>
+                                    </div>
+
+                                    {/* Floating Badges */}
+                                    <div className="absolute top-10 right-0 animate-bounce delay-700">
+                                        <div className="bg-black/80 backdrop-blur-md border border-yellow-500/20 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+                                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                            <span className="text-xs font-bold text-white">Top Result</span>
+                                        </div>
+                                    </div>
+                                    <div className="absolute bottom-10 left-0 animate-bounce delay-1000">
+                                        <div className="bg-black/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-lg shadow-lg">
+                                            <span className="text-xs font-bold text-yellow-500">Best In Island</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            {/* Floating Elements */}
-                            <div className="absolute -top-4 -right-4 w-24 h-24 bg-yellow-500/20 rounded-full blur-2xl animate-pulse" />
-                            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: "1s" }} />
                         </div>
                     </div>
                 </div>
