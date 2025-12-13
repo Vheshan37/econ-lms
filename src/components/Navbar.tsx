@@ -29,6 +29,7 @@ export function Navbar() {
     const navLinks = [
         { name: "Home", path: "/" },
         { name: "Hall of Fame", path: "/hall-of-fame" },
+        { name: "O/L Student?", path: "/ol-students" },
         { name: "Contact Us", path: "/contact" },
     ];
 
@@ -130,7 +131,7 @@ export function Navbar() {
                         style={{ background: "linear-gradient(to bottom, #000000, #030712, #451a03)" }}
                     >
                         {/* Decorative background elements for "stunning" effect */}
-                        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+                        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] bg-size-[16px_16px] pointer-events-none" />
                         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
