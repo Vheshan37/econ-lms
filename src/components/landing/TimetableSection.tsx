@@ -2,37 +2,27 @@
 
 import { Calendar, Clock, MapPin } from "lucide-react";
 
-export function TimetableSection() {
-    const institutes = [
-        {
-            name: "Colombo Institute",
-            location: "Colombo 07",
-            classes: [
-                { day: "Monday", time: "6:00 PM - 8:00 PM", year: "Year 12", hall: "Main Hall" },
-                { day: "Wednesday", time: "6:00 PM - 8:00 PM", year: "Year 13", hall: "Main Hall" },
-                { day: "Saturday", time: "2:00 PM - 4:00 PM", year: "Year 12", hall: "Auditorium" },
-            ]
-        },
-        {
-            name: "Gampaha Institute",
-            location: "Gampaha Town",
-            classes: [
-                { day: "Tuesday", time: "5:30 PM - 7:30 PM", year: "Year 12", hall: "Room 101" },
-                { day: "Thursday", time: "5:30 PM - 7:30 PM", year: "Year 13", hall: "Room 101" },
-                { day: "Sunday", time: "9:00 AM - 11:00 AM", year: "Year 12 & 13", hall: "Main Hall" },
-            ]
-        },
-        {
-            name: "Kandy Institute",
-            location: "Kandy City",
-            classes: [
-                { day: "Friday", time: "6:00 PM - 8:00 PM", year: "Year 12", hall: "Hall A" },
-                { day: "Saturday", time: "4:00 PM - 6:00 PM", year: "Year 13", hall: "Hall A" },
-                { day: "Sunday", time: "8:00 AM - 10:00 AM", year: "Revision Class", hall: "Hall B" },
-            ]
-        },
-    ];
+interface Timetable {
+    id: string;
+    day: string;
+    startTime: string;
+    endTime: string;
+    academicYear: string;
+    // hall: string; // Not in DB schema
+}
 
+interface InstituteWithTimetables {
+    id: string;
+    name: string;
+    location: string;
+    timetables: Timetable[];
+}
+
+interface TimetableSectionProps {
+    institutes: InstituteWithTimetables[];
+}
+
+export function TimetableSection({ institutes }: TimetableSectionProps) {
     return (
         <section className="py-24 bg-black text-white relative overflow-hidden">
             {/* Animated Background */}
@@ -55,9 +45,9 @@ export function TimetableSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {institutes.map((institute, idx) => (
+                    {institutes.map((institute) => (
                         <div
-                            key={idx}
+                            key={institute.id}
                             className="group relative bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)]"
                         >
                             {/* Institute Header */}
@@ -72,9 +62,9 @@ export function TimetableSection() {
 
                             {/* Classes List */}
                             <div className="space-y-4">
-                                {institute.classes.map((classItem, classIdx) => (
+                                {institute.timetables.map((classItem) => (
                                     <div
-                                        key={classIdx}
+                                        key={classItem.id}
                                         className="bg-black/40 rounded-xl p-4 border border-gray-800 hover:border-gray-700 transition-colors"
                                     >
                                         <div className="flex items-start justify-between mb-2">
@@ -83,16 +73,17 @@ export function TimetableSection() {
                                                 <span className="font-semibold text-white">{classItem.day}</span>
                                             </div>
                                             <span className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded-full">
-                                                {classItem.year}
+                                                {classItem.academicYear}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2 text-sm text-gray-400 mb-1">
                                             <Clock className="w-4 h-4" />
-                                            <span>{classItem.time}</span>
+                                            <span>{classItem.startTime} - {classItem.endTime}</span>
                                         </div>
-                                        <div className="text-xs text-gray-500">
+                                        {/* Hall not in DB schema, so omitted */}
+                                        {/* <div className="text-xs text-gray-500">
                                             📍 {classItem.hall}
-                                        </div>
+                                        </div> */}
                                     </div>
                                 ))}
                             </div>

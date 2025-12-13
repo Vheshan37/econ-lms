@@ -24,6 +24,14 @@ export default async function Home() {
     }
   });
 
+  const institutes = await prisma.institute.findMany({
+    include: {
+      timetables: {
+        orderBy: { day: 'asc' } // Or however you want to sort
+      }
+    }
+  });
+
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
       {/* Overlay Navbar for the landing page */}
@@ -36,7 +44,7 @@ export default async function Home() {
         <BannerSection />
         <AboutSection />
         <CoursesSection years={years} />
-        <TimetableSection />
+        <TimetableSection institutes={institutes} />
         <ModernFeaturesSection />
         <FreeLessonsSection />
         <TestimonialsSection />
