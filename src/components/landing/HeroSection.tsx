@@ -4,8 +4,31 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
-export function HeroSection() {
+interface HeroSectionProps {
+    content?: any;
+}
+
+export function HeroSection({ content }: HeroSectionProps) {
+    // Default values if content is missing
+    const defaults = {
+        description: 'දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන් බිහිකරන ලද ඔප්පු වූ ඉතිහාසයක් ඇති වඩාත්ම සවිස්තරාත්මක ආර්ථික විද්‍යා අධ්‍යාපනය අත්විඳින්න. විශිෂ්ටත්වයේ සම්මේලනයට එක්වන්න.',
+        studentCount: '5000+',
+        rankCount: '100+',
+        expCount: '10+',
+        teacherName: 'Krishan Kashthuriarachchi',
+        teacherTitle: 'B.Sc. Economics (Sp.) University of Colombo',
+        teacherImage: null
+    };
+
+    const data = { ...defaults, ...content };
+
+    // Cache busting for teacher image - set once on mount
+    const [timestamp] = useState(new Date().getTime());
+    const teacherImageUrl = data.teacherImage ? `${data.teacherImage}?t=${timestamp}` : null;
+
+
     return (
         <section className="relative min-h-screen bg-[#050505] text-white overflow-hidden flex items-center">
             {/* Background Effects */}
@@ -38,7 +61,7 @@ export function HeroSection() {
 
 
                     <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
-                        දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන් බිහිකරන ලද ඔප්පු වූ ඉතිහාසයක් ඇති වඩාත්ම සවිස්තරාත්මක ආර්ථික විද්‍යා අධ්‍යාපනය අත්විඳින්න. විශිෂ්ටත්වයේ සම්මේලනයට එක්වන්න.
+                        {data.description}
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4">
@@ -59,15 +82,15 @@ export function HeroSection() {
 
                     <div className="flex items-center gap-8 pt-8 border-t border-gray-800">
                         <div>
-                            <p className="text-3xl font-bold text-white">5000+</p>
+                            <p className="text-3xl font-bold text-white">{data.studentCount}</p>
                             <p className="text-sm text-gray-500 uppercase tracking-wider">Students</p>
                         </div>
                         <div>
-                            <p className="text-3xl font-bold text-white">100+</p>
+                            <p className="text-3xl font-bold text-white">{data.rankCount}</p>
                             <p className="text-sm text-gray-500 uppercase tracking-wider">Island Ranks</p>
                         </div>
                         <div>
-                            <p className="text-3xl font-bold text-white">10+</p>
+                            <p className="text-3xl font-bold text-white">{data.expCount}</p>
                             <p className="text-sm text-gray-500 uppercase tracking-wider">Years Exp.</p>
                         </div>
                     </div>
@@ -80,15 +103,19 @@ export function HeroSection() {
                     className="relative hidden lg:block"
                 >
                     <div className="relative z-10 w-full max-w-md mx-auto">
-                        {/* Placeholder for Teacher Image - Using a gradient box for now if no image */}
+                        {/* Teacher Image */}
                         <div className="aspect-3/4 rounded-3xl overflow-hidden bg-linear-to-b from-gray-800 to-black border border-gray-800 relative group">
-                            <div className="absolute inset-0 bg-[url('https://placehold.co/600x800/1a1a1a/FFF?text=Teacher+Image')] bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                            {teacherImageUrl ? (
+                                <div className={`absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700`} style={{ backgroundImage: `url('${teacherImageUrl}')` }} />
+                            ) : (
+                                <div className="absolute inset-0 bg-[url('https://placehold.co/600x800/1a1a1a/FFF?text=Teacher+Image')] bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                            )}
                             <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-90" />
 
                             <div className="absolute bottom-8 left-8 right-8">
                                 <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10">
-                                    <p className="text-yellow-500 font-bold text-lg">Krishan Kashthuriarachchi</p>
-                                    <p className="text-gray-300 text-sm">B.Sc. Economics (Sp.) University of Colombo</p>
+                                    <p className="text-yellow-500 font-bold text-lg">{data.teacherName}</p>
+                                    <p className="text-gray-300 text-sm">{data.teacherTitle}</p>
                                 </div>
                             </div>
                         </div>

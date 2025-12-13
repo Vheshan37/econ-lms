@@ -14,10 +14,19 @@ export async function uploadImage(formData: FormData) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Create unique filename
-        const uniqueId = uuidv4();
-        const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '');
-        const filename = `${uniqueId}-${originalName}`;
+        // Create unique filename or use custom name
+        const customName = formData.get('customName') as string;
+        let filename;
+
+        if (customName) {
+            // Preserve extension
+            const ext = file.name.split('.').pop();
+            filename = `${customName}.${ext}`;
+        } else {
+            const uniqueId = uuidv4();
+            const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '');
+            filename = `${uniqueId}-${originalName}`;
+        }
 
         // Ensure upload directory exists
         const uploadDir = join(process.cwd(), 'public', 'uploads');

@@ -192,12 +192,18 @@ export default function ContentManagementPage() {
             if (teacherImageFile) {
                 const formData = new FormData();
                 formData.append('file', teacherImageFile);
+                formData.append('customName', 'teacher-hero-image'); // Enforce fixed filename
                 const uploadResult = await uploadImage(formData);
                 if (uploadResult.success && uploadResult.url) {
                     teacherImageUrl = uploadResult.url;
                 } else {
                     throw new Error(uploadResult.error || 'Failed to upload image');
                 }
+            }
+
+            // Clean URL before saving (remove query params)
+            if (teacherImageUrl && teacherImageUrl.startsWith('/uploads/')) {
+                teacherImageUrl = teacherImageUrl.split('?')[0];
             }
 
             const result = await updateAllLandingPageContent({
@@ -212,8 +218,8 @@ export default function ContentManagementPage() {
                 setAlert({ isOpen: true, title: 'Success', description: 'General content updated successfully', type: 'success' });
                 // Clear the file selection after successful save
                 setTeacherImageFile(null);
-                // Update local state with the new URL to reflect what's on server
-                setHeroContent(prev => ({ ...prev, teacherImage: teacherImageUrl }));
+                // Update local state with the new URL AND timestamp to force refresh preview
+                setHeroContent(prev => ({ ...prev, teacherImage: `${teacherImageUrl}?t=${new Date().getTime()}` }));
             } else {
                 throw new Error(result.error);
             }

@@ -11,6 +11,7 @@ import { FreeLessonsSection } from "@/components/landing/FreeLessonsSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { FooterSection } from "@/components/landing/FooterSection";
 import { prisma } from "@/lib/prisma";
+import { getLandingPageContent } from "@/lib/actions/content";
 
 export default async function Home() {
   const years = await prisma.academicYear.findMany({
@@ -32,6 +33,9 @@ export default async function Home() {
     }
   });
 
+  const heroContent = await getLandingPageContent('hero');
+  const heroData = heroContent.success ? heroContent.data : null;
+
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
       {/* Overlay Navbar for the landing page */}
@@ -40,7 +44,7 @@ export default async function Home() {
       </div>
 
       <main>
-        <HeroSection />
+        <HeroSection content={heroData} />
         <BannerSection />
         <AboutSection />
         <CoursesSection years={years} />
