@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck, Video, Users, Award, Target, TrendingUp, Lightbulb, CheckCircle, Star, GraduationCap, Brain, Sparkles, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,7 @@ import {
     updateFreeResource,
     deleteFreeResource
 } from '@/lib/actions/content';
+import { uploadImage } from '@/lib/actions/upload';
 import { PreviewModal } from '@/components/landing/preview/PreviewModal';
 import { HeroPreview } from '@/components/landing/preview/HeroPreview';
 import { AboutPreview } from '@/components/landing/preview/AboutPreview';
@@ -68,13 +69,12 @@ export default function ContentManagementPage() {
 
     // General Content State
     const [heroContent, setHeroContent] = useState({
-        sectionSubtitle: '', // "#1 ECONOMICS CLASS IN SRI LANKA"
-        sectionTitle: '', // "Quality ම Econ"
-        secondarySubtitle: '', // "For A/L Students"
         description: '', // Sinhala description
         studentCount: '', rankCount: '', expCount: '',
         teacherName: '', teacherTitle: '', teacherImage: ''
     });
+    const [teacherImageFile, setTeacherImageFile] = useState<File | null>(null);
+
     const [aboutContent, setAboutContent] = useState({
         sectionSubtitle: '', // "ABOUT THE MENTOR"
         sectionTitle: '', // "Why Choose Quality Econ"
@@ -187,8 +187,21 @@ export default function ContentManagementPage() {
     const handleSaveGeneral = async () => {
         setIsSaving(true);
         try {
+            let teacherImageUrl = heroContent.teacherImage;
+
+            if (teacherImageFile) {
+                const formData = new FormData();
+                formData.append('file', teacherImageFile);
+                const uploadResult = await uploadImage(formData);
+                if (uploadResult.success && uploadResult.url) {
+                    teacherImageUrl = uploadResult.url;
+                } else {
+                    throw new Error(uploadResult.error || 'Failed to upload image');
+                }
+            }
+
             const result = await updateAllLandingPageContent({
-                hero: heroContent,
+                hero: { ...heroContent, teacherImage: teacherImageUrl },
                 about: aboutContent,
                 freeLessons: freeLessonsContent,
                 contact: contactContent,
@@ -197,13 +210,33 @@ export default function ContentManagementPage() {
 
             if (result.success) {
                 setAlert({ isOpen: true, title: 'Success', description: 'General content updated successfully', type: 'success' });
+                // Clear the file selection after successful save
+                setTeacherImageFile(null);
+                // Update local state with the new URL to reflect what's on server
+                setHeroContent(prev => ({ ...prev, teacherImage: teacherImageUrl }));
             } else {
                 throw new Error(result.error);
             }
         } catch (error) {
+            console.error(error);
             setAlert({ isOpen: true, title: 'Error', description: 'Failed to update content', type: 'error' });
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Store file for upload on save
+            setTeacherImageFile(file);
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setHeroContent(prev => ({ ...prev, teacherImage: reader.result as string }));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -403,20 +436,7 @@ export default function ContentManagementPage() {
                             </div>
                         </div>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Section Subtitle</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.sectionSubtitle} onChange={e => setHeroContent({ ...heroContent, sectionSubtitle: e.target.value })} placeholder="#1 ECONOMICS CLASS IN SRI LANKA" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Section Title</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.sectionTitle} onChange={e => setHeroContent({ ...heroContent, sectionTitle: e.target.value })} placeholder="Quality ම Econ" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Secondary Subtitle</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.secondarySubtitle} onChange={e => setHeroContent({ ...heroContent, secondarySubtitle: e.target.value })} placeholder="For A/L Students" />
-                                </div>
-                            </div>
+                            {/* Titles removed as per request */}
                             <div className="space-y-2">
                                 <Label className="text-gray-800">Description</Label>
                                 <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.description} onChange={e => setHeroContent({ ...heroContent, description: e.target.value })} rows={3} placeholder="දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන්..." />
@@ -445,8 +465,24 @@ export default function ContentManagementPage() {
                                     <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.teacherTitle} onChange={e => setHeroContent({ ...heroContent, teacherTitle: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-gray-800">Teacher Image URL</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.teacherImage} onChange={e => setHeroContent({ ...heroContent, teacherImage: e.target.value })} />
+                                    <Label className="text-gray-800">Teacher Image</Label>
+                                    <div className="flex items-center gap-4">
+                                        {heroContent.teacherImage && (
+                                            <div className="relative h-16 w-16 rounded-full overflow-hidden border border-gray-200">
+                                                <img src={heroContent.teacherImage} alt="Teacher" className="h-full w-full object-cover" />
+                                            </div>
+                                        )}
+                                        <div className="flex-1">
+                                            <Input
+                                                id="teacher-image-upload"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">Select an image to upload</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

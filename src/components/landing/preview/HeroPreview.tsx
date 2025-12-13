@@ -7,9 +7,6 @@ import { motion } from "framer-motion";
 
 interface HeroPreviewProps {
     data: {
-        sectionSubtitle: string;
-        sectionTitle: string;
-        secondarySubtitle: string;
         description: string;
         studentCount: string;
         rankCount: string;
@@ -38,13 +35,13 @@ export function HeroPreview({ data }: HeroPreviewProps) {
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-500 text-sm font-medium tracking-wider uppercase">
                         <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
-                        {data.sectionSubtitle || "#1 Economics Class in Sri Lanka"}
+                        #1 Economics Class in Sri Lanka
                     </div>
 
                     <h1 className="text-5xl md:text-7xl font-black leading-tight font-serif">
-                        {data.sectionTitle || "Quality ම Econ"} <br />
+                        Quality ම Econ <br />
                         <span className="text-3xl md:text-4xl font-normal text-gray-300 block mt-4">
-                            {data.secondarySubtitle || "For A/L Students"}
+                            For A/L Students
                         </span>
                     </h1>
 
