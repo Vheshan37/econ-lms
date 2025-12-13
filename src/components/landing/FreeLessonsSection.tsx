@@ -1,6 +1,7 @@
 "use client";
 
 import { Play, FileText, BookOpen, ClipboardCheck, Download } from "lucide-react";
+import Link from "next/link";
 
 export function FreeLessonsSection() {
     const resources = [
@@ -159,7 +160,7 @@ export function FreeLessonsSection() {
 
                 {/* CTA Section */}
                 <div className="mt-16 text-center">
-                    <button className="group relative px-10 py-5 bg-linear-to-r from-yellow-500 to-yellow-600 text-black font-bold text-lg rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.6)] hover:scale-105">
+                    <Link href="/free-resources" className="inline-block group relative px-10 py-5 bg-linear-to-r from-yellow-500 to-yellow-600 text-black font-bold text-lg rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.6)] hover:scale-105">
                         <span className="relative z-10 flex items-center gap-2">
                             Browse All Free Resources
                             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -167,7 +168,7 @@ export function FreeLessonsSection() {
                             </svg>
                         </span>
                         <div className="absolute inset-0 bg-linear-to-r from-yellow-600 to-yellow-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </button>
+                    </Link>
                     <p className="text-gray-500 text-sm mt-4">No registration required • Instant access</p>
                 </div>
             </div>
