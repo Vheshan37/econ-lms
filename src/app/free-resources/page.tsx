@@ -146,15 +146,15 @@ export default function FreeResourcesPage() {
 
                 {/* Filter Tabs */}
                 <section className="sticky top-[80px] z-40 bg-black/80 backdrop-blur-md py-6 border-b border-white/5">
-                    <div className="container mx-auto px-4 overflow-x-auto no-scrollbar">
-                        <div className="flex gap-3 justify-start md:justify-center min-w-max px-2">
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-wrap gap-3 justify-center">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${activeTab === tab.id
-                                            ? "bg-yellow-500 text-black border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.3)] scale-105"
-                                            : "bg-white/5 text-gray-400 border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10"
+                                        ? "bg-yellow-500 text-black border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.3)] scale-105"
+                                        : "bg-white/5 text-gray-400 border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10"
                                         }`}
                                 >
                                     {tab.label}
