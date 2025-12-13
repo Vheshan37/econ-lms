@@ -67,9 +67,10 @@ export function FreeLessonsSection() {
                 {/* Resource Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     {resources.map((resource, idx) => (
-                        <div
+                        <Link
+                            href="/free-resources"
                             key={idx}
-                            className={`group relative bg-linear-to-br ${resource.bgColor} backdrop-blur-sm rounded-2xl p-6 border ${resource.borderColor} hover:border-opacity-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer`}
+                            className={`group relative bg-linear-to-br ${resource.bgColor} backdrop-blur-sm rounded-2xl p-6 border ${resource.borderColor} hover:border-opacity-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer block`}
                         >
                             {/* Icon */}
                             <div className={`w-14 h-14 rounded-xl bg-black/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
@@ -95,14 +96,14 @@ export function FreeLessonsSection() {
                                     </svg>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
 
                 {/* Featured Content Preview */}
                 <div className="grid md:grid-cols-3 gap-6">
                     {/* Video Preview */}
-                    <div className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group">
+                    <Link href="/free-resources" className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
                         <div className="aspect-video bg-linear-to-br from-red-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden">
                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDIwIDAgTCAwIDAgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-50" />
                             <div className="relative w-16 h-16 rounded-full bg-red-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 cursor-pointer">
@@ -119,10 +120,10 @@ export function FreeLessonsSection() {
                             <span>•</span>
                             <span>⭐ 4.9/5</span>
                         </div>
-                    </div>
+                    </Link>
 
                     {/* Document Preview */}
-                    <div className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer">
+                    <Link href="/free-resources" className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer block">
                         <div className="aspect-video bg-linear-to-br from-blue-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden p-4">
                             <div className="text-center">
                                 <FileText className="w-12 h-12 text-blue-500 mx-auto mb-2" />
@@ -139,10 +140,10 @@ export function FreeLessonsSection() {
                             <Download className="w-4 h-4" />
                             Download PDF
                         </button>
-                    </div>
+                    </Link>
 
                     {/* Quiz Preview */}
-                    <div className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer">
+                    <Link href="/free-resources" className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer block">
                         <div className="aspect-video bg-linear-to-br from-purple-900/20 to-black rounded-xl mb-4 flex items-center justify-center">
                             <div className="text-center">
                                 <ClipboardCheck className="w-12 h-12 text-purple-500 mx-auto mb-2" />
@@ -155,7 +156,7 @@ export function FreeLessonsSection() {
                         <button className="w-full py-2 bg-purple-500/20 text-purple-500 rounded-lg font-semibold text-sm group-hover:bg-purple-500/30 transition-colors">
                             Start Quiz
                         </button>
-                    </div>
+                    </Link>
                 </div>
 
                 {/* CTA Section */}
