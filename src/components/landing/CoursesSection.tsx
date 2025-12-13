@@ -47,7 +47,7 @@ export function CoursesSection() {
                     {courses.map((course) => (
                         <div key={course.year} className="group relative bg-[#111] rounded-2xl overflow-hidden border border-gray-800 hover:border-yellow-500/50 transition-colors duration-300">
                             {/* Gradient Header */}
-                            <div className={`h-2 bg-gradient-to-r ${course.color}`} />
+                            <div className={`h-2 bg-linear-to-r ${course.color}`} />
 
                             <div className="p-8 space-y-6">
                                 <div className="flex justify-between items-start">
@@ -84,7 +84,7 @@ export function CoursesSection() {
                             </div>
 
                             {/* Hover Effect */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-yellow-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                            <div className="absolute inset-0 bg-linear-to-b from-transparent to-yellow-900/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                         </div>
                     ))}
                 </div>

@@ -48,11 +48,13 @@ export function HeroSection() {
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         </Link>
-                        <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-gray-700/50 bg-gray-900/50 text-gray-300 hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-500 rounded-full w-full sm:w-auto transition-all duration-300">
-                            {/* <Play className="mr-2 h-5 w-5" /> */}
-                            Join Free
-                            <ArrowRight className="ml-2 h-5 w-5" />
-                        </Button>
+                        <Link href="#free-lessons">
+                            <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-gray-700/50 bg-gray-900/50 text-gray-300 hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-500 rounded-full w-full sm:w-auto transition-all duration-300">
+                                {/* <Play className="mr-2 h-5 w-5" /> */}
+                                Join Free
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </Button>
+                        </Link>
                     </div>
 
                     <div className="flex items-center gap-8 pt-8 border-t border-gray-800">
@@ -79,9 +81,9 @@ export function HeroSection() {
                 >
                     <div className="relative z-10 w-full max-w-md mx-auto">
                         {/* Placeholder for Teacher Image - Using a gradient box for now if no image */}
-                        <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-gradient-to-b from-gray-800 to-black border border-gray-800 relative group">
+                        <div className="aspect-3/4 rounded-3xl overflow-hidden bg-linear-to-b from-gray-800 to-black border border-gray-800 relative group">
                             <div className="absolute inset-0 bg-[url('https://placehold.co/600x800/1a1a1a/FFF?text=Teacher+Image')] bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-700" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-90" />
 
                             <div className="absolute bottom-8 left-8 right-8">
                                 <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 
@@ -10,6 +11,8 @@ export function AboutSection() {
         "Real-world Economic Examples",
         "Personalized Attention"
     ];
+
+    const [isPlaying, setIsPlaying] = useState(false);
 
     return (
         <section className="py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
@@ -28,17 +31,37 @@ export function AboutSection() {
                         transition={{ duration: 0.6 }}
                         className="relative"
                     >
-                        <div className="aspect-video rounded-2xl overflow-hidden bg-gray-900 border border-gray-800 shadow-2xl relative group cursor-pointer">
-                            {/* Video Placeholder */}
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-colors">
-                                <div className="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center pl-1 shadow-[0_0_30px_rgba(234,179,8,0.4)] group-hover:scale-110 transition-transform">
-                                    <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-black border-b-[10px] border-b-transparent" />
-                                </div>
-                            </div>
-                            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent">
-                                <p className="font-bold text-lg">Classroom Experience</p>
-                                <p className="text-sm text-gray-400">Watch how we make Economics simple</p>
-                            </div>
+                        <div
+                            className="aspect-video rounded-2xl overflow-hidden bg-gray-900 border border-gray-800 shadow-2xl relative group cursor-pointer"
+                            onClick={() => setIsPlaying(true)}
+                        >
+                            {isPlaying ? (
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src="https://www.youtube.com/embed/LXb3EKWsInQ?autoplay=1"
+                                    title="Quality Econ Trailer"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                />
+                            ) : (
+                                <>
+                                    {/* Video Placeholder */}
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-colors z-10">
+                                        <div className="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center pl-1 shadow-[0_0_30px_rgba(234,179,8,0.4)] group-hover:scale-110 transition-transform">
+                                            <div className="w-0 h-0 border-t-10 border-t-transparent border-l-18 border-l-black border-b-10 border-b-transparent" />
+                                        </div>
+                                    </div>
+                                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black to-transparent z-10">
+                                        <p className="font-bold text-lg">Classroom Experience</p>
+                                        <p className="text-sm text-gray-400">Watch how we make Economics simple</p>
+                                    </div>
+                                    {/* Thumbnail Image (Gradient for now) */}
+                                    <div className="absolute inset-0 bg-linear-to-br from-gray-800 to-black" />
+                                </>
+                            )}
                         </div>
 
                         {/* Decorative dots */}

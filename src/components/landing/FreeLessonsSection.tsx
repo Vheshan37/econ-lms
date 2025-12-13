@@ -43,10 +43,10 @@ export function FreeLessonsSection() {
     ];
 
     return (
-        <section className="py-24 bg-black text-white relative overflow-hidden">
+        <section id="free-lessons" className="py-24 bg-black text-white relative overflow-hidden">
             {/* Animated Grid Background */}
             <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000,transparent)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f_1px,transparent_1px)] bg-size-[3rem_3rem] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,#000,transparent)]" />
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
@@ -68,7 +68,7 @@ export function FreeLessonsSection() {
                     {resources.map((resource, idx) => (
                         <div
                             key={idx}
-                            className={`group relative bg-gradient-to-br ${resource.bgColor} backdrop-blur-sm rounded-2xl p-6 border ${resource.borderColor} hover:border-opacity-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer`}
+                            className={`group relative bg-linear-to-br ${resource.bgColor} backdrop-blur-sm rounded-2xl p-6 border ${resource.borderColor} hover:border-opacity-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer`}
                         >
                             {/* Icon */}
                             <div className={`w-14 h-14 rounded-xl bg-black/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
@@ -101,8 +101,8 @@ export function FreeLessonsSection() {
                 {/* Featured Content Preview */}
                 <div className="grid md:grid-cols-3 gap-6">
                     {/* Video Preview */}
-                    <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group">
-                        <div className="aspect-video bg-gradient-to-br from-red-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden">
+                    <div className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group">
+                        <div className="aspect-video bg-linear-to-br from-red-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden">
                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDIwIDAgTCAwIDAgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-50" />
                             <div className="relative w-16 h-16 rounded-full bg-red-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 cursor-pointer">
                                 <Play className="w-8 h-8 text-white ml-1" fill="white" />
@@ -121,8 +121,8 @@ export function FreeLessonsSection() {
                     </div>
 
                     {/* Document Preview */}
-                    <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer">
-                        <div className="aspect-video bg-gradient-to-br from-blue-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden p-4">
+                    <div className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer">
+                        <div className="aspect-video bg-linear-to-br from-blue-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden p-4">
                             <div className="text-center">
                                 <FileText className="w-12 h-12 text-blue-500 mx-auto mb-2" />
                                 <div className="space-y-1">
@@ -141,8 +141,8 @@ export function FreeLessonsSection() {
                     </div>
 
                     {/* Quiz Preview */}
-                    <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer">
-                        <div className="aspect-video bg-gradient-to-br from-purple-900/20 to-black rounded-xl mb-4 flex items-center justify-center">
+                    <div className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer">
+                        <div className="aspect-video bg-linear-to-br from-purple-900/20 to-black rounded-xl mb-4 flex items-center justify-center">
                             <div className="text-center">
                                 <ClipboardCheck className="w-12 h-12 text-purple-500 mx-auto mb-2" />
                                 <div className="text-2xl font-bold text-white">15</div>
@@ -159,14 +159,14 @@ export function FreeLessonsSection() {
 
                 {/* CTA Section */}
                 <div className="mt-16 text-center">
-                    <button className="group relative px-10 py-5 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold text-lg rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.6)] hover:scale-105">
+                    <button className="group relative px-10 py-5 bg-linear-to-r from-yellow-500 to-yellow-600 text-black font-bold text-lg rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.6)] hover:scale-105">
                         <span className="relative z-10 flex items-center gap-2">
                             Browse All Free Resources
                             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                         </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 to-yellow-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-linear-to-r from-yellow-600 to-yellow-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </button>
                     <p className="text-gray-500 text-sm mt-4">No registration required • Instant access</p>
                 </div>
