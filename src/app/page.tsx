@@ -1,4 +1,4 @@
-"use client";
+
 
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/landing/HeroSection";
@@ -10,8 +10,20 @@ import { ModernFeaturesSection } from "@/components/landing/ModernFeaturesSectio
 import { FreeLessonsSection } from "@/components/landing/FreeLessonsSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { FooterSection } from "@/components/landing/FooterSection";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  const years = await prisma.academicYear.findMany({
+    where: { isActive: true },
+    orderBy: { year: "asc" },
+    include: {
+      classTypes: {
+        where: { isActive: true },
+        select: { name: true }
+      }
+    }
+  });
+
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
       {/* Overlay Navbar for the landing page */}
@@ -23,7 +35,7 @@ export default function Home() {
         <HeroSection />
         <BannerSection />
         <AboutSection />
-        <CoursesSection />
+        <CoursesSection years={years} />
         <TimetableSection />
         <ModernFeaturesSection />
         <FreeLessonsSection />
