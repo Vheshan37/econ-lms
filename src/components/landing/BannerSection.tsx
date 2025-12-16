@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 
 const DEFAULT_BANNERS = [
     {
@@ -111,20 +110,52 @@ export function BannerSection({ content }: { content?: any[] }) {
                     }}
                     className="absolute inset-0 w-full h-full"
                 >
-                    {/* Background Image/Gradient */}
-                    <div className={`absolute inset-0 bg-linear-to-br ${banners[currentIndex].color} opacity-40`} />
+
+
+                    {/* Background Gradient removed, just slight dark overlay for text readability if needed, but requested to remove overlay color */}
+                    <div className="absolute inset-0 bg-black/50" />
                     <img
                         src={banners[currentIndex].image}
                         alt={banners[currentIndex].title}
-                        className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
+                        className="absolute inset-0 w-full h-full object-cover"
                     />
 
                     {/* Content Overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
-
-
                     <div className="relative h-full container mx-auto px-4 flex flex-col justify-center items-center text-center z-10 space-y-6">
-                        {/* Text removed as per request */}
+                        {banners[currentIndex].subtitle && (
+                            <motion.div
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="bg-black/50 backdrop-blur-md px-4 py-1 rounded-full border border-white/10"
+                            >
+                                <span className="text-yellow-400 font-medium tracking-wide uppercase text-sm md:text-base">
+                                    {banners[currentIndex].subtitle}
+                                </span>
+                            </motion.div>
+                        )}
+
+                        {banners[currentIndex].title && (
+                            <motion.h1
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="text-4xl md:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-tight"
+                            >
+                                {banners[currentIndex].title}
+                            </motion.h1>
+                        )}
+
+                        {banners[currentIndex].description && (
+                            <motion.p
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.6 }}
+                                className="text-lg md:text-xl text-gray-200 max-w-2xl"
+                            >
+                                {banners[currentIndex].description}
+                            </motion.p>
+                        )}
                     </div>
                 </motion.div>
             </AnimatePresence>

@@ -211,14 +211,32 @@ export default function ContentManagementPage() {
                 }
             }
 
-            // Clean URL before saving (remove query params)
-            if (teacherImageUrl && teacherImageUrl.startsWith('/uploads/')) {
-                teacherImageUrl = teacherImageUrl.split('?')[0];
+            let videoUrl = aboutContent.videoUrl;
+
+            // Handle Video Upload
+            if (videoFile) {
+                const formData = new FormData();
+                formData.append('file', videoFile);
+                formData.append('customName', 'about-trailer-video'); // Fixed name for simplicity, or timestamped
+                // For video, we might want to keep the original extension or assume mp4
+                // The uploadImage action handles extension preservation if customName is provided without one?
+                // Actually uploadImage expects customName to NOT have extension if we want it to auto-append?
+                // Let's re-read upload.ts logic.
+                // upload.ts: if customName, it uses customName + original extension.
+                // So 'about-trailer-video' is safe.
+
+                // Use a timestamp to avoid caching issues with the same filename if updated
+                formData.append('customName', `about-trailer-${new Date().getTime()}`);
+
+                const vidResult = await uploadImage(formData);
+                if (vidResult.success && vidResult.url) {
+                    videoUrl = vidResult.url;
+                }
             }
 
             const result = await updateAllLandingPageContent({
                 hero: { ...heroContent, teacherImage: teacherImageUrl },
-                about: aboutContent,
+                about: { ...aboutContent, videoUrl },
                 freeLessons: freeLessonsContent,
                 contact: contactContent,
                 footer: footerContent
@@ -228,8 +246,10 @@ export default function ContentManagementPage() {
                 setAlert({ isOpen: true, title: 'Success', description: 'General content updated successfully', type: 'success' });
                 // Clear the file selection after successful save
                 setTeacherImageFile(null);
+                setVideoFile(null);
                 // Update local state with the new URL AND timestamp to force refresh preview
                 setHeroContent(prev => ({ ...prev, teacherImage: `${teacherImageUrl}?t=${new Date().getTime()}` }));
+                setAboutContent(prev => ({ ...prev, videoUrl }));
             } else {
                 throw new Error(result.error);
             }
@@ -256,7 +276,28 @@ export default function ContentManagementPage() {
         }
     };
 
+    const [videoFile, setVideoFile] = useState<File | null>(null);
+
+    const handleVideoUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setVideoFile(file);
+            // Create object URL for preview
+            const previewUrl = URL.createObjectURL(file);
+            setAboutContent(prev => ({ ...prev, videoUrl: previewUrl }));
+        }
+    };
+
     // --- Testimonial Handlers ---
+
+    // ... (rest of the file) ...
+
+    // In the UI Render part (needs separate chunk or manual merge logic, better to do separate replace call for UI)
+    // Actually, I can use multi_replace for this. Let's start with just the handler update in this tool call?
+    // No, I should do multi_replace if I want to touch multiple parts.
+    // The user asked to remove 'Section Subtitle', 'Section Title'.
+    // And add video upload input.
+    // I will cancel this and use multi_replace.
 
     const handleSaveBanners = async () => {
         setIsSaving(true);
@@ -586,18 +627,30 @@ export default function ContentManagementPage() {
                             </div>
                         </div>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Section Subtitle</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.sectionSubtitle} onChange={e => setAboutContent({ ...aboutContent, sectionSubtitle: e.target.value })} placeholder="ABOUT THE MENTOR" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Section Title</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.sectionTitle} onChange={e => setAboutContent({ ...aboutContent, sectionTitle: e.target.value })} placeholder="Why Choose Quality Econ" />
-                                </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label className="text-gray-800">Secondary Subtitle</Label>
                                     <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.secondarySubtitle} onChange={e => setAboutContent({ ...aboutContent, secondarySubtitle: e.target.value })} placeholder="සංකීර්ණතාවය සරල බවට..." />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-gray-800">Trailer Video</Label>
+                                    <div className="flex flex-col gap-2">
+                                        <Input
+                                            type="file"
+                                            accept="video/*"
+                                            onChange={handleVideoUpload}
+                                            className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                                        />
+                                        {aboutContent.videoUrl && (
+                                            <p className="text-xs text-green-600 truncate">
+                                                Current: {aboutContent.videoUrl.split('/').pop()}
+                                            </p>
+                                        )}
+                                        <p className="text-[10px] text-gray-500 flex items-center gap-1">
+                                            <span className="w-1 h-1 rounded-full bg-yellow-500"></span>
+                                            Max size: 50MB. Supports MP4, WebM.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -657,8 +710,7 @@ export default function ContentManagementPage() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-gray-800">Video URL</Label>
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.videoUrl} onChange={e => setAboutContent({ ...aboutContent, videoUrl: e.target.value })} placeholder="https://..." />
+
                             </div>
                         </div>
                     </div>
