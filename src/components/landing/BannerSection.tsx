@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
-const banners = [
+const DEFAULT_BANNERS = [
     {
         id: 1,
         title: "2027 Theory Class",
@@ -40,7 +40,8 @@ const banners = [
     }
 ];
 
-export function BannerSection() {
+export function BannerSection({ content }: { content?: any[] }) {
+    const banners = content && content.length > 0 ? content : DEFAULT_BANNERS;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
 

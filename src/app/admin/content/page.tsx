@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck, Video, Users, Award, Target, TrendingUp, Lightbulb, CheckCircle, Star, GraduationCap, Brain, Sparkles, Eye } from 'lucide-react';
+import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck, Video, Users, Award, Target, TrendingUp, Lightbulb, CheckCircle, Star, GraduationCap, Brain, Sparkles, Eye, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -98,8 +98,18 @@ export default function ContentManagementPage() {
         socialLinks: { facebook: '', youtube: '', telegram: '' },
         quickLinks: [] as { title: string; url: string }[],
         contactInfo: { address: '', phone: '', email: '' },
+        contactInfo: { address: '', phone: '', email: '' },
         copyright: ''
     });
+
+    // Banner State
+    const [bannerContent, setBannerContent] = useState([
+        { id: 1, title: '', subtitle: '', description: '', image: '', color: 'from-yellow-600 to-amber-800' },
+        { id: 2, title: '', subtitle: '', description: '', image: '', color: 'from-blue-900 to-slate-900' },
+        { id: 3, title: '', subtitle: '', description: '', image: '', color: 'from-emerald-900 to-green-950' },
+        { id: 4, title: '', subtitle: '', description: '', image: '', color: 'from-purple-900 to-indigo-950' }
+    ]);
+    const [bannerImageFiles, setBannerImageFiles] = useState<{ [key: number]: File }>({});
 
     // Testimonials State
     const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -171,6 +181,7 @@ export default function ContentManagementPage() {
                 if (data.freeLessons) setFreeLessonsContent(data.freeLessons);
                 if (data.contact) setContactContent(data.contact);
                 if (data.footer) setFooterContent(data.footer);
+                if (data.banners && Array.isArray(data.banners)) setBannerContent(data.banners);
             }
 
             if (testimonialData.success) setTestimonials(testimonialData.data || []);
@@ -247,6 +258,68 @@ export default function ContentManagementPage() {
     };
 
     // --- Testimonial Handlers ---
+
+    const handleSaveBanners = async () => {
+        setIsSaving(true);
+        try {
+            const updatedBanners = [...bannerContent];
+
+            // Process image uploads for each banner
+            for (let i = 0; i < updatedBanners.length; i++) {
+                const file = bannerImageFiles[i];
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    // Unique name for banner images
+                    formData.append('customName', `banner-slide-${i + 1}-${new Date().getTime()}`);
+
+                    const uploadResult = await uploadImage(formData);
+                    if (uploadResult.success && uploadResult.url) {
+                        // Clean URL (remove old query params if any)
+                        let url = uploadResult.url;
+                        if (url.startsWith('/uploads/')) {
+                            url = url.split('?')[0];
+                        }
+                        updatedBanners[i].image = url;
+                    }
+                }
+            }
+
+            const result = await updateLandingPageContent('banners', updatedBanners);
+
+            if (result.success) {
+                setAlert({ isOpen: true, title: 'Success', description: 'Banners updated successfully', type: 'success' });
+                // Clear the file selections
+                setBannerImageFiles({});
+                // Force refresh local state with timestamp to bust cache if needed
+                setBannerContent(updatedBanners.map(b => ({ ...b, image: b.image.includes('?') ? b.image : `${b.image}?t=${new Date().getTime()}` })));
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            console.error(error);
+            setAlert({ isOpen: true, title: 'Error', description: 'Failed to update banners', type: 'error' });
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleBannerImageUpload = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Store file for upload
+            setBannerImageFiles(prev => ({ ...prev, [index]: file }));
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const newBanners = [...bannerContent];
+                newBanners[index] = { ...newBanners[index], image: reader.result as string };
+                setBannerContent(newBanners);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleFreeResourceSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -410,6 +483,9 @@ export default function ContentManagementPage() {
                     </TabsTrigger>
                     <TabsTrigger value="free-lessons" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
                         <BookOpen className="w-4 h-4" /> Free Lessons
+                    </TabsTrigger>
+                    <TabsTrigger value="banners" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
+                        <ImageIcon className="w-4 h-4" /> Banners
                     </TabsTrigger>
                     <TabsTrigger value="features" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
                         <Zap className="w-4 h-4" /> Features
@@ -585,6 +661,88 @@ export default function ContentManagementPage() {
                                 <Label className="text-gray-800">Video URL</Label>
                                 <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.videoUrl} onChange={e => setAboutContent({ ...aboutContent, videoUrl: e.target.value })} placeholder="https://..." />
                             </div>
+                        </div>
+                    </div>
+                </TabsContent>
+
+                {/* Banners Tab */}
+                <TabsContent value="banners" className="space-y-6">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-gray-900">Banner Management</h2>
+                            <Button onClick={() => handleSaveBanners()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                <Save className="w-4 h-4 mr-2" /> Save Changes
+                            </Button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {bannerContent.map((banner, index) => (
+                                <div key={banner.id} className="p-4 border border-gray-200 rounded-xl space-y-4 bg-gray-50">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="font-semibold text-gray-700">Slide {index + 1}</h3>
+                                        <div className={`h-6 w-6 rounded-full bg-linear-to-br ${banner.color}`} title="Background Gradient Preview" />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Title</Label>
+                                        <Input
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={banner.title}
+                                            onChange={e => {
+                                                const newBanners = [...bannerContent];
+                                                newBanners[index].title = e.target.value;
+                                                setBannerContent(newBanners);
+                                            }}
+                                            placeholder="Slide Title"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Subtitle</Label>
+                                        <Input
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={banner.subtitle}
+                                            onChange={e => {
+                                                const newBanners = [...bannerContent];
+                                                newBanners[index].subtitle = e.target.value;
+                                                setBannerContent(newBanners);
+                                            }}
+                                            placeholder="Slide Subtitle"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Description</Label>
+                                        <Textarea
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={banner.description}
+                                            onChange={e => {
+                                                const newBanners = [...bannerContent];
+                                                newBanners[index].description = e.target.value;
+                                                setBannerContent(newBanners);
+                                            }}
+                                            rows={2}
+                                            placeholder="Slide Description"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Background Image</Label>
+                                        <div className="space-y-3">
+                                            {banner.image && (
+                                                <div className="relative h-32 w-full rounded-lg overflow-hidden border border-gray-200">
+                                                    <img src={banner.image} alt={`Slide ${index + 1}`} className="h-full w-full object-cover" />
+                                                </div>
+                                            )}
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleBannerImageUpload(e, index)}
+                                                className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </TabsContent>
