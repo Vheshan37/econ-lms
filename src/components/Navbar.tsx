@@ -36,11 +36,11 @@ export function Navbar() {
     return (
         <>
             <nav className={cn(
-                "transition-all duration-300 border-b border-white/10 sticky top-0 z-50",
+                "transition-all duration-300 border-b border-white/10 sticky top-0 z-[100]",
                 !isMobileMenuOpen && "backdrop-blur-md", // Only blur when menu is closed
                 isMobileMenuOpen && "bg-transparent border-b-0" // Transparent header to let overlay show through
             )}>
-                <div className="container mx-auto px-4 h-20 flex items-center justify-between relative z-50">
+                <div className="container mx-auto px-4 h-20 flex items-center justify-between relative z-[101]">
                     <Link href="/" className="relative h-full min-w-[120px]">
                         <Image
                             src="/logo_t.png"
@@ -127,7 +127,7 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-40 md:hidden pt-24 px-6 flex flex-col items-center"
+                        className="fixed inset-0 z-[90] md:hidden pt-24 px-6 flex flex-col items-center"
                         style={{ background: "linear-gradient(to bottom, #000000, #030712, #451a03)" }}
                     >
                         {/* Decorative background elements for "stunning" effect */}

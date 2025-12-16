@@ -100,9 +100,7 @@ export default function FreeResourcesPage() {
     return (
         <div className="min-h-screen bg-black text-white font-sans selection:bg-yellow-500/30 selection:text-yellow-200">
             {/* Navigation */}
-            <div className="bg-black/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50">
-                <Navbar />
-            </div>
+            <Navbar />
 
             <main className="pb-24">
                 {/* Hero Section */}
