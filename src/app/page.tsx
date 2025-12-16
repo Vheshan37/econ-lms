@@ -41,6 +41,9 @@ export default async function Home() {
   const bannerContent = await getLandingPageContent('banners');
   const bannerData = bannerContent.success ? bannerContent.data : null;
 
+  const aboutContent = await getLandingPageContent('about');
+  const aboutData = aboutContent.success ? aboutContent.data : null;
+
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
       {/* Overlay Navbar for the landing page */}
@@ -51,7 +54,7 @@ export default async function Home() {
       <main>
         <HeroSection content={heroData} timestamp={timestamp} />
         <BannerSection content={bannerData} />
-        <AboutSection />
+        <AboutSection content={aboutData} />
         <CoursesSection years={years} />
         <TimetableSection institutes={institutes} />
         <ModernFeaturesSection />

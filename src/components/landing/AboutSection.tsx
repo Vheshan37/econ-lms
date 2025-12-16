@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
+import { VideoPlayer } from "@/components/ui/VideoPlayer";
 
-export function AboutSection() {
-    const features = [
+export function AboutSection({ content }: { content?: any }) {
+    const features = content?.features?.length > 0 ? content.features : [
         "Comprehensive Theory Coverage",
         "Past Paper Analysis",
         "Real-world Economic Examples",
@@ -14,12 +15,22 @@ export function AboutSection() {
 
     const [isPlaying, setIsPlaying] = useState(false);
 
+    // Default Fallback Data if content is missing
+    const data = {
+        sectionSubtitle: content?.sectionSubtitle || "About The Mentor",
+        sectionTitle: content?.sectionTitle || "Why Choose Quality Econ?",
+        secondarySubtitle: content?.secondarySubtitle || "සංකීර්ණතාවය සරල බවට පරිවර්තනය කිරීම",
+        description: content?.description || "දශකයකට වැඩි ගුරු අත්දැකීම් සහිතව, අපි සංකීර්ණ ආර්ථික න්‍යායන් පහසුවෙන් තේරුම් ගත හැකි, සැබෑ ලෝක සංකල්ප බවට බිඳ දමන අද්විතීය ක්‍රමවේදයක් වර්ධනය කර ඇත. අපගේ අරමුණ ඔබට විභාගය සමත්වීමට උදව් කිරීම පමණක් නොව, විෂය කෙරෙහි ඇති ඇල්ම වර්ධනය කිරීමයි.",
+        videoUrl: content?.videoUrl,
+        // For subtitle, split highlighting if needed, but for now assuming full string
+    };
+
     return (
         <section className="py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-yellow-500 font-medium tracking-widest uppercase text-sm mb-4">About The Mentor</h2>
-                    <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Why Choose Quality Econ?</h3>
+                    <h2 className="text-yellow-500 font-medium tracking-widest uppercase text-sm mb-4">{data.sectionSubtitle}</h2>
+                    <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">{data.sectionTitle}</h3>
                     <div className="w-24 h-1 bg-yellow-500 mx-auto rounded-full" />
                 </div>
 
@@ -35,7 +46,15 @@ export function AboutSection() {
                             className="aspect-video rounded-2xl overflow-hidden bg-gray-900 border border-gray-800 shadow-2xl relative group cursor-pointer"
                             onClick={() => setIsPlaying(true)}
                         >
-                            {isPlaying ? (
+                            {isPlaying && data.videoUrl ? (
+                                <VideoPlayer
+                                    src={data.videoUrl}
+                                    className="w-full h-full"
+                                    autoPlay
+                                    muted
+                                />
+                            ) : isPlaying ? (
+                                // Fallback if no video URL but playing state is true (shouldn't happen typically with default checks but as a safeguard)
                                 <iframe
                                     width="100%"
                                     height="100%"
@@ -79,13 +98,19 @@ export function AboutSection() {
                         transition={{ duration: 0.6 }}
                         className="space-y-8"
                     >
-                        <h4 className="text-3xl font-bold text-white">සංකීර්ණතාවය <span className="text-yellow-500">සරල බවට</span> පරිවර්තනය කිරීම</h4>
+                        <h4 className="text-3xl font-bold text-white">
+                            {content?.secondarySubtitle ? (
+                                data.secondarySubtitle
+                            ) : (
+                                <>සංකීර්ණතාවය <span className="text-yellow-500">සරල බවට</span> පරිවර්තනය කිරීම</>
+                            )}
+                        </h4>
                         <p className="text-gray-400 leading-relaxed text-lg">
-                            දශකයකට වැඩි ගුරු අත්දැකීම් සහිතව, අපි සංකීර්ණ ආර්ථික න්‍යායන් පහසුවෙන් තේරුම් ගත හැකි, සැබෑ ලෝක සංකල්ප බවට බිඳ දමන අද්විතීය ක්‍රමවේදයක් වර්ධනය කර ඇත. අපගේ අරමුණ ඔබට විභාගය සමත්වීමට උදව් කිරීම පමණක් නොව, විෂය කෙරෙහි ඇති ඇල්ම වර්ධනය කිරීමයි.
+                            {data.description}
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {features.map((feature, index) => (
+                            {features.map((feature: string, index: number) => (
                                 <div key={index} className="flex items-center gap-3">
                                     <CheckCircle2 className="text-yellow-500 h-5 w-5 flex-shrink-0" />
                                     <span className="text-gray-300">{feature}</span>

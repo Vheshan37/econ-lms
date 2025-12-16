@@ -281,6 +281,20 @@ export default function ContentManagementPage() {
     const handleVideoUpload = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Check file size (50MB = 50 * 1024 * 1024 bytes)
+            const MAX_SIZE = 50 * 1024 * 1024;
+            if (file.size > MAX_SIZE) {
+                setAlert({
+                    isOpen: true,
+                    title: 'File Too Large',
+                    description: 'Video file size must be less than 50MB.',
+                    type: 'error'
+                });
+                // Clear the input
+                e.target.value = '';
+                return;
+            }
+
             setVideoFile(file);
             // Create object URL for preview
             const previewUrl = URL.createObjectURL(file);
