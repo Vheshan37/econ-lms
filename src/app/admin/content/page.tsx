@@ -98,7 +98,6 @@ export default function ContentManagementPage() {
         socialLinks: { facebook: '', youtube: '', telegram: '' },
         quickLinks: [] as { title: string; url: string }[],
         contactInfo: { address: '', phone: '', email: '' },
-        contactInfo: { address: '', phone: '', email: '' },
         copyright: ''
     });
 
