@@ -81,3 +81,54 @@ export async function deleteFreeResource(id: string) {
         return { success: false, error: 'Failed to delete free resource' };
     }
 }
+
+export async function incrementFreeResourceView(id: string) {
+    try {
+        await (prisma as any).freeResource.update({
+            where: { id },
+            data: {
+                views: {
+                    increment: 1
+                }
+            }
+        });
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to increment view:', error);
+        return { success: false, error: 'Failed to increment view' };
+    }
+}
+
+export async function getFeaturedFreeResources() {
+    try {
+        const [featuredVideo] = await (prisma as any).freeResource.findMany({
+            where: { type: 'VIDEO' },
+            orderBy: { views: 'desc' },
+            take: 1
+        });
+
+        const [featuredDoc] = await (prisma as any).freeResource.findMany({
+            where: { OR: [{ type: 'PDF' }, { type: 'PAST_PAPER' }] },
+            orderBy: { views: 'desc' },
+            take: 1
+        });
+
+        const [featuredQuiz] = await (prisma as any).freeResource.findMany({
+            where: { type: 'QUIZ' },
+            orderBy: { views: 'desc' },
+            take: 1
+        });
+
+        return {
+            success: true,
+            data: {
+                featuredVideo,
+                featuredDoc,
+                featuredQuiz
+            }
+        };
+    } catch (error) {
+        console.error('Failed to fetch featured resources:', error);
+        return { success: false, error: 'Failed to fetch featured resources' };
+    }
+}

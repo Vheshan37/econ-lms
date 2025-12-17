@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Play, FileText, BookOpen, ClipboardCheck, Download, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { getLandingPageContent } from '@/lib/actions/content';
-import { getFreeResources } from '@/lib/actions/freeResource';
+import { getFreeResources, getFeaturedFreeResources, incrementFreeResourceView } from '@/lib/actions/freeResource';
 import { ResourceType } from '@prisma/client';
 
 interface FreeResource {
@@ -38,6 +38,12 @@ interface FreeLessonsContent {
 
 export function FreeLessonsSection() {
     const [content, setContent] = useState<FreeLessonsContent | null>(null);
+    const [featuredResources, setFeaturedResources] = useState<{
+        featuredVideo: FreeResource | null;
+        featuredDoc: FreeResource | null;
+        featuredQuiz: FreeResource | null;
+    }>({ featuredVideo: null, featuredDoc: null, featuredQuiz: null });
+
     const [stats, setStats] = useState({
         VIDEO: 0,
         PDF: 0,
@@ -49,9 +55,10 @@ export function FreeLessonsSection() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [contentResult, resourcesResult] = await Promise.all([
+                const [contentResult, resourcesResult, featuredResult] = await Promise.all([
                     getLandingPageContent('free_lessons'),
-                    getFreeResources()
+                    getFreeResources(),
+                    getFeaturedFreeResources()
                 ]);
 
                 if (contentResult.success && contentResult.data) {
@@ -67,6 +74,10 @@ export function FreeLessonsSection() {
                         QUIZ: resources.filter(r => r.type === 'QUIZ').length
                     };
                     setStats(newStats);
+                }
+
+                if (featuredResult.success && featuredResult.data) {
+                    setFeaturedResources(featuredResult.data);
                 }
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -183,22 +194,42 @@ export function FreeLessonsSection() {
                 {/* Featured Content Preview */}
                 <div className="grid md:grid-cols-3 gap-6">
                     {/* Video Preview */}
-                    <div onClick={() => content?.featuredVideo.url && window.open(content.featuredVideo.url, '_blank')} className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
+                    <div
+                        onClick={() => {
+                            if (featuredResources.featuredVideo) {
+                                incrementFreeResourceView(featuredResources.featuredVideo.id);
+                                if (featuredResources.featuredVideo.url) {
+                                    window.open(featuredResources.featuredVideo.url, '_blank');
+                                }
+                            }
+                        }}
+                        className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block"
+                    >
                         <div className="aspect-video bg-linear-to-br from-red-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden">
                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDIwIDAgTCAwIDAgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-50" />
                             <div className="relative w-16 h-16 rounded-full bg-red-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 cursor-pointer">
                                 <Play className="w-8 h-8 text-white ml-1" fill="white" />
                             </div>
                         </div>
-                        <h4 className="font-bold text-white mb-2">{content?.featuredVideo.title || "Introduction to Microeconomics"}</h4>
-                        <p className="text-sm text-gray-400 mb-3">{content?.featuredVideo.duration || "45 min"} • {content?.featuredVideo.views || "2.5k"} views</p>
+                        <h4 className="font-bold text-white mb-2">{featuredResources.featuredVideo?.title || "No Featured Video"}</h4>
+                        <p className="text-sm text-gray-400 mb-3">{featuredResources.featuredVideo ? 'Most Popular Lesson' : 'Check back later'}</p>
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                             <span className="text-red-500 font-medium">Watch Now</span>
                         </div>
                     </div>
 
                     {/* Document Preview */}
-                    <div onClick={() => content?.featuredDoc.url && window.open(content.featuredDoc.url, '_blank')} className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
+                    <div
+                        onClick={() => {
+                            if (featuredResources.featuredDoc) {
+                                incrementFreeResourceView(featuredResources.featuredDoc.id);
+                                if (featuredResources.featuredDoc.url) {
+                                    window.open(featuredResources.featuredDoc.url, '_blank');
+                                }
+                            }
+                        }}
+                        className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block"
+                    >
                         <div className="aspect-video bg-linear-to-br from-blue-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden p-4">
                             <div className="text-center">
                                 <FileText className="w-12 h-12 text-blue-500 mx-auto mb-2" />
@@ -209,8 +240,8 @@ export function FreeLessonsSection() {
                                 </div>
                             </div>
                         </div>
-                        <h4 className="font-bold text-white mb-2">{content?.featuredDoc.title || "2023 A/L Past Paper"}</h4>
-                        <p className="text-sm text-gray-400 mb-3">{content?.featuredDoc.subtitle || "With marking scheme"}</p>
+                        <h4 className="font-bold text-white mb-2">{featuredResources.featuredDoc?.title || "No Featured Document"}</h4>
+                        <p className="text-sm text-gray-400 mb-3">{featuredResources.featuredDoc?.description || "Check back later"}</p>
                         <button className="flex items-center gap-2 text-blue-500 text-sm font-semibold group-hover:gap-3 transition-all">
                             <Download className="w-4 h-4" />
                             Download PDF
@@ -218,16 +249,26 @@ export function FreeLessonsSection() {
                     </div>
 
                     {/* Quiz Preview */}
-                    <div onClick={() => content?.featuredQuiz.url && window.open(content.featuredQuiz.url, '_blank')} className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
+                    <div
+                        onClick={() => {
+                            if (featuredResources.featuredQuiz) {
+                                incrementFreeResourceView(featuredResources.featuredQuiz.id);
+                                if (featuredResources.featuredQuiz.url) {
+                                    window.open(featuredResources.featuredQuiz.url, '_blank');
+                                }
+                            }
+                        }}
+                        className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block"
+                    >
                         <div className="aspect-video bg-linear-to-br from-purple-900/20 to-black rounded-xl mb-4 flex items-center justify-center">
                             <div className="text-center">
                                 <ClipboardCheck className="w-12 h-12 text-purple-500 mx-auto mb-2" />
-                                <div className="text-2xl font-bold text-white">{content?.featuredQuiz.questionCount || "15"}</div>
+                                <div className="text-2xl font-bold text-white">?</div>
                                 <div className="text-xs text-gray-400">Questions</div>
                             </div>
                         </div>
-                        <h4 className="font-bold text-white mb-2">{content?.featuredQuiz.title || "Supply & Demand Quiz"}</h4>
-                        <p className="text-sm text-gray-400 mb-3">{content?.featuredQuiz.duration || "20 min"} • Multiple Choice</p>
+                        <h4 className="font-bold text-white mb-2">{featuredResources.featuredQuiz?.title || "No Featured Quiz"}</h4>
+                        <p className="text-sm text-gray-400 mb-3">Test your knowledge</p>
                         <button className="w-full py-2 bg-purple-500/20 text-purple-500 rounded-lg font-semibold text-sm group-hover:bg-purple-500/30 transition-colors">
                             Start Quiz
                         </button>

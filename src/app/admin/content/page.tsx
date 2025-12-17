@@ -863,66 +863,11 @@ export default function ContentManagementPage() {
                         </div>
                     </div>
 
-                    {/* Categories */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6">Resource Categories</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {freeLessonsContent.categories.map((cat, idx) => (
-                                <div key={idx} className="p-4 border border-gray-200 rounded-xl space-y-3">
-                                    <h3 className="font-semibold text-gray-700">{cat.title} Card</h3>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Title</Label>
-                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={cat.title} onChange={e => {
-                                            const newCats = [...freeLessonsContent.categories];
-                                            newCats[idx].title = e.target.value;
-                                            setFreeLessonsContent({ ...freeLessonsContent, categories: newCats });
-                                        }} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Count Text</Label>
-                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={cat.count} onChange={e => {
-                                            const newCats = [...freeLessonsContent.categories];
-                                            newCats[idx].count = e.target.value;
-                                            setFreeLessonsContent({ ...freeLessonsContent, categories: newCats });
-                                        }} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Description</Label>
-                                        <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={cat.description} onChange={e => {
-                                            const newCats = [...freeLessonsContent.categories];
-                                            newCats[idx].description = e.target.value;
-                                            setFreeLessonsContent({ ...freeLessonsContent, categories: newCats });
-                                        }} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Featured Previews */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6">Featured Previews</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {/* Video */}
-                            <div className="space-y-3">
-                                <h3 className="font-semibold text-gray-700">Video Preview</h3>
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredVideo.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, title: e.target.value } })} placeholder="Title" />
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredVideo.duration} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, duration: e.target.value } })} placeholder="Duration" />
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredVideo.views} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredVideo: { ...freeLessonsContent.featuredVideo, views: e.target.value } })} placeholder="Views" />
-                            </div>
-                            {/* Doc */}
-                            <div className="space-y-3">
-                                <h3 className="font-semibold text-gray-700">Document Preview</h3>
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredDoc.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredDoc: { ...freeLessonsContent.featuredDoc, title: e.target.value } })} placeholder="Title" />
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredDoc.subtitle} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredDoc: { ...freeLessonsContent.featuredDoc, subtitle: e.target.value } })} placeholder="Subtitle" />
-                            </div>
-                            {/* Quiz */}
-                            <div className="space-y-3">
-                                <h3 className="font-semibold text-gray-700">Quiz Preview</h3>
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredQuiz.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, title: e.target.value } })} placeholder="Title" />
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredQuiz.duration} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, duration: e.target.value } })} placeholder="Duration" />
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.featuredQuiz.questionCount} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, featuredQuiz: { ...freeLessonsContent.featuredQuiz, questionCount: e.target.value } })} placeholder="Questions" />
-                            </div>
+                    <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex gap-3 text-emerald-800">
+                        <div className="shrink-0 mt-0.5">ℹ️</div>
+                        <div className="text-sm">
+                            <p className="font-semibold mb-1">Dynamic Content Active</p>
+                            <p>Resource counts and featured previews are now automatically calculated based on your uploaded resources and student engagement (views). No manual configuration needed.</p>
                         </div>
                     </div>
                 </TabsContent>
