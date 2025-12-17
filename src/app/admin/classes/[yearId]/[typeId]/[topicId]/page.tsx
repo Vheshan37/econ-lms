@@ -11,6 +11,7 @@ import { AlertDialog } from '@/components/ui/alert-dialog';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { getTopicById } from '@/lib/actions/topic';
 import { createResource, updateResource, deleteResource } from '@/lib/actions/resource';
+import { uploadFile } from '@/lib/actions/upload';
 import { ResourceType } from '@prisma/client';
 
 interface Resource {
@@ -68,6 +69,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
     const [title, setTitle] = useState('');
     const [url, setUrl] = useState('');
     const [description, setDescription] = useState('');
+    const [resourceFile, setResourceFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Alert Dialog State
@@ -140,17 +142,36 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
         e.preventDefault();
         setIsSubmitting(true);
 
-        const result = editingResource
-            ? await updateResource(editingResource.id, { title, type: resourceType, url, description })
-            : await createResource({ topicId, title, type: resourceType, url, description });
+        try {
+            let finalUrl = url;
 
-        if (result.success) {
-            await fetchTopicData();
-            closeModal();
-        } else {
-            setErrorAlert({ isOpen: true, message: result.error || 'Failed to save resource' });
+            if (resourceFile && (resourceType === 'PDF' || resourceType === 'PAST_PAPER')) {
+                const formData = new FormData();
+                formData.append('file', resourceFile);
+                const uploadResult = await uploadFile(formData);
+                if (uploadResult.success && uploadResult.url) {
+                    finalUrl = uploadResult.url;
+                } else {
+                    throw new Error(uploadResult.error || 'Failed to upload file');
+                }
+            }
+
+            const result = editingResource
+                ? await updateResource(editingResource.id, { title, type: resourceType, url: finalUrl, description })
+                : await createResource({ topicId, title, type: resourceType, url: finalUrl, description });
+
+            if (result.success) {
+                await fetchTopicData();
+                closeModal();
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to save resource' });
+            }
+        } catch (error) {
+            setErrorAlert({ isOpen: true, message: 'An unexpected error occurred' });
+            console.error(error);
+        } finally {
+            setIsSubmitting(false);
         }
-        setIsSubmitting(false);
     };
 
     const handleEdit = (resource: Resource) => {
@@ -475,15 +496,38 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label className="text-gray-300 ml-1">URL</Label>
-                                            <Input
-                                                placeholder="https://..."
-                                                value={url}
-                                                onChange={e => setUrl(e.target.value)}
-                                                required
-                                                type="url"
-                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                            />
+                                            <Label className="text-gray-300 ml-1">
+                                                {(resourceType === 'PDF' || resourceType === 'PAST_PAPER') ? 'Upload Document' : 'URL'}
+                                            </Label>
+
+                                            {(resourceType === 'PDF' || resourceType === 'PAST_PAPER') ? (
+                                                <div className="space-y-2">
+                                                    <Input
+                                                        type="file"
+                                                        accept=".pdf,.doc,.docx"
+                                                        className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#D4AF37] file:text-[#1a1a1a] hover:file:bg-[#B5952F]"
+                                                        onChange={e => {
+                                                            if (e.target.files?.[0]) {
+                                                                setResourceFile(e.target.files[0]);
+                                                            }
+                                                        }}
+                                                    />
+                                                    {url && (
+                                                        <p className="text-xs text-green-500 truncate pl-1">
+                                                            Current: {url}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <Input
+                                                    placeholder="https://..."
+                                                    value={url}
+                                                    onChange={e => setUrl(e.target.value)}
+                                                    required
+                                                    type="url"
+                                                    className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                                />
+                                            )}
                                         </div>
 
                                         <div className="space-y-2">

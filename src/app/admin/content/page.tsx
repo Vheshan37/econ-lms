@@ -925,49 +925,13 @@ export default function ContentManagementPage() {
                             </div>
                         </div>
                     </div>
-
-                    {/* Resource Library */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Resource Library</h2>
-                            <Button onClick={() => { setEditingFreeResource(null); setFreeResourceForm({ title: '', type: 'VIDEO', url: '', description: '' }); setResourceFile(null); setIsFreeResourceModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                <Plus className="w-4 h-4 mr-2" /> Add Resource
-                            </Button>
-                        </div>
-                        <div className="grid grid-cols-1 gap-4">
-                            {freeResources.map((resource) => (
-                                <div key={resource.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl bg-gray-50">
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-10 w-10 rounded-lg bg-white flex items-center justify-center border border-gray-200">
-                                            {resource.type === 'VIDEO' && <Play className="w-5 h-5 text-red-500" />}
-                                            {resource.type === 'PDF' && <FileText className="w-5 h-5 text-blue-500" />}
-                                            {resource.type === 'PAST_PAPER' && <BookOpen className="w-5 h-5 text-green-500" />}
-                                            {resource.type === 'QUIZ' && <ClipboardCheck className="w-5 h-5 text-purple-500" />}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900">{resource.title}</h3>
-                                            <p className="text-xs text-gray-500">{resource.type} • {resource.url}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => { setEditingFreeResource(resource); setFreeResourceForm(resource); setIsFreeResourceModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        <button onClick={() => handleDeleteFreeResource(resource.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </TabsContent>
 
 
                 {/* Features Tab */}
-                <TabsContent value="features" className="space-y-6">
+                < TabsContent value="features" className="space-y-6" >
                     {/* General Settings */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                    < div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm" >
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Features General Settings</h2>
                             <Button onClick={async () => {
@@ -1136,10 +1100,10 @@ export default function ContentManagementPage() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div >
 
                     {/* Features List */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                    < div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm" >
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Feature Cards</h2>
                             <div className="flex gap-2">
@@ -1179,8 +1143,8 @@ export default function ContentManagementPage() {
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </TabsContent>
+                    </div >
+                </TabsContent >
 
                 {/* Testimonials Tab */}
                 < TabsContent value="testimonials" className="space-y-6" >
