@@ -49,3 +49,4 @@ firebase.json
 /src/generated/prisma
 /public/uploads
 /src/scripts
+/scripts
