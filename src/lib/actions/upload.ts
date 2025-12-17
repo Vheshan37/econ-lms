@@ -1,8 +1,9 @@
 'use server';
 
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { writeFile } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
+import { getPersistentUploadDir } from '@/lib/storage-helper';
+import { join } from 'path';
 
 export async function uploadImage(formData: FormData) {
     try {
@@ -29,31 +30,15 @@ export async function uploadImage(formData: FormData) {
         }
 
 
-        // Determine upload directories
-        const currentDir = process.cwd();
-        const uploadDirs = [];
+        // Determine persistent upload directory
+        const uploadDir = await getPersistentUploadDir();
+        const filepath = join(uploadDir, filename);
 
-        // 1. Standard/Runtime public uploads
-        const runtimeUploadDir = join(currentDir, 'public', 'uploads');
-        uploadDirs.push(runtimeUploadDir);
+        // Save file
+        await writeFile(filepath, buffer);
+        console.log(`Saved image to: ${filepath}`);
 
-        // 2. Persistent uploads (if running in standalone mode)
-        // Standalone runs in .next/standalone, so persistent root is two levels up
-        if (currentDir.includes('.next/standalone')) {
-            const persistentUploadDir = join(currentDir, '../../public/uploads');
-            uploadDirs.push(persistentUploadDir);
-        }
-
-        // Save file to all determined locations
-        for (const dir of uploadDirs) {
-            await mkdir(dir, { recursive: true });
-            const filepath = join(dir, filename);
-            await writeFile(filepath, buffer);
-            console.log(`Saved image to: ${filepath}`);
-        }
-
-
-        // Return public path
+        // Return public path (served via Route Handler)
         const publicPath = `/uploads/${filename}`;
         return { success: true, url: publicPath };
 
