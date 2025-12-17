@@ -18,9 +18,10 @@ export interface AcademicYearWithClasses {
 
 interface CoursesSectionProps {
     years: AcademicYearWithClasses[];
+    whatsappNumber: string;
 }
 
-export function CoursesSection({ years }: CoursesSectionProps) {
+export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBatch, setSelectedBatch] = useState<string>("");
 
@@ -121,6 +122,7 @@ export function CoursesSection({ years }: CoursesSectionProps) {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 batch={selectedBatch}
+                whatsappNumber={whatsappNumber}
             />
         </section>
     );

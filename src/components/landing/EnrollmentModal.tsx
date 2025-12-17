@@ -10,9 +10,10 @@ interface EnrollmentModalProps {
     isOpen: boolean;
     onClose: () => void;
     batch?: string;
+    whatsappNumber: string;
 }
 
-export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps) {
+export function EnrollmentModal({ isOpen, onClose, batch, whatsappNumber }: EnrollmentModalProps) {
     const [submitted, setSubmitted] = useState(false);
     const [mounted, setMounted] = useState(false);
 
@@ -86,11 +87,34 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
                                             </p>
                                         </div>
 
-                                        <form onSubmit={handleSubmit} className="space-y-4">
+                                        <form onSubmit={(e) => {
+                                            e.preventDefault();
+                                            const formData = new FormData(e.currentTarget);
+                                            const name = formData.get('name') as string;
+                                            const phone = formData.get('phone') as string;
+                                            const email = formData.get('email') as string;
+                                            const userMessage = formData.get('message') as string;
+
+                                            // Construct friendly message
+                                            let message = `Hello Sir!\n\nI would like to join the ${batch || 'Economics'} class.\n\nHere are my details:\nName: ${name}\nPhone: ${phone}\nEmail: ${email}`;
+
+                                            // Add optional user message if provided
+                                            if (userMessage && userMessage.trim()) {
+                                                message += `\n\nMy Message:\n${userMessage.trim()}`;
+                                            }
+
+                                            const encodedMessage = encodeURIComponent(message);
+
+                                            // Open WhatsApp
+                                            window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
+
+                                            setSubmitted(true);
+                                        }} className="space-y-4">
                                             <div className="space-y-2">
                                                 <label className="text-sm font-medium text-gray-400">Full Name</label>
                                                 <input
                                                     required
+                                                    name="name"
                                                     type="text"
                                                     placeholder="Enter your name"
                                                     className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors"
@@ -101,6 +125,7 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
                                                 <label className="text-sm font-medium text-gray-400">WhatsApp Number</label>
                                                 <input
                                                     required
+                                                    name="phone"
                                                     type="tel"
                                                     placeholder="07X XXXXXXX"
                                                     className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors"
@@ -111,9 +136,20 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
                                                 <label className="text-sm font-medium text-gray-400">Email Address</label>
                                                 <input
                                                     required
+                                                    name="email"
                                                     type="email"
                                                     placeholder="hello@example.com"
                                                     className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-400">Message <span className="text-gray-600">(Optional)</span></label>
+                                                <textarea
+                                                    name="message"
+                                                    rows={3}
+                                                    placeholder="Any specific questions or notes?"
+                                                    className="w-full rounded-xl bg-black/50 border border-gray-800 p-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors resize-none"
                                                 />
                                             </div>
 
@@ -122,12 +158,12 @@ export function EnrollmentModal({ isOpen, onClose, batch }: EnrollmentModalProps
                                                     type="submit"
                                                     className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-12 rounded-xl text-lg shadow-lg shadow-yellow-500/20"
                                                 >
-                                                    Submit Registration
+                                                    Send via WhatsApp
                                                 </Button>
                                             </div>
 
                                             <p className="text-xs text-center text-gray-500 mt-4">
-                                                We'll respond within 24 hours. No payment required now.
+                                                You will be redirected to WhatsApp to send enrollment details.
                                             </p>
                                         </form>
                                     </>

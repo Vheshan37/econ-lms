@@ -114,8 +114,8 @@ export function BannerSection({ content }: { content?: any[] }) {
                         >
 
 
-                            {/* Background Gradient removed, just slight dark overlay for text readability if needed, but requested to remove overlay color */}
-                            <div className="absolute inset-0 bg-black/50" />
+                            {/* Background Gradient for readability */}
+                            <div className="absolute inset-0 bg-black/60" />
                             <img
                                 src={banners[currentIndex].image}
                                 alt={banners[currentIndex].title}
@@ -129,7 +129,7 @@ export function BannerSection({ content }: { content?: any[] }) {
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.2 }}
-                                        className="bg-black/50 backdrop-blur-md px-4 py-1 rounded-full border border-white/10"
+                                        className="bg-black/50 backdrop-blur-md px-4 py-1 rounded-full border border-white/10 shadow-lg"
                                     >
                                         <span className="text-yellow-400 font-medium tracking-wide uppercase text-sm md:text-base">
                                             {banners[currentIndex].subtitle}
@@ -142,7 +142,7 @@ export function BannerSection({ content }: { content?: any[] }) {
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.4 }}
-                                        className="text-4xl md:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-tight"
+                                        className="text-4xl md:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]"
                                     >
                                         {banners[currentIndex].title}
                                     </motion.h1>
@@ -153,7 +153,7 @@ export function BannerSection({ content }: { content?: any[] }) {
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.6 }}
-                                        className="text-lg md:text-xl text-gray-200 max-w-2xl"
+                                        className="text-lg md:text-xl text-gray-200 max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
                                     >
                                         {banners[currentIndex].description}
                                     </motion.p>

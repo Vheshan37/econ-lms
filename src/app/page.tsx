@@ -55,7 +55,7 @@ export default async function Home() {
         <HeroSection content={heroData} timestamp={timestamp} />
         <AboutSection content={aboutData} />
         <BannerSection content={bannerData} />
-        <CoursesSection years={years} />
+        <CoursesSection years={years} whatsappNumber={process.env.WHATSAPP_NUMBER || ''} />
         <TimetableSection institutes={institutes} />
         <ModernFeaturesSection />
         <FreeLessonsSection />
