@@ -359,7 +359,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                                             <div className="flex items-center gap-2 mb-2">
                                                                 <h3 className="font-semibold text-gray-900 truncate">{resource.title}</h3>
                                                                 {resource.type === 'VIDEO' && (
-                                                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                                                                    <div className="shrink-0 w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
                                                                         <Play className="w-4 h-4 text-red-500" />
                                                                     </div>
                                                                 )}

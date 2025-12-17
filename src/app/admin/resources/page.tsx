@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Youtube, FileText, File, ClipboardList, Play, ExternalLink, BookOpen } from 'lucide-react';
+import { Plus, Edit2, Trash2, Youtube, FileText, File, ClipboardList, Play, ExternalLink, BookOpen, Save, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { getFreeResources, createFreeResource, updateFreeResource, deleteFreeResource } from '@/lib/actions/freeResource';
+import { getLandingPageContent, updateLandingPageContent } from '@/lib/actions/content';
 import { ResourceType } from '@prisma/client';
 
 interface Resource {
@@ -34,6 +36,10 @@ export default function FreeResourcesPage() {
     const [isAddingResource, setIsAddingResource] = useState(false);
     const [editingResource, setEditingResource] = useState<Resource | null>(null);
 
+    // Page Content State
+    const [pageDescription, setPageDescription] = useState('');
+    const [isSavingDescription, setIsSavingDescription] = useState(false);
+
     // Form state
     const [resourceType, setResourceType] = useState<ResourceType>('VIDEO');
     const [title, setTitle] = useState('');
@@ -51,6 +57,10 @@ export default function FreeResourcesPage() {
         isOpen: false,
         message: ''
     });
+    const [successAlert, setSuccessAlert] = useState<{ isOpen: boolean; message: string }>({
+        isOpen: false,
+        message: ''
+    });
 
     // Video Player State
     const [videoPlayer, setVideoPlayer] = useState<{ isOpen: boolean; url: string; title: string }>({
@@ -59,31 +69,90 @@ export default function FreeResourcesPage() {
         title: ''
     });
 
-    const fetchResources = async () => {
+    const fetchData = async () => {
         setIsLoading(true);
-        const result = await getFreeResources();
-        if (result.success && result.data) {
-            setResources(result.data);
-        } else {
-            setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch resources' });
+        try {
+            const [resourcesResult, contentResult] = await Promise.all([
+                getFreeResources(),
+                getLandingPageContent()
+            ]);
+
+            if (resourcesResult.success && resourcesResult.data) {
+                setResources(resourcesResult.data);
+            } else {
+                setErrorAlert({ isOpen: true, message: resourcesResult.error || 'Failed to fetch resources' });
+            }
+
+            if (contentResult.success && contentResult.data) {
+                const data = contentResult.data as any;
+                if (data.freeLessons?.description) {
+                    setPageDescription(data.freeLessons.description);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setErrorAlert({ isOpen: true, message: 'Failed to fetch data' });
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     useEffect(() => {
-        const fetchResourcesData = async () => {
-            setIsLoading(true);
-            const result = await getFreeResources();
-            if (result.success && result.data) {
-                setResources(result.data);
-            } else {
-                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch resources' });
-            }
-            setIsLoading(false);
-        };
-
-        fetchResourcesData();
+        fetchData();
     }, []);
+
+    const handleSaveDescription = async () => {
+        setIsSavingDescription(true);
+        try {
+            // We need to fetch current content first to not overwrite other fields in freeLessons
+            // Or assume backend handles partial updates (which updateLandingPageContent usually does per section)
+            // Based on usage in content page, updateLandingPageContent('freeLessons', data) replaces the section object?
+            // Let's check updateAllLandingPageContent signature or updateLandingPageContent.
+            // In content page: updateLandingPageContent('banners', updatedBanners)
+            // It seems it takes section name and data.
+            // We should ideally merge.
+
+            // Re-fetch strict to be safe or just send the description fields we know
+            // Actually, getLandingPageContent was just called.
+            // Let's assume we maintain the structure.
+
+            // To be safe, let's just update the description field if possible, or we need to send the whole object.
+            // Since we don't have the full object here, we might need to fetch it again or store it.
+            // Let's fetch the latest full content for that section first.
+            const contentResult = await getLandingPageContent();
+            let currentSectionData = {};
+            if (contentResult.success && contentResult.data) {
+                const data = contentResult.data as any;
+                currentSectionData = data.freeLessons || {};
+            }
+
+            const updatedSectionData = {
+                ...currentSectionData,
+                description: pageDescription
+            };
+
+            const result = await updateLandingPageContent('freeLessons', updatedSectionData);
+
+            if (result.success) {
+                setSuccessAlert({ isOpen: true, message: 'Page description updated successfully' });
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to update description' });
+            }
+        } catch (error) {
+            console.error("Error saving description:", error);
+            setErrorAlert({ isOpen: true, message: 'Failed to save description' });
+        } finally {
+            setIsSavingDescription(false);
+        }
+    };
+
+    const fetchResources = async () => {
+        // Re-fetch only resources for updates
+        const result = await getFreeResources();
+        if (result.success && result.data) {
+            setResources(result.data);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,6 +165,7 @@ export default function FreeResourcesPage() {
         if (result.success) {
             await fetchResources();
             closeModal();
+            setSuccessAlert({ isOpen: true, message: `Resource ${editingResource ? 'updated' : 'added'} successfully` });
         } else {
             setErrorAlert({ isOpen: true, message: result.error || 'Failed to save resource' });
         }
@@ -122,6 +192,7 @@ export default function FreeResourcesPage() {
         if (result.success) {
             await fetchResources();
             setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '' });
+            setSuccessAlert({ isOpen: true, message: 'Resource deleted successfully' });
         } else {
             setErrorAlert({ isOpen: true, message: 'Failed to delete resource' });
         }
@@ -159,7 +230,7 @@ export default function FreeResourcesPage() {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
@@ -185,6 +256,31 @@ export default function FreeResourcesPage() {
                         <Plus className="w-5 h-5" />
                         Add Resource
                     </Button>
+                </div>
+            </div>
+
+            {/* Page Description Settings */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-bold text-gray-900">Page Settings</h2>
+                    <Button
+                        onClick={handleSaveDescription}
+                        disabled={isSavingDescription}
+                        className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+                    >
+                        <Save className="w-4 h-4 mr-2" />
+                        {isSavingDescription ? 'Saving...' : 'Save Description'}
+                    </Button>
+                </div>
+                <div className="space-y-2">
+                    <Label className="text-gray-800">Section Description (Sinhala)</Label>
+                    <Textarea
+                        className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                        value={pageDescription}
+                        onChange={(e) => setPageDescription(e.target.value)}
+                        placeholder="Description for the Free Resources page..."
+                        rows={3}
+                    />
                 </div>
             </div>
 
@@ -436,6 +532,16 @@ export default function FreeResourcesPage() {
                 title="Error"
                 description={errorAlert.message}
                 type="error"
+                cancelText="Close"
+            />
+
+            {/* Success Alert */}
+            <AlertDialog
+                isOpen={successAlert.isOpen}
+                onClose={() => setSuccessAlert({ isOpen: false, message: '' })}
+                title="Success"
+                description={successAlert.message}
+                type="success"
                 cancelText="Close"
             />
 

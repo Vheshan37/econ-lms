@@ -4,7 +4,7 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Save, Plus, Trash2, Edit2, Eye, X, Upload,
-    Layers, BookOpen, Image as ImageIcon, Zap, MessageSquare, Mail,
+    Layers, Image as ImageIcon, Zap, MessageSquare, Mail,
     Play, FileText, ClipboardCheck, CheckCircle
 } from 'lucide-react';
 import { FEATURE_ICONS } from '@/lib/constants';
@@ -25,11 +25,7 @@ import {
     getModernFeatures,
     createModernFeature,
     updateModernFeature,
-    deleteModernFeature,
-    getFreeResources,
-    createFreeResource,
-    updateFreeResource,
-    deleteFreeResource
+    deleteModernFeature
 } from '@/lib/actions/content';
 import { uploadImage, uploadFile } from '@/lib/actions/upload';
 import { PreviewModal } from '@/components/landing/preview/PreviewModal';
@@ -37,7 +33,7 @@ import { HeroPreview } from '@/components/landing/preview/HeroPreview';
 import { AboutPreview } from '@/components/landing/preview/AboutPreview';
 import { ModernFeaturesPreview } from '@/components/landing/preview/ModernFeaturesPreview';
 import { TestimonialsPreview } from '@/components/landing/preview/TestimonialsPreview';
-import { FreeLessonsPreview } from '@/components/landing/preview/FreeLessonsPreview';
+
 import { ContactPreview } from '@/components/landing/preview/ContactPreview';
 
 export default function ContentManagementPage() {
@@ -49,12 +45,12 @@ export default function ContentManagementPage() {
 
 
     const GRADIENT_COLORS = [
-        { name: 'Blue', value: 'from-blue-500 to-blue-600', preview: 'bg-gradient-to-r from-blue-500 to-blue-600' },
-        { name: 'Purple', value: 'from-purple-500 to-purple-600', preview: 'bg-gradient-to-r from-purple-500 to-purple-600' },
-        { name: 'Green', value: 'from-green-500 to-green-600', preview: 'bg-gradient-to-r from-green-500 to-green-600' },
-        { name: 'Red', value: 'from-red-500 to-red-600', preview: 'bg-gradient-to-r from-red-500 to-red-600' },
-        { name: 'Yellow', value: 'from-yellow-500 to-yellow-600', preview: 'bg-gradient-to-r from-yellow-500 to-yellow-600' },
-        { name: 'Pink', value: 'from-pink-500 to-pink-600', preview: 'bg-gradient-to-r from-pink-500 to-pink-600' }
+        { name: 'Blue', value: 'from-blue-500 to-blue-600', preview: 'bg-linear-to-r from-blue-500 to-blue-600' },
+        { name: 'Purple', value: 'from-purple-500 to-purple-600', preview: 'bg-linear-to-r from-purple-500 to-purple-600' },
+        { name: 'Green', value: 'from-green-500 to-green-600', preview: 'bg-linear-to-r from-green-500 to-green-600' },
+        { name: 'Red', value: 'from-red-500 to-red-600', preview: 'bg-linear-to-r from-red-500 to-red-600' },
+        { name: 'Yellow', value: 'from-yellow-500 to-yellow-600', preview: 'bg-linear-to-r from-yellow-500 to-yellow-600' },
+        { name: 'Pink', value: 'from-pink-500 to-pink-600', preview: 'bg-linear-to-r from-pink-500 to-pink-600' }
     ];
 
     // General Content State
@@ -114,15 +110,10 @@ export default function ContentManagementPage() {
 
     // Courses and Timetable are managed in dedicated pages, not here
 
-    // Free Resources State
-    const [freeResources, setFreeResources] = useState<any[]>([]);
-    const [isFreeResourceModalOpen, setIsFreeResourceModalOpen] = useState(false);
-    const [editingFreeResource, setEditingFreeResource] = useState<any | null>(null);
-    const [freeResourceForm, setFreeResourceForm] = useState({ title: '', type: 'VIDEO', url: '', description: '' });
-    const [resourceFile, setResourceFile] = useState<File | null>(null);
+
 
     // Preview Modal State
-    const [previewModal, setPreviewModal] = useState<{ isOpen: boolean; type: 'hero' | 'about' | 'features' | 'testimonials' | 'freeLessons' | 'contact' | null }>({
+    const [previewModal, setPreviewModal] = useState<{ isOpen: boolean; type: 'hero' | 'about' | 'features' | 'testimonials' | 'contact' | null }>({
         isOpen: false,
         type: null
     });
@@ -150,19 +141,7 @@ export default function ContentManagementPage() {
             }
         }
     });
-    const [freeLessonsContent, setFreeLessonsContent] = useState({
-        subtitle: '', title: '', description: '',
-        ctaText: '', ctaNote: '',
-        categories: [
-            { title: 'Video Lessons', count: '15+ Free Videos', description: 'Watch comprehensive introductory lessons' },
-            { title: 'Past Papers', count: '50+ Papers', description: 'Access previous A/L Economics papers' },
-            { title: 'Study Materials', count: '30+ PDFs', description: 'Download structured notes and summaries' },
-            { title: 'Practice Quizzes', count: '20+ Quizzes', description: 'Test your knowledge with interactive quizzes' }
-        ],
-        featuredVideo: { title: 'Introduction to Microeconomics', duration: '45 min', views: '2.5k views' },
-        featuredDoc: { title: '2023 A/L Past Paper', subtitle: 'With marking scheme' },
-        featuredQuiz: { title: 'Supply & Demand Quiz', duration: '20 min', questionCount: '15 Questions' }
-    });
+
 
     useEffect(() => {
         fetchContent();
@@ -171,18 +150,17 @@ export default function ContentManagementPage() {
     const fetchContent = async () => {
         setIsLoading(true);
         try {
-            const [landingData, testimonialData, featureData, freeResourceData] = await Promise.all([
+            const [landingData, testimonialData, featureData] = await Promise.all([
                 getLandingPageContent(),
                 getTestimonials(),
-                getModernFeatures(),
-                getFreeResources()
+                getModernFeatures()
             ]);
 
             if (landingData.success && landingData.data) {
                 const data = landingData.data as any;
                 if (data.hero) setHeroContent(data.hero);
                 if (data.about) setAboutContent(data.about);
-                if (data.freeLessons) setFreeLessonsContent(data.freeLessons);
+
                 if (data.contact) setContactContent(data.contact);
                 if (data.footer) setFooterContent(data.footer);
                 if (data.footer) setFooterContent(data.footer);
@@ -192,7 +170,7 @@ export default function ContentManagementPage() {
 
             if (testimonialData.success) setTestimonials(testimonialData.data || []);
             if (featureData.success) setFeatures(featureData.data || []);
-            if (freeResourceData.success) setFreeResources(freeResourceData.data || []);
+
         } catch (error) {
             console.error('Error fetching content:', error);
             setAlert({ isOpen: true, title: 'Error', description: 'Failed to fetch content', type: 'error' });
@@ -244,7 +222,6 @@ export default function ContentManagementPage() {
             const result = await updateAllLandingPageContent({
                 hero: { ...heroContent, teacherImage: teacherImageUrl },
                 about: { ...aboutContent, videoUrl },
-                freeLessons: freeLessonsContent,
                 contact: contactContent,
                 footer: footerContent
             });
@@ -382,66 +359,7 @@ export default function ContentManagementPage() {
         }
     };
 
-    const handleFreeResourceSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true);
-        try {
-            let formToSubmit = { ...freeResourceForm };
 
-            // Handle file upload for documents
-            if (resourceFile && (formToSubmit.type === 'PDF' || formToSubmit.type === 'PAST_PAPER')) {
-                const formData = new FormData();
-                formData.append('file', resourceFile);
-
-                const uploadResult = await uploadFile(formData);
-                if (uploadResult.success && uploadResult.url) {
-                    formToSubmit.url = uploadResult.url;
-                } else {
-                    throw new Error(uploadResult.error || 'Failed to upload file');
-                }
-            }
-
-            const result = editingFreeResource
-                ? await updateFreeResource(editingFreeResource.id, formToSubmit as any)
-                : await createFreeResource(formToSubmit as any);
-
-            if (result.success) {
-                setAlert({ isOpen: true, title: 'Success', description: `Resource ${editingFreeResource ? 'updated' : 'added'} successfully`, type: 'success' });
-                setIsFreeResourceModalOpen(false);
-                setResourceFile(null); // Reset file
-                fetchContent();
-            } else {
-                throw new Error(result.error);
-            }
-        } catch (error) {
-            console.error('Submission error:', error);
-            setAlert({ isOpen: true, title: 'Error', description: 'Failed to save resource', type: 'error' });
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleDeleteFreeResource = async (id: string) => {
-        setAlert({
-            isOpen: true,
-            title: 'Confirm Delete',
-            description: 'Are you sure you want to delete this resource?',
-            type: 'confirm',
-            onConfirm: async () => {
-                try {
-                    const result = await deleteFreeResource(id);
-                    if (result.success) {
-                        setAlert({ isOpen: true, title: 'Success', description: 'Resource deleted successfully', type: 'success' });
-                        fetchContent();
-                    } else {
-                        throw new Error(result.error);
-                    }
-                } catch (error) {
-                    setAlert({ isOpen: true, title: 'Error', description: 'Failed to delete resource', type: 'error' });
-                }
-            }
-        });
-    };
     const handleTestimonialSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
@@ -537,7 +455,7 @@ export default function ContentManagementPage() {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
@@ -559,9 +477,7 @@ export default function ContentManagementPage() {
                     <TabsTrigger value="general" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
                         <Layers className="w-4 h-4" /> General
                     </TabsTrigger>
-                    <TabsTrigger value="free-lessons" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <BookOpen className="w-4 h-4" /> Free Lessons
-                    </TabsTrigger>
+
                     <TabsTrigger value="banners" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
                         <ImageIcon className="w-4 h-4" /> Banners
                     </TabsTrigger>
@@ -837,40 +753,7 @@ export default function ContentManagementPage() {
                 </TabsContent>
 
                 {/* Free Lessons Tab */}
-                <TabsContent value="free-lessons" className="space-y-6">
-                    {/* General Settings */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">General Settings</h2>
-                            <div className="flex gap-2">
-                                <Button
-                                    onClick={() => setPreviewModal({ isOpen: true, type: 'freeLessons' })}
-                                    variant="outline"
-                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                                >
-                                    <Eye className="w-4 h-4 mr-2" /> Preview Section
-                                </Button>
-                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                    <Save className="w-4 h-4 mr-2" /> Save Changes
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Description</Label>
-                                <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.description} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, description: e.target.value })} />
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex gap-3 text-emerald-800">
-                        <div className="shrink-0 mt-0.5">ℹ️</div>
-                        <div className="text-sm">
-                            <p className="font-semibold mb-1">Dynamic Content Active</p>
-                            <p>Resource counts and featured previews are now automatically calculated based on your uploaded resources and student engagement (views). No manual configuration needed.</p>
-                        </div>
-                    </div>
-                </TabsContent>
 
 
                 {/* Features Tab */}
@@ -1336,7 +1219,7 @@ export default function ContentManagementPage() {
                                             <Label className="text-gray-800">Preview</Label>
                                             <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                                 <div className="flex items-start gap-4">
-                                                    <div className={`p-3 rounded-xl bg-gradient-to-r ${featureForm.color}`}>
+                                                    <div className={`p-3 rounded-xl bg-linear-to-r ${featureForm.color}`}>
                                                         {(() => {
                                                             const IconComponent = FEATURE_ICONS.find(i => i.name === featureForm.icon)?.icon;
                                                             return IconComponent ? <IconComponent className="w-6 h-6 text-white" /> : null;
@@ -1370,84 +1253,7 @@ export default function ContentManagementPage() {
 
             {/* Course, Institute, and Timetable modals removed - managed in dedicated pages */}
 
-            {/* Free Resource Modal */}
-            <AnimatePresence>
-                {isFreeResourceModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-gray-900">{editingFreeResource ? 'Edit Resource' : 'Add Resource'}</h2>
-                                <button onClick={() => setIsFreeResourceModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <form onSubmit={handleFreeResourceSubmit} className="p-6 space-y-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Title</Label>
-                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeResourceForm.title} onChange={e => setFreeResourceForm({ ...freeResourceForm, title: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Type</Label>
-                                    <select
-                                        required
-                                        className="w-full px-3 py-2 bg-white border border-gray-300 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                                        value={freeResourceForm.type}
-                                        onChange={(e) => setFreeResourceForm({ ...freeResourceForm, type: e.target.value as 'VIDEO' | 'PDF' | 'PAST_PAPER' | 'QUIZ' })}
-                                    >
-                                        <option value="VIDEO">Video</option>
-                                        <option value="PDF">PDF</option>
-                                        <option value="PAST_PAPER">Past Paper</option>
-                                        <option value="QUIZ">Quiz</option>
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">
-                                        {(freeResourceForm.type === 'PDF' || freeResourceForm.type === 'PAST_PAPER') ? 'Upload Document' : 'URL'}
-                                    </Label>
 
-                                    {(freeResourceForm.type === 'PDF' || freeResourceForm.type === 'PAST_PAPER') ? (
-                                        <div className="space-y-2">
-                                            <Input
-                                                type="file"
-                                                accept=".pdf,.doc,.docx"
-                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                onChange={e => {
-                                                    if (e.target.files?.[0]) {
-                                                        setResourceFile(e.target.files[0]);
-                                                    }
-                                                }}
-                                            />
-                                            {freeResourceForm.url && (
-                                                <p className="text-xs text-green-600 truncate">
-                                                    Current: {freeResourceForm.url}
-                                                </p>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <Input
-                                            required
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={freeResourceForm.url}
-                                            onChange={e => setFreeResourceForm({ ...freeResourceForm, url: e.target.value })}
-                                            placeholder="https://..."
-                                        />
-                                    )}
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Description</Label>
-                                    <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeResourceForm.description} onChange={e => setFreeResourceForm({ ...freeResourceForm, description: e.target.value })} rows={3} />
-                                </div>
-                                <div className="flex justify-end gap-3 pt-4">
-                                    <Button type="button" variant="outline" onClick={() => setIsFreeResourceModalOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                        {isSaving ? 'Saving...' : (editingFreeResource ? 'Update Resource' : 'Add Resource')}
-                                    </Button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
 
             {/* Alert Dialog */}
             <AnimatePresence>
@@ -1511,13 +1317,7 @@ export default function ContentManagementPage() {
                 <TestimonialsPreview data={testimonials} />
             </PreviewModal>
 
-            <PreviewModal
-                isOpen={previewModal.isOpen && previewModal.type === 'freeLessons'}
-                onClose={() => setPreviewModal({ isOpen: false, type: null })}
-                title="Free Lessons Section"
-            >
-                <FreeLessonsPreview data={freeLessonsContent} freeResources={freeResources} />
-            </PreviewModal>
+
 
             <PreviewModal
                 isOpen={previewModal.isOpen && previewModal.type === 'contact'}
