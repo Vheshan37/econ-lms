@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { getPersistentUploadDir } from '@/lib/storage-helper';
 import { join } from 'path';
 
-export async function uploadImage(formData: FormData) {
+export async function uploadFile(formData: FormData) {
     try {
         const file = formData.get('file') as File;
+
         if (!file) {
             return { success: false, error: 'No file provided' };
         }
@@ -47,3 +48,5 @@ export async function uploadImage(formData: FormData) {
         return { success: false, error: 'Failed to upload file' };
     }
 }
+
+export const uploadImage = uploadFile;

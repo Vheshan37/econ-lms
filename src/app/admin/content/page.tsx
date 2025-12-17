@@ -2,7 +2,12 @@
 
 import { useState, useEffect, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, Trash2, Edit2, Layers, MessageSquare, Zap, Mail, X, Calendar, BookOpen, Clock, MapPin, FileText, Play, ClipboardCheck, Video, Users, Award, Target, TrendingUp, Lightbulb, CheckCircle, Star, GraduationCap, Brain, Sparkles, Eye, Image as ImageIcon } from 'lucide-react';
+import {
+    Save, Plus, Trash2, Edit2, Eye, X, Upload,
+    Layers, BookOpen, Image as ImageIcon, Zap, MessageSquare, Mail,
+    Play, FileText, ClipboardCheck, CheckCircle
+} from 'lucide-react';
+import { FEATURE_ICONS } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,7 +31,7 @@ import {
     updateFreeResource,
     deleteFreeResource
 } from '@/lib/actions/content';
-import { uploadImage } from '@/lib/actions/upload';
+import { uploadImage, uploadFile } from '@/lib/actions/upload';
 import { PreviewModal } from '@/components/landing/preview/PreviewModal';
 import { HeroPreview } from '@/components/landing/preview/HeroPreview';
 import { AboutPreview } from '@/components/landing/preview/AboutPreview';
@@ -41,22 +46,7 @@ export default function ContentManagementPage() {
     const [isSaving, setIsSaving] = useState(false);
 
     // Icon and Color options for Features
-    const FEATURE_ICONS = [
-        { name: 'BookOpen', icon: BookOpen, label: 'Book' },
-        { name: 'GraduationCap', icon: GraduationCap, label: 'Graduation' },
-        { name: 'Video', icon: Video, label: 'Video' },
-        { name: 'FileText', icon: FileText, label: 'Document' },
-        { name: 'Users', icon: Users, label: 'Users' },
-        { name: 'Award', icon: Award, label: 'Award' },
-        { name: 'Target', icon: Target, label: 'Target' },
-        { name: 'TrendingUp', icon: TrendingUp, label: 'Growth' },
-        { name: 'Lightbulb', icon: Lightbulb, label: 'Idea' },
-        { name: 'CheckCircle', icon: CheckCircle, label: 'Check' },
-        { name: 'Star', icon: Star, label: 'Star' },
-        { name: 'Zap', icon: Zap, label: 'Lightning' },
-        { name: 'Brain', icon: Brain, label: 'Brain' },
-        { name: 'Sparkles', icon: Sparkles, label: 'Sparkles' }
-    ];
+
 
     const GRADIENT_COLORS = [
         { name: 'Blue', value: 'from-blue-500 to-blue-600', preview: 'bg-gradient-to-r from-blue-500 to-blue-600' },
@@ -129,6 +119,7 @@ export default function ContentManagementPage() {
     const [isFreeResourceModalOpen, setIsFreeResourceModalOpen] = useState(false);
     const [editingFreeResource, setEditingFreeResource] = useState<any | null>(null);
     const [freeResourceForm, setFreeResourceForm] = useState({ title: '', type: 'VIDEO', url: '', description: '' });
+    const [resourceFile, setResourceFile] = useState<File | null>(null);
 
     // Preview Modal State
     const [previewModal, setPreviewModal] = useState<{ isOpen: boolean; type: 'hero' | 'about' | 'features' | 'testimonials' | 'freeLessons' | 'contact' | null }>({
@@ -144,7 +135,21 @@ export default function ContentManagementPage() {
         type: 'success'
     });
 
-
+    // Features Meta State
+    const [featuresMeta, setFeaturesMeta] = useState({
+        description: '', // Main description
+        studentLove: {
+            title: 'Why Students Love Us',
+            description: '',
+            benefits: [] as string[],
+            successRate: {
+                value: '92',
+                suffix: '%',
+                label: 'Success Rate',
+                description: 'of our students achieve A or B grades'
+            }
+        }
+    });
     const [freeLessonsContent, setFreeLessonsContent] = useState({
         subtitle: '', title: '', description: '',
         ctaText: '', ctaNote: '',
@@ -180,7 +185,9 @@ export default function ContentManagementPage() {
                 if (data.freeLessons) setFreeLessonsContent(data.freeLessons);
                 if (data.contact) setContactContent(data.contact);
                 if (data.footer) setFooterContent(data.footer);
+                if (data.footer) setFooterContent(data.footer);
                 if (data.banners && Array.isArray(data.banners)) setBannerContent(data.banners);
+                if (data.features) setFeaturesMeta(data.features);
             }
 
             if (testimonialData.success) setTestimonials(testimonialData.data || []);
@@ -379,18 +386,35 @@ export default function ContentManagementPage() {
         e.preventDefault();
         setIsSaving(true);
         try {
+            let formToSubmit = { ...freeResourceForm };
+
+            // Handle file upload for documents
+            if (resourceFile && (formToSubmit.type === 'PDF' || formToSubmit.type === 'PAST_PAPER')) {
+                const formData = new FormData();
+                formData.append('file', resourceFile);
+
+                const uploadResult = await uploadFile(formData);
+                if (uploadResult.success && uploadResult.url) {
+                    formToSubmit.url = uploadResult.url;
+                } else {
+                    throw new Error(uploadResult.error || 'Failed to upload file');
+                }
+            }
+
             const result = editingFreeResource
-                ? await updateFreeResource(editingFreeResource.id, freeResourceForm as any)
-                : await createFreeResource(freeResourceForm as any);
+                ? await updateFreeResource(editingFreeResource.id, formToSubmit as any)
+                : await createFreeResource(formToSubmit as any);
 
             if (result.success) {
                 setAlert({ isOpen: true, title: 'Success', description: `Resource ${editingFreeResource ? 'updated' : 'added'} successfully`, type: 'success' });
                 setIsFreeResourceModalOpen(false);
+                setResourceFile(null); // Reset file
                 fetchContent();
             } else {
                 throw new Error(result.error);
             }
         } catch (error) {
+            console.error('Submission error:', error);
             setAlert({ isOpen: true, title: 'Error', description: 'Failed to save resource', type: 'error' });
         } finally {
             setIsSaving(false);
@@ -832,29 +856,9 @@ export default function ContentManagementPage() {
                             </div>
                         </div>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Subtitle</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.subtitle} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, subtitle: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Title</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.title} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, title: e.target.value })} />
-                                </div>
-                            </div>
                             <div className="space-y-2">
                                 <Label className="text-gray-800">Description</Label>
                                 <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.description} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, description: e.target.value })} />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">CTA Text</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.ctaText} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, ctaText: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">CTA Note</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeLessonsContent.ctaNote} onChange={e => setFreeLessonsContent({ ...freeLessonsContent, ctaNote: e.target.value })} />
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -926,7 +930,7 @@ export default function ContentManagementPage() {
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Resource Library</h2>
-                            <Button onClick={() => { setEditingFreeResource(null); setFreeResourceForm({ title: '', type: 'VIDEO', url: '', description: '' }); setIsFreeResourceModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
+                            <Button onClick={() => { setEditingFreeResource(null); setFreeResourceForm({ title: '', type: 'VIDEO', url: '', description: '' }); setResourceFile(null); setIsFreeResourceModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
                                 <Plus className="w-4 h-4 mr-2" /> Add Resource
                             </Button>
                         </div>
@@ -962,43 +966,224 @@ export default function ContentManagementPage() {
 
                 {/* Features Tab */}
                 <TabsContent value="features" className="space-y-6">
-                    <div className="flex justify-between items-center">
-                        <Button
-                            onClick={() => setPreviewModal({ isOpen: true, type: 'features' })}
-                            variant="outline"
-                            className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                        >
-                            <Eye className="w-4 h-4 mr-2" /> Preview Section
-                        </Button>
-                        <Button onClick={() => { setEditingFeature(null); setFeatureForm({ title: '', description: '', icon: '', color: '', order: features.length }); setIsFeatureModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                            <Plus className="w-4 h-4 mr-2" /> Add Feature
-                        </Button>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {features.map((feature) => (
-                            <div key={feature.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className={`h-10 w-10 rounded-lg flex items-center justify-center text-white bg-gradient-to-br ${feature.color || 'from-gray-500 to-gray-600'}`}>
-                                        <Zap className="w-5 h-5" />
+                    {/* General Settings */}
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-gray-900">Features General Settings</h2>
+                            <Button onClick={async () => {
+                                setIsSaving(true);
+                                try {
+                                    const result = await updateLandingPageContent('features', featuresMeta);
+                                    if (result.success) {
+                                        setAlert({ isOpen: true, title: 'Success', description: 'Features settings updated', type: 'success' });
+                                    } else {
+                                        throw new Error(result.error);
+                                    }
+                                } catch (error) {
+                                    setAlert({ isOpen: true, title: 'Error', description: 'Failed to update settings', type: 'error' });
+                                } finally {
+                                    setIsSaving(false);
+                                }
+                            }} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                <Save className="w-4 h-4 mr-2" /> Save Settings
+                            </Button>
+                        </div>
+
+                        <div className="space-y-8">
+                            {/* Main Description */}
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Main Section Description (Sinhala)</Label>
+                                <Textarea
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={featuresMeta.description}
+                                    onChange={e => setFeaturesMeta({ ...featuresMeta, description: e.target.value })}
+                                    rows={3}
+                                    placeholder="අති නවීන තාක්ෂණය..."
+                                />
+                            </div>
+
+                            <div className="h-px bg-gray-200" />
+
+                            {/* Why Students Love Us Section */}
+                            <div>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">"Why Students Love Us" Section</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Description</Label>
+                                            <Textarea
+                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                value={featuresMeta.studentLove.description}
+                                                onChange={e => setFeaturesMeta({
+                                                    ...featuresMeta,
+                                                    studentLove: { ...featuresMeta.studentLove, description: e.target.value }
+                                                })}
+                                                rows={4}
+                                                placeholder="Our comprehensive learning platform..."
+                                            />
+                                        </div>
+
+                                        {/* Benefits List */}
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <Label className="text-gray-800">Benefits List</Label>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() => setFeaturesMeta({
+                                                        ...featuresMeta,
+                                                        studentLove: {
+                                                            ...featuresMeta.studentLove,
+                                                            benefits: [...featuresMeta.studentLove.benefits, '']
+                                                        }
+                                                    })}
+                                                    className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] h-8 px-3 text-sm"
+                                                >
+                                                    <Plus className="w-4 h-4 mr-1" /> Add Benefit
+                                                </Button>
+                                            </div>
+                                            <div className="space-y-2">
+                                                {featuresMeta.studentLove.benefits.map((benefit, index) => (
+                                                    <div key={index} className="flex gap-2">
+                                                        <Input
+                                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] flex-1"
+                                                            value={benefit}
+                                                            onChange={e => {
+                                                                const newBenefits = [...featuresMeta.studentLove.benefits];
+                                                                newBenefits[index] = e.target.value;
+                                                                setFeaturesMeta({
+                                                                    ...featuresMeta,
+                                                                    studentLove: { ...featuresMeta.studentLove, benefits: newBenefits }
+                                                                });
+                                                            }}
+                                                            placeholder={`Benefit ${index + 1}`}
+                                                        />
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            onClick={() => {
+                                                                const newBenefits = featuresMeta.studentLove.benefits.filter((_, i) => i !== index);
+                                                                setFeaturesMeta({
+                                                                    ...featuresMeta,
+                                                                    studentLove: { ...featuresMeta.studentLove, benefits: newBenefits }
+                                                                });
+                                                            }}
+                                                            className="h-10 px-3 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => { setEditingFeature(feature); setFeatureForm(feature); setIsFeatureModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        <button onClick={() => handleDeleteFeature(feature.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+
+                                    {/* Success Rate Stats */}
+                                    <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                        <h4 className="font-medium text-gray-700">Success Rate Card</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-gray-800">Value</Label>
+                                                <Input
+                                                    className="bg-white border-gray-300 text-gray-900"
+                                                    value={featuresMeta.studentLove.successRate.value}
+                                                    onChange={e => setFeaturesMeta({
+                                                        ...featuresMeta,
+                                                        studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, value: e.target.value } }
+                                                    })}
+                                                    placeholder="92"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-gray-800">Suffix</Label>
+                                                <Input
+                                                    className="bg-white border-gray-300 text-gray-900"
+                                                    value={featuresMeta.studentLove.successRate.suffix}
+                                                    onChange={e => setFeaturesMeta({
+                                                        ...featuresMeta,
+                                                        studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, suffix: e.target.value } }
+                                                    })}
+                                                    placeholder="%"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Label</Label>
+                                            <Input
+                                                className="bg-white border-gray-300 text-gray-900"
+                                                value={featuresMeta.studentLove.successRate.label}
+                                                onChange={e => setFeaturesMeta({
+                                                    ...featuresMeta,
+                                                    studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, label: e.target.value } }
+                                                })}
+                                                placeholder="Success Rate"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Bottom Description</Label>
+                                            <Textarea
+                                                className="bg-white border-gray-300 text-gray-900"
+                                                value={featuresMeta.studentLove.successRate.description}
+                                                onChange={e => setFeaturesMeta({
+                                                    ...featuresMeta,
+                                                    studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, description: e.target.value } }
+                                                })}
+                                                rows={2}
+                                                placeholder="of our students..."
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                                <h3 className="font-bold text-lg mb-2 text-gray-800">{feature.title}</h3>
-                                <p className="text-gray-600 text-sm">{feature.description}</p>
                             </div>
-                        ))}
+                        </div>
+                    </div>
+
+                    {/* Features List */}
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-gray-900">Feature Cards</h2>
+                            <div className="flex gap-2">
+                                <Button
+                                    onClick={() => setPreviewModal({ isOpen: true, type: 'features' })}
+                                    variant="outline"
+                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" /> Preview Section
+                                </Button>
+                                <Button onClick={() => { setEditingFeature(null); setFeatureForm({ title: '', description: '', icon: '', color: '', order: features.length }); setIsFeatureModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
+                                    <Plus className="w-4 h-4 mr-2" /> Add Feature
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {features.map((feature) => (
+                                <div key={feature.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className={`h-10 w-10 rounded-lg flex items-center justify-center text-white bg-linear-to-br ${feature.color || 'from-gray-500 to-gray-600'}`}>
+                                            {(() => {
+                                                const Icon = FEATURE_ICONS.find(i => i.name === feature.icon)?.icon || Zap;
+                                                return <Icon className="w-5 h-5" />;
+                                            })()}
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => { setEditingFeature(feature); setFeatureForm(feature); setIsFeatureModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={() => handleDeleteFeature(feature.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <h3 className="font-bold text-lg mb-2 text-gray-800">{feature.title}</h3>
+                                    <p className="text-gray-600 text-sm">{feature.description}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </TabsContent>
 
                 {/* Testimonials Tab */}
-                <TabsContent value="testimonials" className="space-y-6">
+                < TabsContent value="testimonials" className="space-y-6" >
                     <div className="flex justify-between items-center">
                         <Button
                             onClick={() => setPreviewModal({ isOpen: true, type: 'testimonials' })}
@@ -1041,10 +1226,10 @@ export default function ContentManagementPage() {
                             </div>
                         ))}
                     </div>
-                </TabsContent>
+                </TabsContent >
 
                 {/* Contact Tab */}
-                <TabsContent value="contact" className="space-y-6">
+                < TabsContent value="contact" className="space-y-6" >
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-900">Contact Information</h2>
@@ -1100,175 +1285,179 @@ export default function ContentManagementPage() {
                             </div>
                         </div>
                     </div>
-                </TabsContent>
-            </Tabs>
+                </TabsContent >
+            </Tabs >
 
             {/* Testimonial Modal */}
             <AnimatePresence>
-                {isTestimonialModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-gray-900">{editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}</h2>
-                                <button onClick={() => setIsTestimonialModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <form onSubmit={handleTestimonialSubmit} className="p-6 space-y-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Student Name</Label>
-                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.name} onChange={e => setTestimonialForm({ ...testimonialForm, name: e.target.value })} />
+                {
+                    isTestimonialModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+                                <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                                    <h2 className="text-xl font-bold text-gray-900">{editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}</h2>
+                                    <button onClick={() => setIsTestimonialModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                                        <X className="w-5 h-5" />
+                                    </button>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <form onSubmit={handleTestimonialSubmit} className="p-6 space-y-4">
                                     <div className="space-y-2">
-                                        <Label className="text-gray-800">Role/Achievement</Label>
-                                        <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.role} onChange={e => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="District Rank 1" />
+                                        <Label className="text-gray-800">Student Name</Label>
+                                        <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.name} onChange={e => setTestimonialForm({ ...testimonialForm, name: e.target.value })} />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Role/Achievement</Label>
+                                            <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.role} onChange={e => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="District Rank 1" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Institute</Label>
+                                            <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.institute} onChange={e => setTestimonialForm({ ...testimonialForm, institute: e.target.value })} placeholder="Colombo" />
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label className="text-gray-800">Institute</Label>
-                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.institute} onChange={e => setTestimonialForm({ ...testimonialForm, institute: e.target.value })} placeholder="Colombo" />
+                                        <Label className="text-gray-800">Testimonial Content</Label>
+                                        <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.content} onChange={e => setTestimonialForm({ ...testimonialForm, content: e.target.value })} rows={4} />
                                     </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Testimonial Content</Label>
-                                    <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.content} onChange={e => setTestimonialForm({ ...testimonialForm, content: e.target.value })} rows={4} />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Image URL</Label>
-                                        <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.imageUrl} onChange={e => setTestimonialForm({ ...testimonialForm, imageUrl: e.target.value })} placeholder="https://..." />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Image URL</Label>
+                                            <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.imageUrl} onChange={e => setTestimonialForm({ ...testimonialForm, imageUrl: e.target.value })} placeholder="https://..." />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Rating (1-5)</Label>
+                                            <Input type="number" min="1" max="5" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.rating} onChange={e => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })} />
+                                        </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Rating (1-5)</Label>
-                                        <Input type="number" min="1" max="5" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.rating} onChange={e => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })} />
+                                    <div className="flex justify-end gap-3 pt-4">
+                                        <Button type="button" variant="outline" onClick={() => setIsTestimonialModalOpen(false)}>Cancel</Button>
+                                        <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
+                                            {isSaving ? 'Saving...' : (editingTestimonial ? 'Update Testimonial' : 'Add Testimonial')}
+                                        </Button>
                                     </div>
-                                </div>
-                                <div className="flex justify-end gap-3 pt-4">
-                                    <Button type="button" variant="outline" onClick={() => setIsTestimonialModalOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                        {isSaving ? 'Saving...' : (editingTestimonial ? 'Update Testimonial' : 'Add Testimonial')}
-                                    </Button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                                </form>
+                            </motion.div>
+                        </div>
+                    )
+                }
+            </AnimatePresence >
 
             {/* Feature Modal */}
             <AnimatePresence>
-                {isFeatureModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-                            <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
-                                <h2 className="text-xl font-bold text-gray-900">{editingFeature ? 'Edit Feature' : 'Add Feature'}</h2>
-                                <button onClick={() => setIsFeatureModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <form onSubmit={handleFeatureSubmit} className="p-6 space-y-6">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Feature Title</Label>
-                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} />
+                {
+                    isFeatureModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+                                <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
+                                    <h2 className="text-xl font-bold text-gray-900">{editingFeature ? 'Edit Feature' : 'Add Feature'}</h2>
+                                    <button onClick={() => setIsFeatureModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                                        <X className="w-5 h-5" />
+                                    </button>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Description</Label>
-                                    <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} rows={3} />
-                                </div>
-
-                                {/* Icon Picker */}
-                                <div className="space-y-3">
-                                    <Label className="text-gray-800">Select Icon</Label>
-                                    <div className="grid grid-cols-7 gap-2">
-                                        {FEATURE_ICONS.map((iconItem) => {
-                                            const IconComponent = iconItem.icon;
-                                            const isSelected = featureForm.icon === iconItem.name;
-                                            return (
-                                                <button
-                                                    key={iconItem.name}
-                                                    type="button"
-                                                    onClick={() => setFeatureForm({ ...featureForm, icon: iconItem.name })}
-                                                    className={`p-3 rounded-lg border-2 transition-all hover:scale-110 ${isSelected
-                                                        ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg'
-                                                        : 'border-gray-200 hover:border-[#D4AF37]/50'
-                                                        }`}
-                                                    title={iconItem.label}
-                                                >
-                                                    <IconComponent className={`w-6 h-6 ${isSelected ? 'text-[#D4AF37]' : 'text-gray-600'}`} />
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    {featureForm.icon && (
-                                        <p className="text-sm text-gray-600">Selected: {FEATURE_ICONS.find(i => i.name === featureForm.icon)?.label}</p>
-                                    )}
-                                </div>
-
-                                {/* Color Picker */}
-                                <div className="space-y-3">
-                                    <Label className="text-gray-800">Select Gradient Color</Label>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {GRADIENT_COLORS.map((colorItem) => {
-                                            const isSelected = featureForm.color === colorItem.value;
-                                            return (
-                                                <button
-                                                    key={colorItem.value}
-                                                    type="button"
-                                                    onClick={() => setFeatureForm({ ...featureForm, color: colorItem.value })}
-                                                    className={`relative p-4 rounded-xl border-2 transition-all hover:scale-105 ${isSelected
-                                                        ? 'border-[#D4AF37] shadow-lg'
-                                                        : 'border-gray-200 hover:border-gray-300'
-                                                        }`}
-                                                >
-                                                    <div className={`h-12 rounded-lg ${colorItem.preview}`} />
-                                                    <p className="text-xs font-medium text-gray-700 mt-2 text-center">{colorItem.name}</p>
-                                                    {isSelected && (
-                                                        <div className="absolute top-2 right-2 bg-[#D4AF37] rounded-full p-1">
-                                                            <CheckCircle className="w-4 h-4 text-white" />
-                                                        </div>
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-
-                                {/* Preview */}
-                                {featureForm.icon && featureForm.color && (
+                                <form onSubmit={handleFeatureSubmit} className="p-6 space-y-6">
                                     <div className="space-y-2">
-                                        <Label className="text-gray-800">Preview</Label>
-                                        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                                            <div className="flex items-start gap-4">
-                                                <div className={`p-3 rounded-xl bg-gradient-to-r ${featureForm.color}`}>
-                                                    {(() => {
-                                                        const IconComponent = FEATURE_ICONS.find(i => i.name === featureForm.icon)?.icon;
-                                                        return IconComponent ? <IconComponent className="w-6 h-6 text-white" /> : null;
-                                                    })()}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <h3 className="font-bold text-gray-900">{featureForm.title || 'Feature Title'}</h3>
-                                                    <p className="text-sm text-gray-600 mt-1">{featureForm.description || 'Feature description'}</p>
+                                        <Label className="text-gray-800">Feature Title</Label>
+                                        <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Description</Label>
+                                        <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} rows={3} />
+                                    </div>
+
+                                    {/* Icon Picker */}
+                                    <div className="space-y-3">
+                                        <Label className="text-gray-800">Select Icon</Label>
+                                        <div className="grid grid-cols-7 gap-2">
+                                            {FEATURE_ICONS.map((iconItem) => {
+                                                const IconComponent = iconItem.icon;
+                                                const isSelected = featureForm.icon === iconItem.name;
+                                                return (
+                                                    <button
+                                                        key={iconItem.name}
+                                                        type="button"
+                                                        onClick={() => setFeatureForm({ ...featureForm, icon: iconItem.name })}
+                                                        className={`p-3 rounded-lg border-2 transition-all hover:scale-110 ${isSelected
+                                                            ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg'
+                                                            : 'border-gray-200 hover:border-[#D4AF37]/50'
+                                                            }`}
+                                                        title={iconItem.label}
+                                                    >
+                                                        <IconComponent className={`w-6 h-6 ${isSelected ? 'text-[#D4AF37]' : 'text-gray-600'}`} />
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                        {featureForm.icon && (
+                                            <p className="text-sm text-gray-600">Selected: {FEATURE_ICONS.find(i => i.name === featureForm.icon)?.label}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Color Picker */}
+                                    <div className="space-y-3">
+                                        <Label className="text-gray-800">Select Gradient Color</Label>
+                                        <div className="grid grid-cols-3 gap-3">
+                                            {GRADIENT_COLORS.map((colorItem) => {
+                                                const isSelected = featureForm.color === colorItem.value;
+                                                return (
+                                                    <button
+                                                        key={colorItem.value}
+                                                        type="button"
+                                                        onClick={() => setFeatureForm({ ...featureForm, color: colorItem.value })}
+                                                        className={`relative p-4 rounded-xl border-2 transition-all hover:scale-105 ${isSelected
+                                                            ? 'border-[#D4AF37] shadow-lg'
+                                                            : 'border-gray-200 hover:border-gray-300'
+                                                            }`}
+                                                    >
+                                                        <div className={`h-12 rounded-lg ${colorItem.preview}`} />
+                                                        <p className="text-xs font-medium text-gray-700 mt-2 text-center">{colorItem.name}</p>
+                                                        {isSelected && (
+                                                            <div className="absolute top-2 right-2 bg-[#D4AF37] rounded-full p-1">
+                                                                <CheckCircle className="w-4 h-4 text-white" />
+                                                            </div>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Preview */}
+                                    {featureForm.icon && featureForm.color && (
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Preview</Label>
+                                            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                                                <div className="flex items-start gap-4">
+                                                    <div className={`p-3 rounded-xl bg-gradient-to-r ${featureForm.color}`}>
+                                                        {(() => {
+                                                            const IconComponent = FEATURE_ICONS.find(i => i.name === featureForm.icon)?.icon;
+                                                            return IconComponent ? <IconComponent className="w-6 h-6 text-white" /> : null;
+                                                        })()}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h3 className="font-bold text-gray-900">{featureForm.title || 'Feature Title'}</h3>
+                                                        <p className="text-sm text-gray-600 mt-1">{featureForm.description || 'Feature description'}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Order</Label>
-                                    <Input type="number" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
-                                </div>
-                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                                    <Button type="button" variant="outline" onClick={() => setIsFeatureModalOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                        {isSaving ? 'Saving...' : (editingFeature ? 'Update Feature' : 'Add Feature')}
-                                    </Button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Order</Label>
+                                        <Input type="number" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
+                                    </div>
+                                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                                        <Button type="button" variant="outline" onClick={() => setIsFeatureModalOpen(false)}>Cancel</Button>
+                                        <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
+                                            {isSaving ? 'Saving...' : (editingFeature ? 'Update Feature' : 'Add Feature')}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </motion.div>
+                        </div>
+                    )
+                }
+            </AnimatePresence >
 
             {/* Course, Institute, and Timetable modals removed - managed in dedicated pages */}
 
@@ -1303,8 +1492,37 @@ export default function ContentManagementPage() {
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-gray-800">URL</Label>
-                                    <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={freeResourceForm.url} onChange={e => setFreeResourceForm({ ...freeResourceForm, url: e.target.value })} placeholder="https://..." />
+                                    <Label className="text-gray-800">
+                                        {(freeResourceForm.type === 'PDF' || freeResourceForm.type === 'PAST_PAPER') ? 'Upload Document' : 'URL'}
+                                    </Label>
+
+                                    {(freeResourceForm.type === 'PDF' || freeResourceForm.type === 'PAST_PAPER') ? (
+                                        <div className="space-y-2">
+                                            <Input
+                                                type="file"
+                                                accept=".pdf,.doc,.docx"
+                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                onChange={e => {
+                                                    if (e.target.files?.[0]) {
+                                                        setResourceFile(e.target.files[0]);
+                                                    }
+                                                }}
+                                            />
+                                            {freeResourceForm.url && (
+                                                <p className="text-xs text-green-600 truncate">
+                                                    Current: {freeResourceForm.url}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <Input
+                                            required
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={freeResourceForm.url}
+                                            onChange={e => setFreeResourceForm({ ...freeResourceForm, url: e.target.value })}
+                                            placeholder="https://..."
+                                        />
+                                    )}
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-gray-800">Description</Label>
@@ -1399,6 +1617,6 @@ export default function ContentManagementPage() {
             >
                 <ContactPreview data={contactContent} />
             </PreviewModal>
-        </div>
+        </div >
     );
 }

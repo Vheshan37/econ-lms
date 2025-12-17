@@ -1,46 +1,58 @@
+"use strict";
 "use client";
 
-import { BookOpen, Video, Users, Award, TrendingUp, Headphones } from "lucide-react";
+import { useState, useEffect } from "react";
+import { FEATURE_ICONS } from "@/lib/constants";
+import { getLandingPageContent, getModernFeatures } from "@/lib/actions/content";
+import { Zap, TrendingUp } from "lucide-react";
 
 export function ModernFeaturesSection() {
-    const features = [
-        {
-            icon: Video,
-            title: "Recorded Lessons",
-            description: "ඕනෑම වේලාවක, ඕනෑම තැනක උසස් තත්ත්වයේ වීඩියෝ පාඩම් වලට ප්‍රවේශ වන්න. නැවත කිසිදා පන්තියක් මග හරින්න එපා.",
-            color: "from-blue-500 to-blue-600"
-        },
-        {
-            icon: BookOpen,
-            title: "Comprehensive Resources",
-            description: "ප්‍රවීණයන් විසින් සකස් කරන ලද සවිස්තරාත්මක සටහන්, පසුගිය ප්‍රශ්න පත්‍ර සහ අධ්‍යයන ද්‍රව්‍ය වෙත ප්‍රවේශය ලබා ගන්න.",
-            color: "from-purple-500 to-purple-600"
-        },
-        {
-            icon: Users,
-            title: "Interactive Classes",
-            description: "ගතික, අන්තර්ක්‍රියාකාරී පන්ති කාමර සැසිවලදී ගුරුවරුන් සහ සම වයසේ මිතුරන් සමඟ සම්බන්ධ වන්න.",
-            color: "from-green-500 to-green-600"
-        },
-        {
-            icon: Award,
-            title: "Regular Assessments",
-            description: "මුළු වර්ෂය පුරාම ප්‍රශ්න මාලා, පැවරුම් සහ ආදර්ශ විභාග සමඟ ඔබගේ ප්‍රගතිය නිරීක්ෂණය කරන්න.",
-            color: "from-red-500 to-red-600"
-        },
-        {
-            icon: TrendingUp,
-            title: "Performance Analytics",
-            description: "සවිස්තරාත්මක විශ්ලේෂණ සහ පුද්ගලික ප්‍රතිපෝෂණ සමඟ ඔබගේ දියුණුව නිරීක්ෂණය කරන්න.",
-            color: "from-yellow-500 to-yellow-600"
-        },
-        {
-            icon: Headphones,
-            title: "24/7 Support",
-            description: "අපගේ කැප වූ සහාය නාලිකා හරහා ඕනෑම වේලාවක ඔබගේ ප්‍රශ්නවලට පිළිතුරු ලබා ගන්න.",
-            color: "from-pink-500 to-pink-600"
-        },
-    ];
+    const [features, setFeatures] = useState<any[]>([]);
+    const [featuresMeta, setFeaturesMeta] = useState<any>({
+        description: 'අති නවීන තාක්ෂණය සහ ඔප්පු වූ ගුරු ක්‍රමවේද සමඟ උ.පෙ. ආර්ථික විද්‍යා අධ්‍යාපනයට විප්ලවවාදී ප්‍රවේශයක් අත්විඳින්න.',
+        studentLove: {
+            title: 'Why Students Love Us',
+            description: 'Our comprehensive learning platform is designed to give you every advantage in your A/L Economics journey, combining traditional teaching excellence with modern technology.',
+            benefits: [
+                "Flexible learning schedule that fits your lifestyle",
+                "Access to a vast library of educational resources",
+                "Personalized learning paths based on your progress",
+                "Direct communication with experienced teachers",
+                "Competitive environment that motivates excellence"
+            ],
+            successRate: {
+                value: '92',
+                suffix: '%',
+                label: 'Success Rate',
+                description: 'of our students achieve A or B grades'
+            }
+        }
+    });
+
+    useEffect(() => {
+        const fetchContent = async () => {
+            try {
+                // Fetch features list
+                const featuresResult = await getModernFeatures();
+                if (featuresResult.success && featuresResult.data) {
+                    setFeatures(featuresResult.data);
+                }
+
+                // Fetch metadata (description, etc)
+                const metaResult = await getLandingPageContent('features');
+                if (metaResult.success && metaResult.data) {
+                    setFeaturesMeta(metaResult.data);
+                }
+            } catch (error) {
+                console.error("Error fetching features content:", error);
+            }
+        };
+
+        fetchContent();
+    }, []);
+
+    // Fallback if no features in DB yet
+    const displayFeatures = features.length > 0 ? features : [];
 
     return (
         <section className="py-24 bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white relative overflow-hidden">
@@ -60,36 +72,40 @@ export function ModernFeaturesSection() {
                         <div className="h-1 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6" />
                     </div>
                     <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-                        අති නවීන තාක්ෂණය සහ ඔප්පු වූ ගුරු ක්‍රමවේද සමඟ උ.පෙ. ආර්ථික විද්‍යා අධ්‍යාපනයට විප්ලවවාදී ප්‍රවේශයක් අත්විඳින්න.
+                        {featuresMeta.description}
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {features.map((feature, idx) => (
-                        <div
-                            key={idx}
-                            className="group relative bg-gradient-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)] hover:-translate-y-2"
-                        >
-                            {/* Icon with Gradient Background */}
-                            <div className="relative mb-6">
-                                <div className={`inline-flex p-4 bg-gradient-to-br ${feature.color} rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                                    <feature.icon className="w-8 h-8 text-white" />
+                    {displayFeatures.map((feature, idx) => {
+                        const Icon = FEATURE_ICONS.find(i => i.name === feature.icon)?.icon || Zap;
+
+                        return (
+                            <div
+                                key={idx}
+                                className="group relative bg-gradient-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)] hover:-translate-y-2"
+                            >
+                                {/* Icon with Gradient Background */}
+                                <div className="relative mb-6">
+                                    <div className={`inline-flex p-4 bg-gradient-to-br ${feature.color || 'from-gray-600 to-gray-700'} rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                                        <Icon className="w-8 h-8 text-white" />
+                                    </div>
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.color || 'from-gray-600 to-gray-700'} blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-2xl`} />
                                 </div>
-                                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-2xl`} />
+
+                                {/* Content */}
+                                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
+                                    {feature.title}
+                                </h3>
+                                <p className="text-gray-400 text-sm leading-relaxed">
+                                    {feature.description}
+                                </p>
+
+                                {/* Decorative Corner */}
+                                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-bl-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
-
-                            {/* Content */}
-                            <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
-                                {feature.title}
-                            </h3>
-                            <p className="text-gray-400 text-sm leading-relaxed">
-                                {feature.description}
-                            </p>
-
-                            {/* Decorative Corner */}
-                            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-bl-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* Student Benefits Section - Redesigned */}
@@ -105,16 +121,10 @@ export function ModernFeaturesSection() {
                                     Why Students <span className="text-yellow-500">Love Us</span>
                                 </h3>
                                 <p className="text-gray-400 mb-8 text-lg leading-relaxed">
-                                    Our comprehensive learning platform is designed to give you every advantage in your A/L Economics journey, combining traditional teaching excellence with modern technology.
+                                    {featuresMeta.studentLove?.description}
                                 </p>
                                 <ul className="space-y-4">
-                                    {[
-                                        "Flexible learning schedule that fits your lifestyle",
-                                        "Access to a vast library of educational resources",
-                                        "Personalized learning paths based on your progress",
-                                        "Direct communication with experienced teachers",
-                                        "Competitive environment that motivates excellence"
-                                    ].map((benefit, idx) => (
+                                    {(featuresMeta.studentLove?.benefits || []).map((benefit: string, idx: number) => (
                                         <li key={idx} className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5 hover:border-yellow-500/30 hover:bg-white/10 transition-all duration-300 group">
                                             <div className="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
                                                 <svg className="w-4 h-4 text-yellow-500 group-hover:text-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -139,10 +149,11 @@ export function ModernFeaturesSection() {
                                             <TrendingUp className="w-10 h-10 text-black" />
                                         </div>
                                         <div className="text-7xl font-bold text-white mb-2 tracking-tighter">
-                                            92<span className="text-yellow-500 text-4xl">%</span>
+                                            {featuresMeta.studentLove?.successRate?.value || '92'}
+                                            <span className="text-yellow-500 text-4xl">{featuresMeta.studentLove?.successRate?.suffix || '%'}</span>
                                         </div>
-                                        <div className="text-xl text-gray-300 font-medium">Success Rate</div>
-                                        <div className="text-sm text-gray-500 mt-2">of our students achieve<br />A or B grades</div>
+                                        <div className="text-xl text-gray-300 font-medium">{featuresMeta.studentLove?.successRate?.label || 'Success Rate'}</div>
+                                        <div className="text-sm text-gray-500 mt-2">{featuresMeta.studentLove?.successRate?.description}</div>
                                     </div>
 
                                     {/* Floating Badges */}
