@@ -1,47 +1,127 @@
 "use client";
 
-import { Play, FileText, BookOpen, ClipboardCheck, Download } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Play, FileText, BookOpen, ClipboardCheck, Download, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { getLandingPageContent } from '@/lib/actions/content';
+import { getFreeResources } from '@/lib/actions/freeResource';
+import { ResourceType } from '@prisma/client';
+
+interface FreeResource {
+    id: string;
+    title: string;
+    type: ResourceType;
+    url: string;
+    description?: string;
+}
+
+interface FreeLessonsContent {
+    description: string;
+    featuredVideo: {
+        title: string;
+        duration: string;
+        views: string;
+        url: string;
+    };
+    featuredDoc: {
+        title: string;
+        subtitle: string;
+        url: string;
+    };
+    featuredQuiz: {
+        title: string;
+        duration: string;
+        questionCount: string;
+        url: string;
+    };
+}
 
 export function FreeLessonsSection() {
-    const resources = [
+    const [content, setContent] = useState<FreeLessonsContent | null>(null);
+    const [stats, setStats] = useState({
+        VIDEO: 0,
+        PDF: 0,
+        PAST_PAPER: 0,
+        QUIZ: 0
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [contentResult, resourcesResult] = await Promise.all([
+                    getLandingPageContent('free_lessons'),
+                    getFreeResources()
+                ]);
+
+                if (contentResult.success && contentResult.data) {
+                    setContent(contentResult.data);
+                }
+
+                if (resourcesResult.success && resourcesResult.data) {
+                    const resources = resourcesResult.data as FreeResource[];
+                    const newStats = {
+                        VIDEO: resources.filter(r => r.type === 'VIDEO').length,
+                        PDF: resources.filter(r => r.type === 'PDF').length,
+                        PAST_PAPER: resources.filter(r => r.type === 'PAST_PAPER').length,
+                        QUIZ: resources.filter(r => r.type === 'QUIZ').length
+                    };
+                    setStats(newStats);
+                }
+            } catch (error) {
+                console.error('Failed to fetch data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const resourceTypes = [
         {
+            type: 'VIDEO',
             icon: Play,
             title: "Video Lessons",
-            count: "15+ Free Videos",
+            count: `${stats.VIDEO}+ Free Videos`,
             description: "Watch comprehensive introductory lessons covering key Economics topics",
             bgColor: "from-red-500/10 to-red-600/10",
             iconColor: "text-red-500",
             borderColor: "border-red-500/20"
         },
         {
+            type: 'PAST_PAPER',
             icon: FileText,
             title: "Past Papers",
-            count: "50+ Papers",
+            count: `${stats.PAST_PAPER}+ Papers`,
             description: "Access previous A/L Economics papers with detailed marking schemes",
             bgColor: "from-blue-500/10 to-blue-600/10",
             iconColor: "text-blue-500",
             borderColor: "border-blue-500/20"
         },
         {
+            type: 'PDF',
             icon: BookOpen,
             title: "Study Materials",
-            count: "30+ PDFs",
+            count: `${stats.PDF}+ PDFs`,
             description: "Download structured notes, summaries, and reference materials",
             bgColor: "from-green-500/10 to-green-600/10",
             iconColor: "text-green-500",
             borderColor: "border-green-500/20"
         },
         {
+            type: 'QUIZ',
             icon: ClipboardCheck,
             title: "Practice Quizzes",
-            count: "20+ Quizzes",
+            count: `${stats.QUIZ}+ Quizzes`,
             description: "Test your knowledge with interactive quizzes and instant feedback",
             bgColor: "from-purple-500/10 to-purple-600/10",
             iconColor: "text-purple-500",
             borderColor: "border-purple-500/20"
         },
     ];
+
+    if (loading) return null;
 
     return (
         <section id="free-lessons" className="py-24 bg-black text-white relative overflow-hidden">
@@ -60,13 +140,13 @@ export function FreeLessonsSection() {
                         Explore a Few Lessons Before You Join
                     </h2>
                     <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-                        අපි ඔබට සුදුසුද යන්න විශ්වාස නැද්ද? එක්වීමට පෙර අපගේ නොමිලේ සම්පත් උත්සාහ කර අපගේ ගුරු කිරීමේ ගුණාත්මකභාවය අත්විඳින්න.
+                        {content?.description || "අපි ඔබට සුදුසුද යන්න විශ්වාස නැද්ද? එක්වීමට පෙර අපගේ නොමිලේ සම්පත් උත්සාහ කර අපගේ ගුරු කිරීමේ ගුණාත්මකභාවය අත්විඳින්න."}
                     </p>
                 </div>
 
                 {/* Resource Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {resources.map((resource, idx) => (
+                    {resourceTypes.map((resource, idx) => (
                         <Link
                             href="/free-resources"
                             key={idx}
@@ -103,27 +183,22 @@ export function FreeLessonsSection() {
                 {/* Featured Content Preview */}
                 <div className="grid md:grid-cols-3 gap-6">
                     {/* Video Preview */}
-                    <Link href="/free-resources" className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
+                    <div onClick={() => content?.featuredVideo.url && window.open(content.featuredVideo.url, '_blank')} className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
                         <div className="aspect-video bg-linear-to-br from-red-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden">
                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDIwIDAgTCAwIDAgMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-50" />
                             <div className="relative w-16 h-16 rounded-full bg-red-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 cursor-pointer">
                                 <Play className="w-8 h-8 text-white ml-1" fill="white" />
                             </div>
                         </div>
-                        <h4 className="font-bold text-white mb-2">Introduction to Microeconomics</h4>
-                        <p className="text-sm text-gray-400 mb-3">45 min • Beginner Level</p>
+                        <h4 className="font-bold text-white mb-2">{content?.featuredVideo.title || "Introduction to Microeconomics"}</h4>
+                        <p className="text-sm text-gray-400 mb-3">{content?.featuredVideo.duration || "45 min"} • {content?.featuredVideo.views || "2.5k"} views</p>
                         <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <div className="flex items-center gap-1">
-                                <span>👁️</span>
-                                <span>2.5k views</span>
-                            </div>
-                            <span>•</span>
-                            <span>⭐ 4.9/5</span>
+                            <span className="text-red-500 font-medium">Watch Now</span>
                         </div>
-                    </Link>
+                    </div>
 
                     {/* Document Preview */}
-                    <Link href="/free-resources" className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer block">
+                    <div onClick={() => content?.featuredDoc.url && window.open(content.featuredDoc.url, '_blank')} className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
                         <div className="aspect-video bg-linear-to-br from-blue-900/20 to-black rounded-xl mb-4 flex items-center justify-center relative overflow-hidden p-4">
                             <div className="text-center">
                                 <FileText className="w-12 h-12 text-blue-500 mx-auto mb-2" />
@@ -134,29 +209,29 @@ export function FreeLessonsSection() {
                                 </div>
                             </div>
                         </div>
-                        <h4 className="font-bold text-white mb-2">2023 A/L Past Paper</h4>
-                        <p className="text-sm text-gray-400 mb-3">With marking scheme</p>
+                        <h4 className="font-bold text-white mb-2">{content?.featuredDoc.title || "2023 A/L Past Paper"}</h4>
+                        <p className="text-sm text-gray-400 mb-3">{content?.featuredDoc.subtitle || "With marking scheme"}</p>
                         <button className="flex items-center gap-2 text-blue-500 text-sm font-semibold group-hover:gap-3 transition-all">
                             <Download className="w-4 h-4" />
                             Download PDF
                         </button>
-                    </Link>
+                    </div>
 
                     {/* Quiz Preview */}
-                    <Link href="/free-resources" className="bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group cursor-pointer block">
+                    <div onClick={() => content?.featuredQuiz.url && window.open(content.featuredQuiz.url, '_blank')} className="cursor-pointer bg-linear-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 group block">
                         <div className="aspect-video bg-linear-to-br from-purple-900/20 to-black rounded-xl mb-4 flex items-center justify-center">
                             <div className="text-center">
                                 <ClipboardCheck className="w-12 h-12 text-purple-500 mx-auto mb-2" />
-                                <div className="text-2xl font-bold text-white">15</div>
+                                <div className="text-2xl font-bold text-white">{content?.featuredQuiz.questionCount || "15"}</div>
                                 <div className="text-xs text-gray-400">Questions</div>
                             </div>
                         </div>
-                        <h4 className="font-bold text-white mb-2">Supply & Demand Quiz</h4>
-                        <p className="text-sm text-gray-400 mb-3">20 min • Multiple Choice</p>
+                        <h4 className="font-bold text-white mb-2">{content?.featuredQuiz.title || "Supply & Demand Quiz"}</h4>
+                        <p className="text-sm text-gray-400 mb-3">{content?.featuredQuiz.duration || "20 min"} • Multiple Choice</p>
                         <button className="w-full py-2 bg-purple-500/20 text-purple-500 rounded-lg font-semibold text-sm group-hover:bg-purple-500/30 transition-colors">
                             Start Quiz
                         </button>
-                    </Link>
+                    </div>
                 </div>
 
                 {/* CTA Section */}
