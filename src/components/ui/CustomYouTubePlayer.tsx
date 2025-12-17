@@ -24,6 +24,7 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
     const [isReady, setIsReady] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [hasStarted, setHasStarted] = useState(false);
 
     // Progress Loop
     useEffect(() => {
@@ -101,8 +102,30 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
     };
 
     const onPlayerStateChange = (event: any) => {
-        // 1 = Playing, 2 = Paused
-        setIsPlaying(event.data === 1);
+        // 1 = Playing, 2 = Paused, 0 = Ended
+        const state = event.data;
+        setIsPlaying(state === 1);
+
+        if (state === 1) {
+            setHasStarted(true); // Ensure mask is hidden if it starts playing
+        }
+
+        // Auto-reset when video ends to prevent "Suggested Videos"
+        if (state === 0) {
+            playerRef.current.seekTo(0);
+            playerRef.current.pauseVideo();
+            setIsPlaying(false);
+            setCurrentTime(0);
+            // Optional: setHasStarted(false) if we want to show cover again on end
+            // but usually looping or staying on last frame is better
+        }
+    };
+
+    const handleStart = () => {
+        setHasStarted(true);
+        if (playerRef.current && isReady) {
+            playerRef.current.playVideo();
+        }
     };
 
     // Controls
@@ -146,65 +169,86 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
                 onContextMenu={(e) => e.preventDefault()}
             />
 
-            {/* 3. The Dashboard: Custom Controls (Z-index > Shield) */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent z-20 flex items-center justify-center gap-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-
-                {/* Rewind */}
-                <button
-                    onClick={() => seek(-10)}
-                    className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-transform hover:scale-110 active:scale-95"
-                    title="-10s"
+            {/* NEW: Start Mask (Thumbnail + Big Play Button) */}
+            {!hasStarted && (
+                <div
+                    className="absolute inset-0 z-40 bg-cover bg-center flex items-center justify-center cursor-pointer group/mask"
+                    style={{ backgroundImage: `url(https://img.youtube.com/vi/${videoId}/maxresdefault.jpg)` }}
+                    onClick={handleStart}
                 >
-                    <Rewind className="w-6 h-6" />
-                </button>
+                    <div className="absolute inset-0 bg-black/30 group-hover/mask:bg-black/40 transition-colors" />
+                    <button className="relative z-50 p-6 rounded-full bg-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.5)] group-hover/mask:scale-110 transition-transform duration-300">
+                        <Play className="w-12 h-12 text-black fill-current ml-2" />
+                    </button>
+                </div>
+            )}
 
-                {/* Play/Pause */}
-                <button
-                    onClick={togglePlay}
-                    className="p-5 rounded-full bg-yellow-500 hover:bg-yellow-400 text-black shadow-[0_0_20px_rgba(234,179,8,0.5)] transition-transform hover:scale-110 active:scale-95"
-                    disabled={!isReady}
-                >
-                    {isPlaying ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
-                </button>
+            {/* 3. The Dashboard: Container for Timeline + Controls (Z-index > Shield) */}
+            <div className={cn(
+                "absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-12 pb-6 px-6 flex flex-col gap-4 transition-opacity duration-300",
+                !hasStarted ? "opacity-0 pointer-events-none" : "opacity-0 group-hover:opacity-100"
+            )}>
 
-                {/* Forward */}
-                <button
-                    onClick={() => seek(10)}
-                    className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-transform hover:scale-110 active:scale-95"
-                    title="+10s"
-                >
-                    <FastForward className="w-6 h-6" />
-                </button>
+                {/* Timeline Scrubber (Top) */}
+                <div className="w-full flex items-center">
+                    <input
+                        type="range"
+                        min="0"
+                        max={duration || 100}
+                        value={currentTime}
+                        onChange={(e) => {
+                            const newTime = parseFloat(e.target.value);
+                            setCurrentTime(newTime);
+                            if (playerRef.current && isReady) {
+                                playerRef.current.seekTo(newTime, true);
+                            }
+                        }}
+                        className="w-full h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-yellow-500 hover:h-2 transition-all"
+                        style={{
+                            background: `linear-gradient(to right, #eab308 ${duration ? (currentTime / duration) * 100 : 0}%, #4b5563 ${duration ? (currentTime / duration) * 100 : 0}%)`
+                        }}
+                    />
+                </div>
 
-                {/* Volume */}
-                <button
-                    onClick={toggleMute}
-                    className="absolute right-6 p-2 text-gray-400 hover:text-white"
-                >
-                    {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                </button>
+                {/* Control Buttons (Bottom) */}
+                <div className="flex items-center justify-center gap-6 relative">
 
-            </div>
+                    {/* Rewind */}
+                    <button
+                        onClick={() => seek(-10)}
+                        className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-transform hover:scale-110 active:scale-95"
+                        title="-10s"
+                    >
+                        <Rewind className="w-6 h-6" />
+                    </button>
 
-            {/* Timeline Scrubber */}
-            <div className="absolute bottom-[88px] left-6 right-6 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <input
-                    type="range"
-                    min="0"
-                    max={duration || 100}
-                    value={currentTime}
-                    onChange={(e) => {
-                        const newTime = parseFloat(e.target.value);
-                        setCurrentTime(newTime);
-                        if (playerRef.current && isReady) {
-                            playerRef.current.seekTo(newTime, true);
-                        }
-                    }}
-                    className="w-full h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-yellow-500 hover:h-2 transition-all"
-                    style={{
-                        background: `linear-gradient(to right, #eab308 ${duration ? (currentTime / duration) * 100 : 0}%, #4b5563 ${duration ? (currentTime / duration) * 100 : 0}%)`
-                    }}
-                />
+                    {/* Play/Pause */}
+                    <button
+                        onClick={togglePlay}
+                        className="p-4 rounded-full bg-yellow-500 hover:bg-yellow-400 text-black shadow-[0_0_20px_rgba(234,179,8,0.5)] transition-transform hover:scale-110 active:scale-95"
+                        disabled={!isReady}
+                    >
+                        {isPlaying ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}
+                    </button>
+
+                    {/* Forward */}
+                    <button
+                        onClick={() => seek(10)}
+                        className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-transform hover:scale-110 active:scale-95"
+                        title="+10s"
+                    >
+                        <FastForward className="w-6 h-6" />
+                    </button>
+
+                    {/* Volume */}
+                    <button
+                        onClick={toggleMute}
+                        className="absolute right-0 p-2 text-gray-400 hover:text-white"
+                    >
+                        {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                    </button>
+                </div>
+
             </div>
         </div>
     );
