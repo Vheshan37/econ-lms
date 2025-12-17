@@ -53,8 +53,8 @@ export default async function Home() {
 
       <main>
         <HeroSection content={heroData} timestamp={timestamp} />
-        <BannerSection content={bannerData} />
         <AboutSection content={aboutData} />
+        <BannerSection content={bannerData} />
         <CoursesSection years={years} />
         <TimetableSection institutes={institutes} />
         <ModernFeaturesSection />
