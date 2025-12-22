@@ -53,7 +53,7 @@ export default function AdminLayout({
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="bg-[#1a1a1a] border-r border-gray-800 fixed h-full z-20 hidden md:flex flex-col shadow-2xl"
                 >
-                    <div className={`p - 6 border - b border - gray - 800 flex items - center ${isCollapsed ? 'justify-center' : 'justify-between'} `}>
+                    <div className={`p-6 border-b border-gray-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} `}>
                         {!isCollapsed && (
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 rounded-xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
