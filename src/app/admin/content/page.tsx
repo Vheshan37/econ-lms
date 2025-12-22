@@ -35,6 +35,7 @@ import { ModernFeaturesPreview } from '@/components/landing/preview/ModernFeatur
 import { TestimonialsPreview } from '@/components/landing/preview/TestimonialsPreview';
 
 import { ContactPreview } from '@/components/landing/preview/ContactPreview';
+import { Testimonial } from '@prisma/client';
 
 export default function ContentManagementPage() {
     const [activeTab, setActiveTab] = useState('general');
@@ -68,7 +69,8 @@ export default function ContentManagementPage() {
         description: '', // Sinhala description
         features: [] as string[], // Array of feature strings
         quote: '', quoteAuthor: '',
-        videoUrl: ''
+        videoUrl: '',
+        videoPreviewImage: ''
     });
     const [contactContent, setContactContent] = useState({
         subtitle: '',
@@ -97,9 +99,15 @@ export default function ContentManagementPage() {
     const [bannerImageFiles, setBannerImageFiles] = useState<{ [key: number]: File }>({});
 
     // Testimonials State
-    const [testimonials, setTestimonials] = useState<any[]>([]);
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+    const [testimonialStats, setTestimonialStats] = useState({
+        totalStudents: '5000+',
+        averageRating: '4.9/5',
+        recommendationRate: '98%',
+        experienceYears: '10+'
+    });
     const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
-    const [editingTestimonial, setEditingTestimonial] = useState<any | null>(null);
+    const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
     const [testimonialForm, setTestimonialForm] = useState({ name: '', role: '', content: '', imageUrl: '', rating: 5, institute: '' });
 
     // Features State
@@ -159,11 +167,11 @@ export default function ContentManagementPage() {
             if (landingData.success && landingData.data) {
                 const data = landingData.data as any;
                 if (data.hero) setHeroContent(data.hero);
-                if (data.about) setAboutContent(data.about);
+                if (data.about) setAboutContent(prev => ({ ...prev, ...data.about }));
 
                 if (data.contact) setContactContent(data.contact);
                 if (data.footer) setFooterContent(data.footer);
-                if (data.footer) setFooterContent(data.footer);
+                if (data.testimonials) setTestimonialStats(prev => ({ ...prev, ...data.testimonials }));
                 if (data.banners && Array.isArray(data.banners)) setBannerContent(data.banners);
                 if (data.features) setFeaturesMeta(data.features);
             }
@@ -297,6 +305,27 @@ export default function ContentManagementPage() {
     // And add video upload input.
     // I will cancel this and use multi_replace.
 
+    const handleVideoPreviewImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('customName', 'about-video-preview-' + new Date().getTime());
+
+            setIsSaving(true);
+            const result = await uploadImage(formData);
+            if (result.success && result.url) {
+                // Clean URL (remove old query params if any)
+                let url = result.url;
+                if (url.startsWith('/uploads/')) {
+                    url = url.split('?')[0];
+                }
+                setAboutContent(prev => ({ ...prev, videoPreviewImage: url }));
+            }
+            setIsSaving(false);
+        }
+    };
+
     const handleSaveBanners = async () => {
         setIsSaving(true);
         try {
@@ -359,6 +388,23 @@ export default function ContentManagementPage() {
         }
     };
 
+
+    const handleSaveTestimonialStats = async () => {
+        setIsSaving(true);
+        try {
+            const result = await updateLandingPageContent('testimonials', testimonialStats);
+            if (result.success) {
+                setAlert({ isOpen: true, title: 'Success', description: 'Testimonial stats updated successfully', type: 'success' });
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            console.error(error);
+            setAlert({ isOpen: true, title: 'Error', description: 'Failed to update stats', type: 'error' });
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const handleTestimonialSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -604,6 +650,25 @@ export default function ContentManagementPage() {
                                             <span className="w-1 h-1 rounded-full bg-yellow-500"></span>
                                             Max size: 50MB. Supports MP4, WebM.
                                         </p>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-gray-800">Video Preview Image</Label>
+                                    <div className="flex items-center gap-4">
+                                        {aboutContent.videoPreviewImage && (
+                                            <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-gray-200">
+                                                <img src={aboutContent.videoPreviewImage} alt="Video Preview" className="h-full w-full object-cover" />
+                                            </div>
+                                        )}
+                                        <div className="flex-1">
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleVideoPreviewImageUpload}
+                                                className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">Select an image to show before video plays</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -953,7 +1018,7 @@ export default function ContentManagementPage() {
                                     <div className="flex justify-between items-start mb-4">
                                         <div className={`h-10 w-10 rounded-lg flex items-center justify-center text-white bg-linear-to-br ${feature.color || 'from-gray-500 to-gray-600'}`}>
                                             {(() => {
-                                                const Icon = FEATURE_ICONS.find(i => i.name === feature.icon)?.icon || Zap;
+                                                const Icon = (FEATURE_ICONS.find(i => i.name === feature.icon)?.icon || Zap) as any;
                                                 return <Icon className="w-5 h-5" />;
                                             })()}
                                         </div>
@@ -972,10 +1037,10 @@ export default function ContentManagementPage() {
                             ))}
                         </div>
                     </div >
-                </TabsContent >
+                </TabsContent>
 
                 {/* Testimonials Tab */}
-                < TabsContent value="testimonials" className="space-y-6" >
+                <TabsContent value="testimonials" className="space-y-6">
                     <div className="flex justify-between items-center">
                         <Button
                             onClick={() => setPreviewModal({ isOpen: true, type: 'testimonials' })}
@@ -988,6 +1053,54 @@ export default function ContentManagementPage() {
                             <Plus className="w-4 h-4 mr-2" /> Add Testimonial
                         </Button>
                     </div>
+
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-gray-900">Statistics Section</h2>
+                            <Button onClick={handleSaveTestimonialStats} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                <Save className="w-4 h-4 mr-2" /> Save Stats
+                            </Button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Total Students</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={testimonialStats.totalStudents}
+                                    onChange={e => setTestimonialStats({ ...testimonialStats, totalStudents: e.target.value })}
+                                    placeholder="5000+"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Average Rating</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={testimonialStats.averageRating}
+                                    onChange={e => setTestimonialStats({ ...testimonialStats, averageRating: e.target.value })}
+                                    placeholder="4.9/5"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Recommend Rate</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={testimonialStats.recommendationRate}
+                                    onChange={e => setTestimonialStats({ ...testimonialStats, recommendationRate: e.target.value })}
+                                    placeholder="98%"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Experience</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={testimonialStats.experienceYears}
+                                    onChange={e => setTestimonialStats({ ...testimonialStats, experienceYears: e.target.value })}
+                                    placeholder="10+"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {testimonials.map((testimonial) => (
                             <div key={testimonial.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
@@ -1002,7 +1115,7 @@ export default function ContentManagementPage() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button onClick={() => { setEditingTestimonial(testimonial); setTestimonialForm(testimonial); setIsTestimonialModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                                        <button onClick={() => { setEditingTestimonial(testimonial); setTestimonialForm({ ...testimonial, imageUrl: testimonial.imageUrl || '', institute: testimonial.institute || '' }); setIsTestimonialModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
                                             <Edit2 className="w-4 h-4" />
                                         </button>
                                         <button onClick={() => handleDeleteTestimonial(testimonial.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
@@ -1018,9 +1131,15 @@ export default function ContentManagementPage() {
                             </div>
                         ))}
                     </div>
-                </TabsContent >
+                </TabsContent>
 
-                {/* Contact Tab */}
+                <PreviewModal
+                    isOpen={previewModal.isOpen && previewModal.type === 'testimonials'}
+                    onClose={() => setPreviewModal({ isOpen: false, type: null })}
+                    title="Testimonials Section"
+                >
+                    <TestimonialsPreview data={testimonials} stats={testimonialStats} />
+                </PreviewModal>
                 < TabsContent value="contact" className="space-y-6" >
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-6">
@@ -1221,7 +1340,7 @@ export default function ContentManagementPage() {
                                                 <div className="flex items-start gap-4">
                                                     <div className={`p-3 rounded-xl bg-linear-to-r ${featureForm.color}`}>
                                                         {(() => {
-                                                            const IconComponent = FEATURE_ICONS.find(i => i.name === featureForm.icon)?.icon;
+                                                            const IconComponent = (FEATURE_ICONS.find(i => i.name === featureForm.icon)?.icon) as any;
                                                             return IconComponent ? <IconComponent className="w-6 h-6 text-white" /> : null;
                                                         })()}
                                                     </div>

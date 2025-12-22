@@ -78,6 +78,7 @@ model FreeResource {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   views       Int          @default(0)
+  level       String       @default("Advanced Level") // "Advanced Level" or "Ordinary Level"
 }
 
 model Student {

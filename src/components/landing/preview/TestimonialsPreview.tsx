@@ -3,21 +3,19 @@
 import { Quote, Star } from "lucide-react";
 import { CountUp } from "@/components/ui/CountUp";
 
-interface Testimonial {
-    id?: string;
-    name: string;
-    achievement: string;
-    avatar: string;
-    rating: number;
-    text: string;
-    institute: string;
-}
+import { Testimonial } from "@prisma/client";
 
 interface TestimonialsPreviewProps {
     data: Testimonial[];
+    stats?: {
+        totalStudents: string;
+        averageRating: string;
+        recommendationRate: string;
+        experienceYears: string;
+    };
 }
 
-export function TestimonialsPreview({ data }: TestimonialsPreviewProps) {
+export function TestimonialsPreview({ data, stats }: TestimonialsPreviewProps) {
     return (
         <section className="py-24 bg-gradient-to-b from-gray-950 via-black to-gray-950 text-white relative overflow-hidden">
             {/* Background Decoration */}
@@ -61,17 +59,23 @@ export function TestimonialsPreview({ data }: TestimonialsPreviewProps) {
 
                             {/* Testimonial Text */}
                             <p className="text-gray-300 text-sm leading-relaxed mb-6 relative z-10">
-                                "{testimonial.text}"
+                                "{testimonial.content}"
                             </p>
 
                             {/* Student Info */}
                             <div className="flex items-center gap-4 pt-6 border-t border-gray-800">
                                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition-colors">
-                                    <img src={testimonial.avatar} alt={testimonial.name} className="w-full h-full object-cover" />
+                                    {testimonial.imageUrl ? (
+                                        <img src={testimonial.imageUrl} alt={testimonial.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full bg-gray-600 flex items-center justify-center text-xs">
+                                            {testimonial.name.charAt(0)}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="font-bold text-white text-sm">{testimonial.name}</h4>
-                                    <p className="text-xs text-yellow-500 font-semibold">{testimonial.achievement}</p>
+                                    <p className="text-xs text-yellow-500 font-semibold">{testimonial.role}</p>
                                     <p className="text-xs text-gray-500 mt-0.5">{testimonial.institute}</p>
                                 </div>
                             </div>
@@ -92,25 +96,25 @@ export function TestimonialsPreview({ data }: TestimonialsPreviewProps) {
                 <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
                     <div className="text-center">
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
-                            <CountUp end={5000} suffix="+" />
+                            {stats?.totalStudents || "5000+"}
                         </div>
                         <div className="text-sm text-gray-400 uppercase tracking-wider">Happy Students</div>
                     </div>
                     <div className="text-center">
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
-                            4.9/5
+                            {stats?.averageRating || "4.9/5"}
                         </div>
                         <div className="text-sm text-gray-400 uppercase tracking-wider">Average Rating</div>
                     </div>
                     <div className="text-center">
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
-                            <CountUp end={98} suffix="%" />
+                            {stats?.recommendationRate || "98%"}
                         </div>
                         <div className="text-sm text-gray-400 uppercase tracking-wider">Would Recommend</div>
                     </div>
                     <div className="text-center">
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2 bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
-                            <CountUp end={10} suffix="+" />
+                            {stats?.experienceYears || "10+"}
                         </div>
                         <div className="text-sm text-gray-400 uppercase tracking-wider">Years Experience</div>
                     </div>

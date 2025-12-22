@@ -22,6 +22,7 @@ export function AboutSection({ content }: { content?: any }) {
         secondarySubtitle: content?.secondarySubtitle || "සංකීර්ණතාවය සරල බවට පරිවර්තනය කිරීම",
         description: content?.description || "දශකයකට වැඩි ගුරු අත්දැකීම් සහිතව, අපි සංකීර්ණ ආර්ථික න්‍යායන් පහසුවෙන් තේරුම් ගත හැකි, සැබෑ ලෝක සංකල්ප බවට බිඳ දමන අද්විතීය ක්‍රමවේදයක් වර්ධනය කර ඇත. අපගේ අරමුණ ඔබට විභාගය සමත්වීමට උදව් කිරීම පමණක් නොව, විෂය කෙරෙහි ඇති ඇල්ම වර්ධනය කිරීමයි.",
         videoUrl: content?.videoUrl,
+        videoPreviewImage: content?.videoPreviewImage,
         // For subtitle, split highlighting if needed, but for now assuming full string
     };
 
@@ -77,8 +78,20 @@ export function AboutSection({ content }: { content?: any }) {
                                         <p className="font-bold text-lg">Classroom Experience</p>
                                         <p className="text-sm text-gray-400">Watch how we make Economics simple</p>
                                     </div>
-                                    {/* Thumbnail Image (Gradient for now) */}
-                                    <div className="absolute inset-0 bg-linear-to-br from-gray-800 to-black" />
+                                    {/* Thumbnail Image */}
+                                    {data.videoPreviewImage ? (
+                                        <div className="absolute inset-0 z-0">
+                                            <img
+                                                src={data.videoPreviewImage}
+                                                alt="Video Preview"
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
+                                            {/* Gradient Overlay for Text Readability */}
+                                            <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
+                                        </div>
+                                    ) : (
+                                        <div className="absolute inset-0 bg-linear-to-br from-gray-800 to-black" />
+                                    )}
                                 </>
                             )}
                         </div>
@@ -112,7 +125,7 @@ export function AboutSection({ content }: { content?: any }) {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {features.map((feature: string, index: number) => (
                                 <div key={index} className="flex items-center gap-3">
-                                    <CheckCircle2 className="text-yellow-500 h-5 w-5 flex-shrink-0" />
+                                    <CheckCircle2 className="text-yellow-500 h-5 w-5 shrink-0" />
                                     <span className="text-gray-300">{feature}</span>
                                 </div>
                             ))}

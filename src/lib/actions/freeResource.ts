@@ -4,9 +4,12 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { ResourceType } from '@prisma/client';
 
-export async function getFreeResources() {
+export async function getFreeResources(level: string = "Advanced Level") {
     try {
         const resources = await (prisma as any).freeResource.findMany({
+            where: {
+                level
+            },
             orderBy: {
                 createdAt: 'desc'
             }
@@ -24,6 +27,7 @@ export async function createFreeResource(data: {
     type: ResourceType;
     url: string;
     description?: string;
+    level?: string;
 }) {
     try {
         const resource = await (prisma as any).freeResource.create({
@@ -32,10 +36,12 @@ export async function createFreeResource(data: {
                 type: data.type,
                 url: data.url,
                 description: data.description,
+                level: data.level || "Advanced Level",
             },
         });
 
         revalidatePath('/admin/resources');
+        revalidatePath('/admin/ol-resources');
         return { success: true, data: resource };
     } catch (error) {
         console.error('Failed to create free resource:', error);
@@ -48,6 +54,7 @@ export async function updateFreeResource(id: string, data: {
     type: ResourceType;
     url: string;
     description?: string;
+    level?: string;
 }) {
     try {
         const resource = await (prisma as any).freeResource.update({
@@ -57,10 +64,12 @@ export async function updateFreeResource(id: string, data: {
                 type: data.type,
                 url: data.url,
                 description: data.description,
+                level: data.level,
             },
         });
 
         revalidatePath('/admin/resources');
+        revalidatePath('/admin/ol-resources');
         return { success: true, data: resource };
     } catch (error) {
         console.error('Failed to update free resource:', error);
@@ -75,6 +84,7 @@ export async function deleteFreeResource(id: string) {
         });
 
         revalidatePath('/admin/resources');
+        revalidatePath('/admin/ol-resources');
         return { success: true };
     } catch (error) {
         console.error('Failed to delete free resource:', error);

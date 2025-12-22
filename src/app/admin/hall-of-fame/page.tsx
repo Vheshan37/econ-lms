@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { getHallOfFame, createAlumni, updateAlumni, deleteAlumni } from '@/lib/actions/hallOfFame';
+import { getLandingPageContent, updateLandingPageContent } from '@/lib/actions/content';
 import { PreviewModal } from '@/components/landing/preview/PreviewModal';
 import { ResultsPreview } from '@/components/landing/preview/ResultsPreview';
 
@@ -37,6 +38,15 @@ export default function HallOfFamePage() {
     const [districtRank, setDistrictRank] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Stats State
+    const [hallOfFameStats, setHallOfFameStats] = useState({
+        totalAPasses: '150+',
+        passRate: '92%',
+        districtRanks: '12',
+        islandRanks: '3'
+    });
+    const [isSavingStats, setIsSavingStats] = useState(false);
 
     // Alert Dialog State
     const [deleteAlert, setDeleteAlert] = useState<{ isOpen: boolean; alumniId: string | null; alumniName: string }>({
@@ -71,8 +81,28 @@ export default function HallOfFamePage() {
             }
             setIsLoading(false);
         };
+
+        const fetchStats = async () => {
+            const content = await getLandingPageContent('hall-of-fame');
+            if (content.success && content.data) {
+                setHallOfFameStats(prev => ({ ...prev, ...content.data }));
+            }
+        };
+
         fetchAlumniData();
+        fetchStats();
     }, []);
+
+    const handleSaveStats = async () => {
+        setIsSavingStats(true);
+        const result = await updateLandingPageContent('hall-of-fame', hallOfFameStats);
+        if (result.success) {
+            // Optional: Show success toast
+        } else {
+            setErrorAlert({ isOpen: true, message: 'Failed to save statistics' });
+        }
+        setIsSavingStats(false);
+    };
 
     const handleEdit = (alumnus: Alumni) => {
         setEditingAlumni(alumnus);
@@ -149,7 +179,7 @@ export default function HallOfFamePage() {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
@@ -185,6 +215,57 @@ export default function HallOfFamePage() {
                 </div>
             </div>
 
+            {/* Stats Management Section */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">Page Settings</h2>
+                        <p className="text-sm text-gray-500">Manage the analytics displayed on the Hall of Fame page</p>
+                    </div>
+                    <Button onClick={handleSaveStats} disabled={isSavingStats} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                        {isSavingStats ? 'Saving...' : 'Save Settings'}
+                    </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                        <Label className="text-gray-800">A Passes</Label>
+                        <Input
+                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                            value={hallOfFameStats.totalAPasses}
+                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, totalAPasses: e.target.value })}
+                            placeholder="150+"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-gray-800">Pass Rate</Label>
+                        <Input
+                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                            value={hallOfFameStats.passRate}
+                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, passRate: e.target.value })}
+                            placeholder="92%"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-gray-800">District Ranks</Label>
+                        <Input
+                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                            value={hallOfFameStats.districtRanks}
+                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, districtRanks: e.target.value })}
+                            placeholder="12"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-gray-800">Island Ranks</Label>
+                        <Input
+                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                            value={hallOfFameStats.islandRanks}
+                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, islandRanks: e.target.value })}
+                            placeholder="3"
+                        />
+                    </div>
+                </div>
+            </div>
+
             {/* Alumni Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <AnimatePresence>
@@ -198,7 +279,7 @@ export default function HallOfFamePage() {
                             className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
                         >
                             {/* Image Section */}
-                            <div className="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                            <div className="relative h-64 bg-linear-to-br from-gray-100 to-gray-200 overflow-hidden">
                                 {alumnus.imageUrl ? (
                                     <img
                                         src={alumnus.imageUrl}
@@ -261,7 +342,7 @@ export default function HallOfFamePage() {
                             </div>
 
                             {/* Decorative Bottom Border */}
-                            <div className="h-1 bg-gradient-to-r from-[#D4AF37] via-[#B5952F] to-[#D4AF37]" />
+                            <div className="h-1 bg-linear-to-r from-[#D4AF37] via-[#B5952F] to-[#D4AF37]" />
                         </motion.div>
                     ))}
                 </AnimatePresence>

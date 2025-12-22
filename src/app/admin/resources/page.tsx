@@ -38,6 +38,12 @@ export default function FreeResourcesPage() {
 
     // Page Content State
     const [pageDescription, setPageDescription] = useState('');
+    const [categoryDescriptions, setCategoryDescriptions] = useState({
+        VIDEO: '',
+        PDF: '',
+        PAST_PAPER: '',
+        QUIZ: ''
+    });
     const [isSavingDescription, setIsSavingDescription] = useState(false);
 
     // Form state
@@ -88,6 +94,9 @@ export default function FreeResourcesPage() {
                 if (data.freeLessons?.description) {
                     setPageDescription(data.freeLessons.description);
                 }
+                if (data.freeLessons?.categories) {
+                    setCategoryDescriptions(prev => ({ ...prev, ...data.freeLessons.categories }));
+                }
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -128,7 +137,8 @@ export default function FreeResourcesPage() {
 
             const updatedSectionData = {
                 ...currentSectionData,
-                description: pageDescription
+                description: pageDescription,
+                categories: categoryDescriptions
             };
 
             const result = await updateLandingPageContent('freeLessons', updatedSectionData);
@@ -281,6 +291,30 @@ export default function FreeResourcesPage() {
                         placeholder="Description for the Free Resources page..."
                         rows={3}
                     />
+                </div>
+
+                <div className="mt-6 border-t border-gray-100 pt-6">
+                    <Label className="text-gray-900 font-bold text-md mb-4 block">Category Descriptions</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {TABS.map((tab) => (
+                            <div key={tab.id} className="space-y-2">
+                                <Label className="text-gray-800 text-sm flex items-center gap-2">
+                                    <tab.icon className={`w-4 h-4 ${tab.color}`} />
+                                    {tab.label} Description
+                                </Label>
+                                <Textarea
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] text-sm"
+                                    value={categoryDescriptions[tab.id as keyof typeof categoryDescriptions]}
+                                    onChange={(e) => setCategoryDescriptions(prev => ({
+                                        ...prev,
+                                        [tab.id]: e.target.value
+                                    }))}
+                                    placeholder={`Description for ${tab.label}...`}
+                                    rows={2}
+                                />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 

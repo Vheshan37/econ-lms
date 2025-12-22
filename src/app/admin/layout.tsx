@@ -36,6 +36,7 @@ export default function AdminLayout({
         { name: 'Classes', href: '/admin/classes', icon: BookOpen },
         { name: 'Students', href: '/admin/students', icon: Users },
         { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
+        { name: 'O/L Resources', href: '/admin/ol-resources', icon: BookOpen },
         { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
         { name: 'Site Content', href: '/admin/content', icon: Layers },
