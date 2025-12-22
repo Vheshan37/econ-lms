@@ -77,7 +77,11 @@ export default function ContentManagementPage() {
         title: '',
         description: '',
         email: '', phone: '', address: '',
-        formTitle: '', mapUrl: '',
+        formTitle: '',
+        locations: [
+            { name: '', address: '', latitude: '', longitude: '' },
+            { name: '', address: '', latitude: '', longitude: '' }
+        ] as { name: string; address: string; latitude: string; longitude: string }[],
         officeHours: { title: '', weekdays: '', weekends: '' }
     });
 
@@ -170,6 +174,17 @@ export default function ContentManagementPage() {
                 if (data.about) setAboutContent(prev => ({ ...prev, ...data.about }));
 
                 if (data.contact) setContactContent(data.contact);
+                if (data.contact) {
+                    // Ensure backward compatibility - add locations array if it doesn't exist
+                    const contactData = {
+                        ...data.contact,
+                        locations: data.contact.locations || [
+                            { name: '', address: '', latitude: '', longitude: '' },
+                            { name: '', address: '', latitude: '', longitude: '' }
+                        ]
+                    };
+                    setContactContent(contactData);
+                }
                 if (data.footer) setFooterContent(data.footer);
                 if (data.testimonials) setTestimonialStats(prev => ({ ...prev, ...data.testimonials }));
                 if (data.banners && Array.isArray(data.banners)) setBannerContent(data.banners);
@@ -1165,10 +1180,6 @@ export default function ContentManagementPage() {
                                 <Label className="text-gray-800">Form Title</Label>
                                 <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.formTitle} onChange={e => setContactContent({ ...contactContent, formTitle: e.target.value })} placeholder="Start Your AL Economics Journey Today" />
                             </div>
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Map URL</Label>
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.mapUrl} onChange={e => setContactContent({ ...contactContent, mapUrl: e.target.value })} placeholder="https://maps.google.com/..." />
-                            </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label className="text-gray-800">Email Address</Label>
@@ -1181,6 +1192,94 @@ export default function ContentManagementPage() {
                                 <div className="space-y-2">
                                     <Label className="text-gray-800">Address</Label>
                                     <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.address} onChange={e => setContactContent({ ...contactContent, address: e.target.value })} />
+                                </div>
+                            </div>
+                            <div className="space-y-6">
+                                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                                    <span>📍</span> Institute Locations (Up to 2)
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                    Add up to 2 institute locations with map coordinates.
+                                    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-[#D4AF37] hover:underline ml-1">
+                                        Get coordinates from Google Maps →
+                                    </a>
+                                </p>
+
+                                {(contactContent.locations || []).map((location, index) => (
+                                    <div key={index} className="p-6 border-2 border-gray-200 rounded-xl space-y-4 bg-gray-50">
+                                        <h4 className="font-bold text-gray-900">Location {index + 1}</h4>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Location Name</Label>
+                                            <Input
+                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                value={location.name}
+                                                onChange={e => {
+                                                    const newLocations = [...contactContent.locations];
+                                                    newLocations[index].name = e.target.value;
+                                                    setContactContent({ ...contactContent, locations: newLocations });
+                                                }}
+                                                placeholder="Colombo Institute"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Address</Label>
+                                            <Input
+                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                value={location.address}
+                                                onChange={e => {
+                                                    const newLocations = [...contactContent.locations];
+                                                    newLocations[index].address = e.target.value;
+                                                    setContactContent({ ...contactContent, locations: newLocations });
+                                                }}
+                                                placeholder="No. 123, High Level Road, Nugegoda"
+                                            />
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-gray-800">Latitude</Label>
+                                                <Input
+                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                    value={location.latitude}
+                                                    onChange={e => {
+                                                        const newLocations = [...contactContent.locations];
+                                                        newLocations[index].latitude = e.target.value;
+                                                        setContactContent({ ...contactContent, locations: newLocations });
+                                                    }}
+                                                    placeholder="7.0904"
+                                                    type="text"
+                                                />
+                                                <p className="text-xs text-gray-500">Example: 7.0904</p>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-gray-800">Longitude</Label>
+                                                <Input
+                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                    value={location.longitude}
+                                                    onChange={e => {
+                                                        const newLocations = [...contactContent.locations];
+                                                        newLocations[index].longitude = e.target.value;
+                                                        setContactContent({ ...contactContent, locations: newLocations });
+                                                    }}
+                                                    placeholder="80.1350"
+                                                    type="text"
+                                                />
+                                                <p className="text-xs text-gray-500">Example: 80.1350</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <p className="text-sm text-blue-900">
+                                        <strong>💡 How to get coordinates:</strong><br />
+                                        1. Open Google Maps<br />
+                                        2. Right-click on your location<br />
+                                        3. Click on the coordinates (e.g., "7.0904, 80.1350")<br />
+                                        4. Paste them here (latitude first, then longitude)
+                                    </p>
                                 </div>
                             </div>
                             <div className="space-y-2">

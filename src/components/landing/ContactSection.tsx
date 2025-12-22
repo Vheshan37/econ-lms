@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
+import { getLandingPageContent } from "@/lib/actions/content";
+import dynamic from 'next/dynamic';
+
+// Dynamically import LocationMap to avoid SSR issues with Leaflet
+const LocationMap = dynamic(() => import('@/components/LocationMap').then(mod => ({ default: mod.LocationMap })), {
+    ssr: false,
+    loading: () => <div className="w-full h-[400px] bg-gray-900 rounded-2xl animate-pulse" />
+});
 
 export function ContactSection() {
     const [formData, setFormData] = useState({
@@ -13,6 +21,29 @@ export function ContactSection() {
         message: ""
     });
     const [submitted, setSubmitted] = useState(false);
+    const [contactContent, setContactContent] = useState({
+        email: 'info@economicslms.lk',
+        phone: '+94 11 234 5678',
+        address: '123, Galle Road, Colombo 03, Sri Lanka',
+        locations: [
+            { name: 'Main Institute', address: 'Colombo', latitude: '6.9271', longitude: '79.8612' },
+            { name: 'Branch Institute', address: 'Nugegoda', latitude: '6.8649', longitude: '79.8997' }
+        ]
+    });
+
+    useEffect(() => {
+        const loadContent = async () => {
+            try {
+                const response = await getLandingPageContent('contact');
+                if (response.success && response.data) {
+                    setContactContent(prev => ({ ...prev, ...response.data }));
+                }
+            } catch (error) {
+                console.error("Failed to load contact content:", error);
+            }
+        };
+        loadContent();
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -243,36 +274,36 @@ export function ContactSection() {
                             </div>
                         </div>
 
-                        {/* Map Placeholder */}
-                        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-2 border border-gray-800 overflow-hidden">
-                            <div className="aspect-video w-full rounded-xl overflow-hidden relative group">
-                                {/* Embedded Google Maps - Replace with actual coordinates */}
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63371.80784024654!2d79.82118447089844!3d6.927078999999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0x3e049adba9650c15!2sColombo%2003!5e0!3m2!1sen!2slk!4v1234567890123!5m2!1sen!2slk"
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    className="grayscale hover:grayscale-0 transition-all duration-500"
-                                />
-                            </div>
+                        {/* Maps - One for each location */}
+                        <div className="space-y-4">
+                            {contactContent.locations && contactContent.locations.length > 0 && contactContent.locations.map((location, index) => (
+                                location.latitude && location.longitude && (
+                                    <div key={index} className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-2 border border-gray-800 overflow-hidden">
+                                        <h4 className="text-white font-semibold px-4 pt-2 pb-1">{location.name || `Location ${index + 1}`}</h4>
+                                        <LocationMap
+                                            latitude={parseFloat(location.latitude) || 6.9271}
+                                            longitude={parseFloat(location.longitude) || 79.8612}
+                                            locationName={location.name || 'Quality Econ Institute'}
+                                            address={location.address}
+                                        />
+                                    </div>
+                                )
+                            ))}
                         </div>
                     </div>
-                </div>
 
-                {/* Office Hours */}
-                <div className="mt-16 max-w-3xl mx-auto bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-2xl p-8 border border-yellow-500/20">
-                    <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Office Hours</h3>
-                    <div className="grid md:grid-cols-2 gap-4 text-center">
-                        <div>
-                            <p className="text-gray-400 text-sm">Weekdays</p>
-                            <p className="text-white font-semibold">9:00 AM - 6:00 PM</p>
-                        </div>
-                        <div>
-                            <p className="text-gray-400 text-sm">Weekends</p>
-                            <p className="text-white font-semibold">9:00 AM - 3:00 PM</p>
+                    {/* Office Hours */}
+                    <div className="mt-16 max-w-3xl mx-auto bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-2xl p-8 border border-yellow-500/20">
+                        <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Office Hours</h3>
+                        <div className="grid md:grid-cols-2 gap-4 text-center">
+                            <div>
+                                <p className="text-gray-400 text-sm">Weekdays</p>
+                                <p className="text-white font-semibold">9:00 AM - 6:00 PM</p>
+                            </div>
+                            <div>
+                                <p className="text-gray-400 text-sm">Weekends</p>
+                                <p className="text-white font-semibold">9:00 AM - 3:00 PM</p>
+                            </div>
                         </div>
                     </div>
                 </div>

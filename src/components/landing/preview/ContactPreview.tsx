@@ -14,7 +14,6 @@ interface ContactPreviewProps {
         phone: string;
         address: string;
         formTitle: string;
-        mapUrl: string;
         officeHours: {
             title: string;
             weekdays: string;
@@ -150,21 +149,6 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-
-                        {/* Map */}
-                        {data.mapUrl && (
-                            <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-2 border border-gray-800 overflow-hidden">
-                                <iframe
-                                    src={data.mapUrl}
-                                    width="100%"
-                                    height="300"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    className="rounded-xl"
-                                />
                             </div>
                         )}
                     </div>
