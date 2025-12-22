@@ -21,14 +21,16 @@ export function ContactSection() {
         message: ""
     });
     const [submitted, setSubmitted] = useState(false);
-    const [contactContent, setContactContent] = useState({
+    const [contactContent, setContactContent] = useState<any>({
         email: 'info@economicslms.lk',
         phone: '+94 11 234 5678',
         address: '123, Galle Road, Colombo 03, Sri Lanka',
+        formTitle: 'Send Us a Message',
         locations: [
             { name: 'Main Institute', address: 'Colombo', latitude: '6.9271', longitude: '79.8612' },
             { name: 'Branch Institute', address: 'Nugegoda', latitude: '6.8649', longitude: '79.8997' }
-        ]
+        ],
+        officeHours: { weekdays: '9:00 AM - 6:00 PM', weekends: '9:00 AM - 3:00 PM' }
     });
 
     useEffect(() => {
@@ -36,7 +38,7 @@ export function ContactSection() {
             try {
                 const response = await getLandingPageContent('contact');
                 if (response.success && response.data) {
-                    setContactContent(prev => ({ ...prev, ...response.data }));
+                    setContactContent((prev: any) => ({ ...prev, ...response.data }));
                 }
             } catch (error) {
                 console.error("Failed to load contact content:", error);
@@ -85,7 +87,9 @@ export function ContactSection() {
                 <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
                     {/* Contact Form */}
                     <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800">
-                        <h3 className="text-2xl font-bold text-white mb-6">Send Us a Message</h3>
+                        <h3 className="text-2xl font-bold text-white mb-6">
+                            {contactContent.formTitle || "Send Us a Message"}
+                        </h3>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Name */}
@@ -153,9 +157,15 @@ export function ContactSection() {
                                         className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                                     >
                                         <option value="">Select Institute</option>
-                                        <option value="colombo">Colombo Institute</option>
-                                        <option value="gampaha">Gampaha Institute</option>
-                                        <option value="kandy">Kandy Institute</option>
+                                        {contactContent.locations?.map((loc: any, idx: number) => (
+                                            <option key={idx} value={loc.name.toLowerCase()}>{loc.name}</option>
+                                        ))}
+                                        {!contactContent.locations?.length && (
+                                            <>
+                                                <option value="colombo">Colombo Institute</option>
+                                                <option value="gampaha">Gampaha Institute</option>
+                                            </>
+                                        )}
                                         <option value="other">Other</option>
                                     </select>
                                 </div>
@@ -221,89 +231,76 @@ export function ContactSection() {
                     <div className="space-y-8">
                         {/* Contact Information Cards */}
                         <div className="space-y-4">
-                            <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Phone className="w-6 h-6 text-yellow-500" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-white mb-1">Phone</h4>
-                                        <a href="tel:+94112345678" className="text-gray-400 hover:text-yellow-500 transition-colors">
-                                            +94 11 234 5678
-                                        </a>
-                                        <br />
-                                        <a href="tel:+94771234567" className="text-gray-400 hover:text-yellow-500 transition-colors">
-                                            +94 77 123 4567
-                                        </a>
+                            {contactContent.phone && (
+                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Phone className="w-6 h-6 text-yellow-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white mb-1">Phone</h4>
+                                            <a href={`tel:${contactContent.phone}`} className="text-gray-400 hover:text-yellow-500 transition-colors">
+                                                {contactContent.phone}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
 
-                            <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Mail className="w-6 h-6 text-yellow-500" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-white mb-1">Email</h4>
-                                        <a href="mailto:info@economicslms.lk" className="text-gray-400 hover:text-yellow-500 transition-colors">
-                                            info@economicslms.lk
-                                        </a>
-                                        <br />
-                                        <a href="mailto:admissions@economicslms.lk" className="text-gray-400 hover:text-yellow-500 transition-colors">
-                                            admissions@economicslms.lk
-                                        </a>
+                            {contactContent.email && (
+                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Mail className="w-6 h-6 text-yellow-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white mb-1">Email</h4>
+                                            <a href={`mailto:${contactContent.email}`} className="text-gray-400 hover:text-yellow-500 transition-colors">
+                                                {contactContent.email}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
 
-                            <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <MapPin className="w-6 h-6 text-yellow-500" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-white mb-1">Main Office</h4>
-                                        <p className="text-gray-400">
-                                            123, Galle Road,<br />
-                                            Colombo 03,<br />
-                                            Sri Lanka
-                                        </p>
+                            {contactContent.address && (
+                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <MapPin className="w-6 h-6 text-yellow-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white mb-1">Main Office</h4>
+                                            <p className="text-gray-400">
+                                                {contactContent.address}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* Maps - One for each location */}
-                        <div className="space-y-4">
-                            {contactContent.locations && contactContent.locations.length > 0 && contactContent.locations.map((location, index) => (
-                                location.latitude && location.longitude && (
-                                    <div key={index} className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-2 border border-gray-800 overflow-hidden">
-                                        <h4 className="text-white font-semibold px-4 pt-2 pb-1">{location.name || `Location ${index + 1}`}</h4>
-                                        <LocationMap
-                                            latitude={parseFloat(location.latitude) || 6.9271}
-                                            longitude={parseFloat(location.longitude) || 79.8612}
-                                            locationName={location.name || 'Quality Econ Institute'}
-                                            address={location.address}
-                                        />
-                                    </div>
-                                )
-                            ))}
-                        </div>
+                        {/* Consolidated Map showing all locations */}
+                        {contactContent.locations && contactContent.locations.some((loc: any) => loc.latitude && loc.longitude) && (
+                            <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-2 border border-gray-800 overflow-hidden">
+                                <h4 className="text-white font-semibold px-4 pt-4 pb-2">📍 Institute Locations</h4>
+                                <LocationMap locations={contactContent.locations} />
+                            </div>
+                        )}
                     </div>
+                </div>
 
-                    {/* Office Hours */}
-                    <div className="mt-16 max-w-3xl mx-auto bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-2xl p-8 border border-yellow-500/20">
-                        <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Office Hours</h3>
-                        <div className="grid md:grid-cols-2 gap-4 text-center">
-                            <div>
-                                <p className="text-gray-400 text-sm">Weekdays</p>
-                                <p className="text-white font-semibold">9:00 AM - 6:00 PM</p>
-                            </div>
-                            <div>
-                                <p className="text-gray-400 text-sm">Weekends</p>
-                                <p className="text-white font-semibold">9:00 AM - 3:00 PM</p>
-                            </div>
+                {/* Office Hours */}
+                <div className="mt-16 max-w-3xl mx-auto bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-2xl p-8 border border-yellow-500/20">
+                    <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Office Hours</h3>
+                    <div className="grid md:grid-cols-2 gap-4 text-center">
+                        <div>
+                            <p className="text-gray-400 text-sm">Weekdays</p>
+                            <p className="text-white font-semibold">{contactContent.officeHours?.weekdays || "9:00 AM - 6:00 PM"}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-400 text-sm">Weekends</p>
+                            <p className="text-white font-semibold">{contactContent.officeHours?.weekends || "9:00 AM - 3:00 PM"}</p>
                         </div>
                     </div>
                 </div>
