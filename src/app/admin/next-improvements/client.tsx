@@ -20,21 +20,24 @@ const upcomingFeatures = [
                 description: "Conduct real-time video classes with screen sharing, whiteboard, and recording capabilities",
                 icon: Video,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 25,000"
             },
             {
                 title: "Discussion Forums",
                 description: "Enable students to ask questions, discuss topics, and collaborate with peers",
                 icon: MessageSquare,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 12,500"
             },
             {
                 title: "Gamification System",
                 description: "Reward students with points, badges, and leaderboards to boost motivation",
                 icon: Award,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 18,000"
             }
         ]
     },
@@ -49,21 +52,24 @@ const upcomingFeatures = [
                 description: "Track student performance, engagement metrics, and learning patterns with AI insights",
                 icon: TrendingUp,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 35,000"
             },
             {
                 title: "Auto-Grading System",
                 description: "Automatically grade quizzes and assignments with detailed feedback generation",
                 icon: FileCheck,
                 impact: "High",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 20,000"
             },
             {
                 title: "Progress Reports",
                 description: "Generate comprehensive PDF reports for students and parents with performance insights",
                 icon: Target,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 10,000"
             }
         ]
     },
@@ -78,21 +84,24 @@ const upcomingFeatures = [
                 description: "Push notifications for assignments, announcements, and upcoming classes",
                 icon: Bell,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 12,000"
             },
             {
                 title: "WhatsApp Integration",
                 description: "Send automated reminders and updates directly to students' WhatsApp",
                 icon: MessageSquare,
                 impact: "High",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 15,000"
             },
             {
                 title: "Email Campaigns",
                 description: "Create and schedule email campaigns for announcements and marketing",
                 icon: Globe,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 10,000"
             }
         ]
     },
@@ -107,21 +116,24 @@ const upcomingFeatures = [
                 description: "Generate quizzes, flashcards, and study materials using AI from your lessons",
                 icon: Brain,
                 impact: "High",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 45,000"
             },
             {
                 title: "Interactive Simulations",
                 description: "Create interactive economic simulations and case studies for better understanding",
                 icon: Zap,
                 impact: "Medium",
-                timeline: "Q3 2025"
+                timeline: "Q3 2025",
+                price: "LKR 25,000"
             },
             {
                 title: "Mobile App",
                 description: "Native iOS and Android apps for students to learn on-the-go",
                 icon: Smartphone,
                 impact: "High",
-                timeline: "Q3 2025"
+                timeline: "Q3 2025",
+                price: "LKR 250,000+"
             }
         ]
     },
@@ -133,31 +145,35 @@ const upcomingFeatures = [
         features: [
             {
                 title: "Welcome Email Automation",
-                description: "Automatically send personalized welcome emails to new students with login credentials and getting started guide",
+                description: "Automatically send personalized welcome emails to new students with credentials",
                 icon: Mail,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 8,000"
             },
             {
                 title: "Class Assignment Notifications",
-                description: "Instant email notifications when students are assigned to new classes with course details",
+                description: "Instant email notifications when students are assigned to new classes",
                 icon: Bell,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 8,000"
             },
             {
                 title: "Resource Upload Alerts",
                 description: "Notify students via email when new resources are uploaded to their classes",
                 icon: FileCheck,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 8,000"
             },
             {
                 title: "Weekly Digest Emails",
-                description: "Automated weekly summary emails with upcoming classes, new resources, and important announcements",
+                description: "Automated weekly summary emails with upcoming classes and announcements",
                 icon: Calendar,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 12,000"
             }
         ]
     },
@@ -169,24 +185,27 @@ const upcomingFeatures = [
         features: [
             {
                 title: "OTP Rate Limiting",
-                description: "Prevent spam by limiting OTP requests per email/phone with configurable cooldown periods",
+                description: "Prevent spam by limiting OTP requests per email/phone with cooldown periods",
                 icon: Shield,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 7,500"
             },
             {
                 title: "Login Attempt Protection",
-                description: "Block accounts after multiple failed login attempts with automatic unlock after time period",
+                description: "Block accounts after multiple failed login attempts with automatic unlock",
                 icon: Lock,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 7,500"
             },
             {
                 title: "API Rate Limiting",
                 description: "Protect your system from abuse with intelligent rate limiting on all API endpoints",
                 icon: Zap,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 12,500"
             }
         ]
     },
@@ -198,31 +217,35 @@ const upcomingFeatures = [
         features: [
             {
                 title: "Online Payment Integration",
-                description: "Accept payments via credit card, debit card, and digital wallets with Stripe/PayPal integration",
+                description: "Accept payments via credit card, debit card, and digital wallets",
                 icon: CreditCard,
                 impact: "High",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 35,000"
             },
             {
                 title: "Payment History & Tracking",
-                description: "Complete payment history with filtering, search, and export capabilities for students and admin",
+                description: "Complete payment history with filtering, search, and export capabilities",
                 icon: Receipt,
                 impact: "High",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 15,000"
             },
             {
                 title: "Automated Invoice Generation",
-                description: "Generate professional PDF invoices automatically with custom branding and tax calculations",
+                description: "Generate professional PDF invoices automatically with custom branding",
                 icon: FileSpreadsheet,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 12,500"
             },
             {
                 title: "Payment Reminders",
-                description: "Automated email and SMS reminders for pending payments and upcoming due dates",
+                description: "Automated email and SMS reminders for pending payments and due dates",
                 icon: Bell,
                 impact: "Medium",
-                timeline: "Q3 2025"
+                timeline: "Q3 2025",
+                price: "LKR 10,000"
             }
         ]
     },
@@ -234,31 +257,35 @@ const upcomingFeatures = [
         features: [
             {
                 title: "Digital Attendance Marking",
-                description: "Mark student attendance digitally with present/absent/late status and notes",
+                description: "Mark student attendance digitally with present/absent/late status",
                 icon: UserCheck,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 12,500"
             },
             {
                 title: "Attendance Reports & Analytics",
-                description: "Generate detailed attendance reports by class, student, or date range with visual analytics",
+                description: "Generate detailed attendance reports with visual analytics",
                 icon: BarChart3,
                 impact: "High",
-                timeline: "Q1 2025"
+                timeline: "Q1 2025",
+                price: "LKR 15,000"
             },
             {
                 title: "Student Attendance Dashboard",
-                description: "Students can view their own attendance history, percentage, and trends over time",
+                description: "Students can view their own attendance history, percentage, and trends",
                 icon: TrendingUp,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 10,000"
             },
             {
                 title: "Attendance Alerts",
-                description: "Automatic notifications to parents/guardians when student attendance falls below threshold",
+                description: "Automatic notifications to parents when student attendance falls below threshold",
                 icon: Bell,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 8,000"
             }
         ]
     },
@@ -273,7 +300,8 @@ const upcomingFeatures = [
                 description: "Manage class schedules, exams, and events with calendar integration",
                 icon: Calendar,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 15,000"
             }
         ]
     },
@@ -288,21 +316,24 @@ const upcomingFeatures = [
                 description: "24/7 AI chatbot to answer student questions and provide instant support",
                 icon: Brain,
                 impact: "High",
-                timeline: "Q3 2025"
+                timeline: "Q3 2025",
+                price: "LKR 55,000"
             },
             {
                 title: "Certificate Generation",
                 description: "Auto-generate and send completion certificates with custom branding",
                 icon: GraduationCap,
                 impact: "Medium",
-                timeline: "Q2 2025"
+                timeline: "Q2 2025",
+                price: "LKR 10,000"
             },
             {
                 title: "Multi-Language Support",
-                description: "Support for Sinhala, Tamil, and English interfaces for wider reach",
+                description: "Support for Sinhala, Tamil, and English interfaces",
                 icon: Globe,
                 impact: "Medium",
-                timeline: "Q3 2025"
+                timeline: "Q3 2025",
+                price: "LKR 15,000"
             }
         ]
     }
@@ -489,10 +520,20 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                                             {feature.description}
                                                         </p>
 
-                                                        {/* Timeline */}
-                                                        <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
-                                                            <Clock className="w-4 h-4" />
-                                                            <span>{feature.timeline}</span>
+                                                        {/* Timeline & Price */}
+                                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-800/50">
+                                                            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+                                                                <Clock className="w-4 h-4" />
+                                                                <span>{feature.timeline}</span>
+                                                            </div>
+                                                            {feature.price && (
+                                                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/20">
+                                                                    <DollarSign className="w-3.5 h-3.5 text-[#D4AF37]" />
+                                                                    <span className="text-[13px] font-bold text-[#D4AF37] whitespace-nowrap">
+                                                                        {feature.price}
+                                                                    </span>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </motion.div>
