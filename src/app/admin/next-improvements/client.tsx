@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import {
     Sparkles, TrendingUp, Users, MessageSquare, BarChart3, Bell,
     Calendar, Award, FileCheck, Video, Brain, Zap, Target, Globe,
-    Shield, Smartphone, Clock, DollarSign, BookOpen, GraduationCap, Mail, Phone, Star, Rocket
+    Shield, Smartphone, Clock, DollarSign, BookOpen, GraduationCap, Mail, Phone, Star, Rocket,
+    Send, Lock, CreditCard, UserCheck, Receipt, FileSpreadsheet
 } from 'lucide-react';
 
 const upcomingFeatures = [
@@ -125,25 +126,148 @@ const upcomingFeatures = [
         ]
     },
     {
+        category: "Email & Communication Automation",
+        icon: Send,
+        color: "from-teal-500 via-teal-600 to-cyan-600",
+        bgGlow: "bg-teal-500/20",
+        features: [
+            {
+                title: "Welcome Email Automation",
+                description: "Automatically send personalized welcome emails to new students with login credentials and getting started guide",
+                icon: Mail,
+                impact: "High",
+                timeline: "Q1 2025"
+            },
+            {
+                title: "Class Assignment Notifications",
+                description: "Instant email notifications when students are assigned to new classes with course details",
+                icon: Bell,
+                impact: "High",
+                timeline: "Q1 2025"
+            },
+            {
+                title: "Resource Upload Alerts",
+                description: "Notify students via email when new resources are uploaded to their classes",
+                icon: FileCheck,
+                impact: "Medium",
+                timeline: "Q2 2025"
+            },
+            {
+                title: "Weekly Digest Emails",
+                description: "Automated weekly summary emails with upcoming classes, new resources, and important announcements",
+                icon: Calendar,
+                impact: "Medium",
+                timeline: "Q2 2025"
+            }
+        ]
+    },
+    {
+        category: "Security & Rate Limiting",
+        icon: Lock,
+        color: "from-red-500 via-red-600 to-orange-600",
+        bgGlow: "bg-red-500/20",
+        features: [
+            {
+                title: "OTP Rate Limiting",
+                description: "Prevent spam by limiting OTP requests per email/phone with configurable cooldown periods",
+                icon: Shield,
+                impact: "High",
+                timeline: "Q1 2025"
+            },
+            {
+                title: "Login Attempt Protection",
+                description: "Block accounts after multiple failed login attempts with automatic unlock after time period",
+                icon: Lock,
+                impact: "High",
+                timeline: "Q1 2025"
+            },
+            {
+                title: "API Rate Limiting",
+                description: "Protect your system from abuse with intelligent rate limiting on all API endpoints",
+                icon: Zap,
+                impact: "Medium",
+                timeline: "Q2 2025"
+            }
+        ]
+    },
+    {
+        category: "Payment & Billing System",
+        icon: CreditCard,
+        color: "from-emerald-500 via-emerald-600 to-green-600",
+        bgGlow: "bg-emerald-500/20",
+        features: [
+            {
+                title: "Online Payment Integration",
+                description: "Accept payments via credit card, debit card, and digital wallets with Stripe/PayPal integration",
+                icon: CreditCard,
+                impact: "High",
+                timeline: "Q2 2025"
+            },
+            {
+                title: "Payment History & Tracking",
+                description: "Complete payment history with filtering, search, and export capabilities for students and admin",
+                icon: Receipt,
+                impact: "High",
+                timeline: "Q2 2025"
+            },
+            {
+                title: "Automated Invoice Generation",
+                description: "Generate professional PDF invoices automatically with custom branding and tax calculations",
+                icon: FileSpreadsheet,
+                impact: "Medium",
+                timeline: "Q2 2025"
+            },
+            {
+                title: "Payment Reminders",
+                description: "Automated email and SMS reminders for pending payments and upcoming due dates",
+                icon: Bell,
+                impact: "Medium",
+                timeline: "Q3 2025"
+            }
+        ]
+    },
+    {
+        category: "Attendance Management",
+        icon: UserCheck,
+        color: "from-violet-500 via-violet-600 to-purple-600",
+        bgGlow: "bg-violet-500/20",
+        features: [
+            {
+                title: "Digital Attendance Marking",
+                description: "Mark student attendance digitally with present/absent/late status and notes",
+                icon: UserCheck,
+                impact: "High",
+                timeline: "Q1 2025"
+            },
+            {
+                title: "Attendance Reports & Analytics",
+                description: "Generate detailed attendance reports by class, student, or date range with visual analytics",
+                icon: BarChart3,
+                impact: "High",
+                timeline: "Q1 2025"
+            },
+            {
+                title: "Student Attendance Dashboard",
+                description: "Students can view their own attendance history, percentage, and trends over time",
+                icon: TrendingUp,
+                impact: "Medium",
+                timeline: "Q2 2025"
+            },
+            {
+                title: "Attendance Alerts",
+                description: "Automatic notifications to parents/guardians when student attendance falls below threshold",
+                icon: Bell,
+                impact: "Medium",
+                timeline: "Q2 2025"
+            }
+        ]
+    },
+    {
         category: "Administration & Management",
         icon: Shield,
         color: "from-indigo-500 via-indigo-600 to-blue-600",
         bgGlow: "bg-indigo-500/20",
         features: [
-            {
-                title: "Attendance Tracking",
-                description: "Mark and track student attendance with automated reports and alerts",
-                icon: Clock,
-                impact: "High",
-                timeline: "Q1 2025"
-            },
-            {
-                title: "Payment Integration",
-                description: "Accept online payments for courses with automated invoicing and receipts",
-                icon: DollarSign,
-                impact: "High",
-                timeline: "Q2 2025"
-            },
             {
                 title: "Calendar & Scheduling",
                 description: "Manage class schedules, exams, and events with calendar integration",
@@ -265,10 +389,10 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                 {/* Stats Overview - Enhanced */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     {[
-                        { label: "Total Features", value: "18+", icon: Sparkles, gradient: "from-blue-500 to-cyan-500" },
-                        { label: "Categories", value: "6", icon: Target, gradient: "from-purple-500 to-pink-500" },
-                        { label: "High Impact", value: "12", icon: TrendingUp, gradient: "from-green-500 to-emerald-500" },
-                        { label: "Coming Q1", value: "7", icon: Clock, gradient: "from-orange-500 to-red-500" }
+                        { label: "Total Features", value: "33+", icon: Sparkles, gradient: "from-blue-500 to-cyan-500" },
+                        { label: "Categories", value: "10", icon: Target, gradient: "from-purple-500 to-pink-500" },
+                        { label: "High Impact", value: "21", icon: TrendingUp, gradient: "from-green-500 to-emerald-500" },
+                        { label: "Coming Q1", value: "12", icon: Clock, gradient: "from-orange-500 to-red-500" }
                     ].map((stat, index) => {
                         const Icon = stat.icon;
                         return (
