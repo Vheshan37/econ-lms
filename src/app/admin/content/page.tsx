@@ -536,6 +536,9 @@ export default function ContentManagementPage() {
                     <TabsTrigger value="contact" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
                         <Mail className="w-4 h-4" /> Contact
                     </TabsTrigger>
+                    <TabsTrigger value="footer" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
+                        <FileText className="w-4 h-4" /> Footer
+                    </TabsTrigger>
                 </TabsList>
 
                 {/* General Tab */}
@@ -1197,6 +1200,171 @@ export default function ContentManagementPage() {
                         </div>
                     </div>
                 </TabsContent >
+
+                {/* Footer Tab */}
+                <TabsContent value="footer" className="space-y-6">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-gray-900">Footer Content</h2>
+                            <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
+                                <Save className="w-4 h-4 mr-2" /> Save Changes
+                            </Button>
+                        </div>
+
+                        <div className="space-y-6">
+                            {/* Description */}
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Footer Description</Label>
+                                <Textarea
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={footerContent.description}
+                                    onChange={e => setFooterContent({ ...footerContent, description: e.target.value })}
+                                    placeholder="The premier Economics education platform..."
+                                    rows={3}
+                                />
+                            </div>
+
+                            {/* Social Links */}
+                            <div className="space-y-4">
+                                <h3 className="font-semibold text-gray-900">Social Media Links</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Facebook URL</Label>
+                                        <Input
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={footerContent.socialLinks.facebook}
+                                            onChange={e => setFooterContent({ ...footerContent, socialLinks: { ...footerContent.socialLinks, facebook: e.target.value } })}
+                                            placeholder="https://facebook.com/..."
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">YouTube URL</Label>
+                                        <Input
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={footerContent.socialLinks.youtube}
+                                            onChange={e => setFooterContent({ ...footerContent, socialLinks: { ...footerContent.socialLinks, youtube: e.target.value } })}
+                                            placeholder="https://youtube.com/..."
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Telegram/Instagram URL</Label>
+                                        <Input
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={footerContent.socialLinks.telegram}
+                                            onChange={e => setFooterContent({ ...footerContent, socialLinks: { ...footerContent.socialLinks, telegram: e.target.value } })}
+                                            placeholder="https://t.me/... or https://instagram.com/..."
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Quick Links */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="font-semibold text-gray-900">Quick Links</h3>
+                                    <Button
+                                        onClick={() => setFooterContent({ ...footerContent, quickLinks: [...footerContent.quickLinks, { title: '', url: '' }] })}
+                                        variant="outline"
+                                        size="sm"
+                                        className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                                    >
+                                        <Plus className="w-4 h-4 mr-2" /> Add Link
+                                    </Button>
+                                </div>
+                                <div className="space-y-3">
+                                    {footerContent.quickLinks.map((link, index) => (
+                                        <div key={index} className="flex gap-3 items-end">
+                                            <div className="flex-1 space-y-2">
+                                                <Label className="text-gray-800">Link Title</Label>
+                                                <Input
+                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                    value={link.title}
+                                                    onChange={e => {
+                                                        const newLinks = [...footerContent.quickLinks];
+                                                        newLinks[index].title = e.target.value;
+                                                        setFooterContent({ ...footerContent, quickLinks: newLinks });
+                                                    }}
+                                                    placeholder="Home"
+                                                />
+                                            </div>
+                                            <div className="flex-1 space-y-2">
+                                                <Label className="text-gray-800">Link URL</Label>
+                                                <Input
+                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                    value={link.url}
+                                                    onChange={e => {
+                                                        const newLinks = [...footerContent.quickLinks];
+                                                        newLinks[index].url = e.target.value;
+                                                        setFooterContent({ ...footerContent, quickLinks: newLinks });
+                                                    }}
+                                                    placeholder="#home"
+                                                />
+                                            </div>
+                                            <Button
+                                                onClick={() => {
+                                                    const newLinks = footerContent.quickLinks.filter((_, i) => i !== index);
+                                                    setFooterContent({ ...footerContent, quickLinks: newLinks });
+                                                }}
+                                                variant="outline"
+                                                size="sm"
+                                                className="border-red-500 text-red-500 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Contact Info */}
+                            <div className="space-y-4">
+                                <h3 className="font-semibold text-gray-900">Contact Information</h3>
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label className="text-gray-800">Address</Label>
+                                        <Input
+                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                            value={footerContent.contactInfo.address}
+                                            onChange={e => setFooterContent({ ...footerContent, contactInfo: { ...footerContent.contactInfo, address: e.target.value } })}
+                                            placeholder="No. 123, High Level Road, Nugegoda, Sri Lanka"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Phone</Label>
+                                            <Input
+                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                value={footerContent.contactInfo.phone}
+                                                onChange={e => setFooterContent({ ...footerContent, contactInfo: { ...footerContent.contactInfo, phone: e.target.value } })}
+                                                placeholder="+94 77 123 4567"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-800">Email</Label>
+                                            <Input
+                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                                value={footerContent.contactInfo.email}
+                                                onChange={e => setFooterContent({ ...footerContent, contactInfo: { ...footerContent.contactInfo, email: e.target.value } })}
+                                                placeholder="info@qualityecon.lk"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Copyright */}
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Copyright Text</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={footerContent.copyright}
+                                    onChange={e => setFooterContent({ ...footerContent, copyright: e.target.value })}
+                                    placeholder="© 2024 Quality Econ. All rights reserved."
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </TabsContent>
             </Tabs >
 
             {/* Testimonial Modal */}
