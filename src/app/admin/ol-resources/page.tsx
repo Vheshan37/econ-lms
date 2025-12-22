@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { getFreeResources, createFreeResource, updateFreeResource, deleteFreeResource } from '@/lib/actions/freeResource';
+import { getLandingPageContent, updateLandingPageContent } from '@/lib/actions/content';
 import { ResourceType } from '@prisma/client';
 
 interface Resource {
@@ -32,6 +33,16 @@ export default function OLResourcesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isAddingResource, setIsAddingResource] = useState(false);
     const [editingResource, setEditingResource] = useState<Resource | null>(null);
+
+    // Page Settings State
+    const [ctaYear, setCtaYear] = useState('2027');
+    const [ctaMessage, setCtaMessage] = useState('Want more advanced content? Join our {year} Batch');
+    const [categoryCards, setCategoryCards] = useState([
+        { title: 'Past Papers', description: 'Access previous exam papers', icon: 'File', link: '#past-papers' },
+        { title: 'Study Guides', description: 'Comprehensive study materials', icon: 'BookOpen', link: '#guides' },
+        { title: 'Practice Quizzes', description: 'Test your knowledge', icon: 'ClipboardList', link: '#quizzes' }
+    ]);
+    const [isSavingSettings, setIsSavingSettings] = useState(false);
 
     // Form state
     const [resourceType, setResourceType] = useState<ResourceType>('PDF');
@@ -58,12 +69,26 @@ export default function OLResourcesPage() {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const resourcesResult = await getFreeResources("Ordinary Level");
+            const [resourcesResult, settingsResult] = await Promise.all([
+                getFreeResources("Ordinary Level"),
+                getLandingPageContent('ol-resources')
+            ]);
 
             if (resourcesResult.success && resourcesResult.data) {
                 setResources(resourcesResult.data);
             } else {
                 setErrorAlert({ isOpen: true, message: resourcesResult.error || 'Failed to fetch resources' });
+            }
+
+            if (settingsResult.success && settingsResult.data) {
+                const data = settingsResult.data as any;
+                if (data.cta) {
+                    setCtaYear(data.cta.year || '2027');
+                    setCtaMessage(data.cta.message || 'Want more advanced content? Join our {year} Batch');
+                }
+                if (data.categoryCards) {
+                    setCategoryCards(data.categoryCards);
+                }
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -76,6 +101,32 @@ export default function OLResourcesPage() {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const handleSaveSettings = async () => {
+        setIsSavingSettings(true);
+        try {
+            const settingsData = {
+                cta: {
+                    year: ctaYear,
+                    message: ctaMessage
+                },
+                categoryCards
+            };
+
+            const result = await updateLandingPageContent('ol-resources', settingsData);
+
+            if (result.success) {
+                setSuccessAlert({ isOpen: true, message: 'Page settings saved successfully' });
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to save settings' });
+            }
+        } catch (error) {
+            console.error("Error saving settings:", error);
+            setErrorAlert({ isOpen: true, message: 'An error occurred while saving settings' });
+        } finally {
+            setIsSavingSettings(false);
+        }
+    };
 
     const handleAddResource = () => {
         setIsAddingResource(true);
@@ -194,6 +245,122 @@ export default function OLResourcesPage() {
                 </div>
             </div>
 
+            {/* Page Settings Section */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">Page Settings</h2>
+                        <p className="text-sm text-gray-500">Manage the CTA and category cards for the O/L landing page</p>
+                    </div>
+                    <Button
+                        onClick={handleSaveSettings}
+                        disabled={isSavingSettings}
+                        className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a]"
+                    >
+                        <Save className="w-4 h-4 mr-2" />
+                        {isSavingSettings ? 'Saving...' : 'Save Settings'}
+                    </Button>
+                </div>
+
+                {/* CTA Settings */}
+                <div className="space-y-4 mb-8">
+                    <h3 className="text-lg font-semibold text-gray-800">Call-to-Action Banner</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="ctaYear">Batch Year</Label>
+                            <Input
+                                id="ctaYear"
+                                value={ctaYear}
+                                onChange={(e) => setCtaYear(e.target.value)}
+                                placeholder="2027"
+                                className="bg-white border-gray-300"
+                            />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="ctaMessage">CTA Message (use {"{year}"} for dynamic year)</Label>
+                            <Textarea
+                                id="ctaMessage"
+                                value={ctaMessage}
+                                onChange={(e) => setCtaMessage(e.target.value)}
+                                placeholder="Want more advanced content? Join our {year} Batch"
+                                rows={2}
+                                className="bg-white border-gray-300"
+                            />
+                            <p className="text-xs text-gray-500">
+                                Preview: {ctaMessage.replace('{year}', ctaYear)}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Category Cards */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-800">Category Cards</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {categoryCards.map((card, index) => (
+                            <div key={index} className="border border-gray-200 rounded-xl p-4 space-y-3">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-sm font-medium text-gray-500">Card {index + 1}</span>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-xs">Title</Label>
+                                    <Input
+                                        value={card.title}
+                                        onChange={(e) => {
+                                            const newCards = [...categoryCards];
+                                            newCards[index].title = e.target.value;
+                                            setCategoryCards(newCards);
+                                        }}
+                                        placeholder="Card title"
+                                        className="h-9 text-sm"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-xs">Description</Label>
+                                    <Textarea
+                                        value={card.description}
+                                        onChange={(e) => {
+                                            const newCards = [...categoryCards];
+                                            newCards[index].description = e.target.value;
+                                            setCategoryCards(newCards);
+                                        }}
+                                        placeholder="Card description"
+                                        rows={2}
+                                        className="text-sm"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-xs">Icon Name</Label>
+                                    <Input
+                                        value={card.icon}
+                                        onChange={(e) => {
+                                            const newCards = [...categoryCards];
+                                            newCards[index].icon = e.target.value;
+                                            setCategoryCards(newCards);
+                                        }}
+                                        placeholder="File, BookOpen, etc."
+                                        className="h-9 text-sm"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-xs">Link</Label>
+                                    <Input
+                                        value={card.link}
+                                        onChange={(e) => {
+                                            const newCards = [...categoryCards];
+                                            newCards[index].link = e.target.value;
+                                            setCategoryCards(newCards);
+                                        }}
+                                        placeholder="#section or /page"
+                                        className="h-9 text-sm"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
             {/* Tabs */}
             <div className="flex gap-2 border-b border-gray-200">
                 {TABS.map((tab) => {
@@ -203,8 +370,8 @@ export default function OLResourcesPage() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as ResourceType)}
                             className={`flex items-center gap-2 px-6 py-3 font-medium transition-all relative ${activeTab === tab.id
-                                    ? 'text-[#1a1a1a]'
-                                    : 'text-gray-500 hover:text-gray-700'
+                                ? 'text-[#1a1a1a]'
+                                : 'text-gray-500 hover:text-gray-700'
                                 }`}
                         >
                             <Icon className={`w-5 h-5 ${activeTab === tab.id ? tab.color : ''}`} />
@@ -325,8 +492,8 @@ export default function OLResourcesPage() {
                                                     type="button"
                                                     onClick={() => setResourceType(tab.id as ResourceType)}
                                                     className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${resourceType === tab.id
-                                                            ? `border-${tab.bgColor.replace('bg-', '')} bg-opacity-10`
-                                                            : 'border-gray-200 hover:border-gray-300'
+                                                        ? `border-${tab.bgColor.replace('bg-', '')} bg-opacity-10`
+                                                        : 'border-gray-200 hover:border-gray-300'
                                                         }`}
                                                 >
                                                     <Icon className={`w-6 h-6 ${resourceType === tab.id ? tab.color : 'text-gray-400'}`} />

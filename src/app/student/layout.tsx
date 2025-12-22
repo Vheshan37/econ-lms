@@ -34,6 +34,7 @@ export default function StudentLayout({
         { name: 'Dashboard', href: '/student/dashboard', icon: LayoutDashboard },
         { name: 'My Classes', href: '/student/classes', icon: GraduationCap },
         { name: 'All Resources', href: '/student/resources', icon: BookOpen },
+        { name: 'Free Resources', href: '/student/free-resources', icon: BookOpen },
         { name: 'Profile', href: '/student/profile', icon: User },
     ];
 

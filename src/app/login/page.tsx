@@ -40,6 +40,18 @@ export default function LoginPage() {
         }
     };
 
+    const handlePaste = (e: React.ClipboardEvent) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+        if (pastedData.length === 6) {
+            const newOtp = pastedData.split('');
+            setOtp(newOtp);
+            // Focus the last input
+            const lastInput = document.getElementById('otp-5');
+            lastInput?.focus();
+        }
+    };
+
     const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -294,6 +306,7 @@ export default function LoginPage() {
                                                     value={digit}
                                                     onChange={(e) => handleOtpChange(index, e.target.value)}
                                                     onKeyDown={(e) => handleKeyDown(index, e)}
+                                                    onPaste={handlePaste}
                                                     className="w-12 h-14 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37] transition-all text-gray-900"
                                                 />
                                             ))}

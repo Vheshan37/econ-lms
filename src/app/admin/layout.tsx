@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { logout } from "@/lib/actions/auth";
@@ -40,6 +40,7 @@ export default function AdminLayout({
         { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
         { name: 'Site Content', href: '/admin/content', icon: Layers },
+        { name: 'Next Improvements', href: '/admin/next-improvements', icon: Sparkles },
     ];
 
     return (
@@ -52,7 +53,7 @@ export default function AdminLayout({
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="bg-[#1a1a1a] border-r border-gray-800 fixed h-full z-20 hidden md:flex flex-col shadow-2xl"
                 >
-                    <div className={`p-6 border-b border-gray-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+                    <div className={`p - 6 border - b border - gray - 800 flex items - center ${isCollapsed ? 'justify-center' : 'justify-between'} `}>
                         {!isCollapsed && (
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 rounded-xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">

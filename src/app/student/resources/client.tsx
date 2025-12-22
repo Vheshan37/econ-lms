@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Youtube, FileText, File, ClipboardList, Play, ExternalLink, BookOpen, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { VideoPlayer } from '@/components/VideoPlayer';
 
 interface Resource {
     id: string;
@@ -31,6 +32,11 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [selectedYear, setSelectedYear] = useState<string>('all');
+    const [videoPlayer, setVideoPlayer] = useState<{ isOpen: boolean; url: string; title: string }>({
+        isOpen: false,
+        url: '',
+        title: ''
+    });
 
     const uniqueYears = Array.from(new Set(resources.map(r => r.yearId))).map(id => {
         const resource = resources.find(r => r.yearId === id);
@@ -45,6 +51,18 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
         const matchesYear = selectedYear === 'all' || resource.yearId === selectedYear;
         return matchesSearch && matchesType && matchesYear;
     });
+
+    const handleResourceClick = (resource: Resource) => {
+        if (resource.type === 'VIDEO') {
+            setVideoPlayer({
+                isOpen: true,
+                url: resource.url,
+                title: resource.title
+            });
+        } else {
+            window.location.href = resource.url;
+        }
+    };
 
     const currentTab = TABS.find(t => t.id === activeTab)!;
     // const TabIcon = currentTab.icon;
@@ -158,12 +176,10 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {filteredResources.map((resource) => (
-                                        <a
+                                        <div
                                             key={resource.id}
-                                            href={resource.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="group bg-gray-50 p-4 rounded-xl hover:shadow-md transition-all border border-gray-100 cursor-pointer block"
+                                            onClick={() => handleResourceClick(resource)}
+                                            className="group bg-gray-50 p-4 rounded-xl hover:shadow-md transition-all border border-gray-100 cursor-pointer"
                                         >
                                             <div className="flex items-start justify-between gap-3">
                                                 <div className="flex-1 min-w-0">
@@ -198,12 +214,17 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                                                             {resource.topicTitle}
                                                         </span>
                                                         <span className="text-[#D4AF37] flex items-center gap-1 shrink-0">
-                                                            Open <ExternalLink className="w-3 h-3" />
+                                                            {resource.type === 'VIDEO' ? 'Watch' : 'Open'}
+                                                            {resource.type === 'VIDEO' ? (
+                                                                <Play className="w-3 h-3" />
+                                                            ) : (
+                                                                <ExternalLink className="w-3 h-3" />
+                                                            )}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </a>
+                                        </div>
                                     ))}
                                 </div>
                             )}
@@ -211,6 +232,14 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                     </AnimatePresence>
                 </div>
             </div>
+
+            {/* Video Player Modal */}
+            <VideoPlayer
+                videoUrl={videoPlayer.url}
+                isOpen={videoPlayer.isOpen}
+                onClose={() => setVideoPlayer({ isOpen: false, url: '', title: '' })}
+                title={videoPlayer.title}
+            />
         </div>
     );
 }
