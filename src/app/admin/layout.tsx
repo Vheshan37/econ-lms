@@ -31,7 +31,7 @@ export default function AdminLayout({
         router.push('/login');
     };
 
-    const navigation = [
+    const mainNavigation = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Classes', href: '/admin/classes', icon: BookOpen },
         { name: 'Students', href: '/admin/students', icon: Users },
@@ -40,8 +40,12 @@ export default function AdminLayout({
         { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
         { name: 'Site Content', href: '/admin/content', icon: Layers },
+    ];
+
+    const bottomNavigation = [
         { name: 'Next Improvements', href: '/admin/next-improvements', icon: Sparkles },
     ];
+
 
     return (
         <TooltipProvider delayDuration={0}>
@@ -76,49 +80,84 @@ export default function AdminLayout({
                         )}
                     </div>
 
-                    <nav className={`flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar ${isCollapsed ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : ''}`}>
-                        {navigation.map((item) => {
-                            const isActive = pathname === item.href;
-                            const LinkButton = (
-                                <Link href={item.href} className="block w-full">
-                                    <Button
-                                        variant="ghost"
-                                        className={`w-full transition-all duration-200 relative group ${isCollapsed ? 'justify-center px-2' : 'justify-start gap-3'
-                                            } ${isActive
-                                                ? 'bg-[#D4AF37]/10 text-[#D4AF37]'
-                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                            }`}
-                                    >
-                                        <item.icon className={`h-5 w-5 ${isActive ? 'text-[#D4AF37]' : 'text-gray-400 group-hover:text-white'} transition-colors`} />
-                                        {!isCollapsed && <span>{item.name}</span>}
+                    <nav
+                        className={`flex-1 p-4 flex flex-col overflow-y-auto custom-scrollbar
+    ${isCollapsed ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : ''}`}
+                    >
+                        {/* Top navigation */}
+                        <div className="space-y-2">
+                            {mainNavigation.map((item) => {
+                                const isActive = pathname === item.href;
 
-                                        {/* Active Indicator */}
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="activeIndicator"
-                                                className="absolute left-0 top-0 bottom-0 w-1 bg-[#D4AF37] rounded-r-full"
-                                            />
-                                        )}
-                                    </Button>
-                                </Link>
-                            );
+                                const LinkButton = (
+                                    <Link href={item.href} className="block w-full">
+                                        <Button
+                                            variant="ghost"
+                                            className={`w-full transition-all duration-200 relative group
+                        ${isCollapsed ? 'justify-center px-2' : 'justify-start gap-3'}
+                        ${isActive
+                                                    ? 'bg-[#D4AF37]/10 text-[#D4AF37]'
+                                                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                                }`}
+                                        >
+                                            <item.icon className={`h-5 w-5 ${isActive ? 'text-[#D4AF37]' : 'text-gray-400 group-hover:text-white'}`} />
+                                            {!isCollapsed && <span>{item.name}</span>}
 
-                            if (isCollapsed) {
-                                return (
-                                    <Tooltip key={item.name}>
-                                        <TooltipTrigger asChild>
-                                            {LinkButton}
-                                        </TooltipTrigger>
-                                        <TooltipContent side="right">
-                                            {item.name}
-                                        </TooltipContent>
-                                    </Tooltip>
+                                            {isActive && (
+                                                <motion.div
+                                                    layoutId="activeIndicator"
+                                                    className="absolute left-0 top-0 bottom-0 w-1 bg-[#D4AF37] rounded-r-full"
+                                                />
+                                            )}
+                                        </Button>
+                                    </Link>
                                 );
-                            }
 
-                            return <div key={item.name}>{LinkButton}</div>;
-                        })}
+                                return isCollapsed ? (
+                                    <Tooltip key={item.name}>
+                                        <TooltipTrigger asChild>{LinkButton}</TooltipTrigger>
+                                        <TooltipContent side="right">{item.name}</TooltipContent>
+                                    </Tooltip>
+                                ) : (
+                                    <div key={item.name}>{LinkButton}</div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Bottom navigation — pushed down */}
+                        <div className="mt-auto pt-4 space-y-2">
+                            {bottomNavigation.map((item) => {
+                                const isActive = pathname === item.href;
+
+                                const LinkButton = (
+                                    <Link href={item.href} className="block w-full">
+                                        <Button
+                                            variant="ghost"
+                                            className={`w-full transition-all duration-200 relative group
+                        ${isCollapsed ? 'justify-center px-2' : 'justify-start gap-3'}
+                        ${isActive
+                                                    ? 'bg-[#D4AF37]/10 text-[#D4AF37]'
+                                                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                                }`}
+                                        >
+                                            <item.icon className="h-5 w-5" />
+                                            {!isCollapsed && <span>{item.name}</span>}
+                                        </Button>
+                                    </Link>
+                                );
+
+                                return isCollapsed ? (
+                                    <Tooltip key={item.name}>
+                                        <TooltipTrigger asChild>{LinkButton}</TooltipTrigger>
+                                        <TooltipContent side="right">{item.name}</TooltipContent>
+                                    </Tooltip>
+                                ) : (
+                                    <div key={item.name}>{LinkButton}</div>
+                                );
+                            })}
+                        </div>
                     </nav>
+
 
                     <div className="p-4 border-t border-gray-800 space-y-2">
                         {isCollapsed ? (
