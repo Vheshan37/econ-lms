@@ -21,7 +21,6 @@ const upcomingFeatures = [
                 icon: Video,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 25,000"
             },
             {
                 title: "Discussion Forums",
@@ -29,7 +28,6 @@ const upcomingFeatures = [
                 icon: MessageSquare,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 12,500"
             },
             {
                 title: "Gamification System",
@@ -37,7 +35,6 @@ const upcomingFeatures = [
                 icon: Award,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 18,000"
             }
         ]
     },
@@ -53,7 +50,6 @@ const upcomingFeatures = [
                 icon: TrendingUp,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 35,000"
             },
             {
                 title: "Auto-Grading System",
@@ -61,7 +57,6 @@ const upcomingFeatures = [
                 icon: FileCheck,
                 impact: "High",
                 timeline: "Q2 2025",
-                price: "LKR 20,000"
             },
             {
                 title: "Progress Reports",
@@ -69,7 +64,6 @@ const upcomingFeatures = [
                 icon: Target,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 10,000"
             }
         ]
     },
@@ -85,7 +79,6 @@ const upcomingFeatures = [
                 icon: Bell,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 12,000"
             },
             {
                 title: "WhatsApp Integration",
@@ -93,7 +86,6 @@ const upcomingFeatures = [
                 icon: MessageSquare,
                 impact: "High",
                 timeline: "Q2 2025",
-                price: "LKR 15,000"
             },
             {
                 title: "Email Campaigns",
@@ -101,7 +93,6 @@ const upcomingFeatures = [
                 icon: Globe,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 10,000"
             }
         ]
     },
@@ -117,7 +108,6 @@ const upcomingFeatures = [
                 icon: Brain,
                 impact: "High",
                 timeline: "Q2 2025",
-                price: "LKR 45,000"
             },
             {
                 title: "Interactive Simulations",
@@ -125,7 +115,6 @@ const upcomingFeatures = [
                 icon: Zap,
                 impact: "Medium",
                 timeline: "Q3 2025",
-                price: "LKR 25,000"
             },
             {
                 title: "Mobile App",
@@ -133,7 +122,6 @@ const upcomingFeatures = [
                 icon: Smartphone,
                 impact: "High",
                 timeline: "Q3 2025",
-                price: "LKR 250,000+"
             }
         ]
     },
@@ -149,7 +137,6 @@ const upcomingFeatures = [
                 icon: Mail,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 8,000"
             },
             {
                 title: "Class Assignment Notifications",
@@ -157,7 +144,6 @@ const upcomingFeatures = [
                 icon: Bell,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 8,000"
             },
             {
                 title: "Resource Upload Alerts",
@@ -165,7 +151,6 @@ const upcomingFeatures = [
                 icon: FileCheck,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 8,000"
             },
             {
                 title: "Weekly Digest Emails",
@@ -173,7 +158,6 @@ const upcomingFeatures = [
                 icon: Calendar,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 12,000"
             }
         ]
     },
@@ -189,7 +173,6 @@ const upcomingFeatures = [
                 icon: Shield,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 7,500"
             },
             {
                 title: "Login Attempt Protection",
@@ -197,7 +180,6 @@ const upcomingFeatures = [
                 icon: Lock,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 7,500"
             },
             {
                 title: "API Rate Limiting",
@@ -205,7 +187,6 @@ const upcomingFeatures = [
                 icon: Zap,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 12,500"
             }
         ]
     },
@@ -221,7 +202,6 @@ const upcomingFeatures = [
                 icon: CreditCard,
                 impact: "High",
                 timeline: "Q2 2025",
-                price: "LKR 35,000"
             },
             {
                 title: "Payment History & Tracking",
@@ -229,7 +209,6 @@ const upcomingFeatures = [
                 icon: Receipt,
                 impact: "High",
                 timeline: "Q2 2025",
-                price: "LKR 15,000"
             },
             {
                 title: "Automated Invoice Generation",
@@ -237,7 +216,6 @@ const upcomingFeatures = [
                 icon: FileSpreadsheet,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 12,500"
             },
             {
                 title: "Payment Reminders",
@@ -245,7 +223,6 @@ const upcomingFeatures = [
                 icon: Bell,
                 impact: "Medium",
                 timeline: "Q3 2025",
-                price: "LKR 10,000"
             }
         ]
     },
@@ -261,7 +238,6 @@ const upcomingFeatures = [
                 icon: UserCheck,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 12,500"
             },
             {
                 title: "Attendance Reports & Analytics",
@@ -269,7 +245,6 @@ const upcomingFeatures = [
                 icon: BarChart3,
                 impact: "High",
                 timeline: "Q1 2025",
-                price: "LKR 15,000"
             },
             {
                 title: "Student Attendance Dashboard",
@@ -277,7 +252,6 @@ const upcomingFeatures = [
                 icon: TrendingUp,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 10,000"
             },
             {
                 title: "Attendance Alerts",
@@ -285,7 +259,6 @@ const upcomingFeatures = [
                 icon: Bell,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 8,000"
             }
         ]
     },
@@ -301,7 +274,6 @@ const upcomingFeatures = [
                 icon: Calendar,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 15,000"
             }
         ]
     },
@@ -317,7 +289,6 @@ const upcomingFeatures = [
                 icon: Brain,
                 impact: "High",
                 timeline: "Q3 2025",
-                price: "LKR 55,000"
             },
             {
                 title: "Certificate Generation",
@@ -325,7 +296,6 @@ const upcomingFeatures = [
                 icon: GraduationCap,
                 impact: "Medium",
                 timeline: "Q2 2025",
-                price: "LKR 10,000"
             },
             {
                 title: "Multi-Language Support",
@@ -333,7 +303,6 @@ const upcomingFeatures = [
                 icon: Globe,
                 impact: "Medium",
                 timeline: "Q3 2025",
-                price: "LKR 15,000"
             }
         ]
     }
@@ -520,20 +489,12 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                                             {feature.description}
                                                         </p>
 
-                                                        {/* Timeline & Price */}
+                                                        {/* Timeline */}
                                                         <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-800/50">
                                                             <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
                                                                 <Clock className="w-4 h-4" />
                                                                 <span>{feature.timeline}</span>
                                                             </div>
-                                                            {feature.price && (
-                                                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/20">
-                                                                    <DollarSign className="w-3.5 h-3.5 text-[#D4AF37]" />
-                                                                    <span className="text-[13px] font-bold text-[#D4AF37] whitespace-nowrap">
-                                                                        {feature.price}
-                                                                    </span>
-                                                                </div>
-                                                            )}
                                                         </div>
                                                     </div>
                                                 </motion.div>
