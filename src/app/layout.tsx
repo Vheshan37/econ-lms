@@ -18,8 +18,20 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Quality ම Econ",
   description: "Advanced Level Economics Education Platform",
+  metadataBase: new URL("https://www.krishankasthuriarachchi.lk"),
+  alternates: {
+    canonical: "/",
+  },
   icons: {
-    icon: "/logo_t.png",
+    icon: [
+      { url: "/icon.png" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon.png" },
+    ],
+    shortcut: ["/icon.png"],
   },
 };
 
@@ -31,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${ geistSans.variable } ${ geistMono.variable } ${ fmGemunu.variable } ${ impact.variable } antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fmGemunu.variable} ${impact.variable} antialiased`}
       >
         <SmoothScroll>
           {children}
