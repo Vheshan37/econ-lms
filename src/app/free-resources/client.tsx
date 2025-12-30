@@ -69,6 +69,12 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
 
     const handleResourceClick = async (resource: Resource) => {
         incrementFreeResourceView(resource.id);
+
+        if (resource.type === 'PDF' || resource.type === 'PAST_PAPER') {
+            window.open(resource.url, '_blank');
+            return;
+        }
+
         setSelectedResource(resource);
     };
 
