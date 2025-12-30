@@ -16,6 +16,23 @@ const getYouTubeVideoId = (url: string) => {
     return (match && match[2].length === 11) ? match[2] : null;
 };
 
+// Helper to convert document URLs to embeddable formats
+const getEmbeddableUrl = (url: string) => {
+    if (!url) return '';
+
+    // Handle Google Drive URLs
+    if (url.includes('drive.google.com')) {
+        // Try to extract the file ID
+        const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+            return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
+        }
+    }
+
+    // Return original URL for direct links (e.g. domain.com/file.pdf)
+    return url;
+};
+
 // Map DB types to UI Icons and Styles
 const getResourceIcon = (type: string) => {
     switch (type) {
@@ -69,12 +86,6 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
 
     const handleResourceClick = async (resource: Resource) => {
         incrementFreeResourceView(resource.id);
-
-        if (resource.type === 'PDF' || resource.type === 'PAST_PAPER') {
-            window.open(resource.url, '_blank');
-            return;
-        }
-
         setSelectedResource(resource);
     };
 
@@ -111,25 +122,19 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
         }
 
         else if (resource.type === 'PDF' || resource.type === 'PAST_PAPER') {
+            const embedUrl = getEmbeddableUrl(resource.url);
             return (
                 <div className="w-full h-full bg-white rounded-xl overflow-hidden relative group">
-                    {/* Loading Spinner / Fallback */}
+                    {/* Loading Spinner */}
                     <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-0">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
                     </div>
 
-                    <object
-                        data={resource.url}
-                        type="application/pdf"
-                        className="w-full h-full relative z-10"
-                    >
-                        {/* Fallback if object fails, try Google Viewer */}
-                        <iframe
-                            src={`https://docs.google.com/viewer?url=${encodeURIComponent(resource.url)}&embedded=true`}
-                            className="w-full h-full border-none"
-                            title={resource.title}
-                        />
-                    </object>
+                    <iframe
+                        src={embedUrl}
+                        className="w-full h-full relative z-10 border-none"
+                        title={resource.title}
+                    />
                 </div>
             );
         }
