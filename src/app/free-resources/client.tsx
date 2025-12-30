@@ -3,7 +3,7 @@
 import { Navbar } from "@/components/Navbar";
 import { FooterSection } from "@/components/landing/FooterSection";
 import { Play, FileText, ClipboardCheck, Search, Filter, ArrowRight, BookOpen, X, Download } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { incrementFreeResourceView } from "@/lib/actions/freeResource";
 import Link from "next/link";
@@ -76,15 +76,117 @@ interface FreeResourcesClientProps {
     initialResources: Resource[];
 }
 
+// Isolated Modal Component
+function ResourceModal({ resource, onClose }: { resource: Resource; onClose: () => void }) {
+    // Basic ESC key listener
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
+
+    // Simple Render Logic
+    const renderContent = () => {
+        if (resource.type === 'VIDEO') {
+            const videoId = getYouTubeVideoId(resource.url);
+            if (!videoId) return <div className="p-8 text-center text-red-500">Invalid Video URL</div>;
+            return (
+                <div className="w-full h-full bg-black">
+                    <iframe
+                        className="w-full h-full"
+                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                        title={resource.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
+                </div>
+            );
+        }
+
+        if (resource.type === 'PDF' || resource.type === 'PAST_PAPER') {
+            const embedUrl = getEmbeddableUrl(resource.url);
+            return (
+                <div className="w-full h-full bg-white relative group">
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-0">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
+                    </div>
+                    <iframe
+                        key={resource.id} // Force re-render on new resource
+                        src={embedUrl}
+                        className="w-full h-full relative z-10 border-none"
+                        title={resource.title}
+                    />
+                </div>
+            );
+        }
+
+        if (resource.type === 'QUIZ') {
+            return (
+                <div className="w-full h-full bg-white">
+                    <iframe
+                        src={resource.url}
+                        className="w-full h-full border-none"
+                        title={resource.title}
+                    />
+                </div>
+            );
+        }
+
+        return <div className="p-8 text-center text-gray-400">Resource not supported</div>;
+    };
+
+    return (
+        <div
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-8"
+            onClick={onClose}
+        >
+            {/* Master Close Button */}
+            <button
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                }}
+                className="fixed top-6 right-6 z-[210] p-3 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg transition-transform hover:scale-110"
+                title="Close (ESC)"
+            >
+                <X className="w-6 h-6" />
+            </button>
+
+            <div
+                className="relative w-full max-w-6xl h-[85vh] bg-[#0A0A0A] rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex flex-col"
+                onClick={e => e.stopPropagation()}
+            >
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#111]">
+                    <h3 className="text-lg font-bold text-white truncate max-w-[80%]">
+                        {resource.title}
+                    </h3>
+                    <button
+                        onClick={onClose}
+                        className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 bg-black overflow-hidden relative">
+                    {renderContent()}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function FreeResourcesClient({ isHallOfFameEnabled, initialResources }: FreeResourcesClientProps) {
     const [activeTab, setActiveTab] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [resources] = useState<Resource[]>(initialResources);
-
-    // Unified Selected Resource State
     const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
 
-    const handleResourceClick = async (resource: Resource) => {
+    const handleResourceClick = (resource: Resource) => {
         incrementFreeResourceView(resource.id);
         setSelectedResource(resource);
     };
@@ -96,79 +198,14 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
         return matchesTab && matchesSearch;
     });
 
-    // Render Modal Content based on Type
-    const renderModalContent = (resource: Resource) => {
-        if (resource.type === 'VIDEO') {
-            const videoId = getYouTubeVideoId(resource.url);
-            if (videoId) {
-                return (
-                    <div className="w-full h-full bg-black rounded-xl overflow-hidden">
-                        <iframe
-                            className="w-full h-full"
-                            src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-                            title={resource.title}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe >
-                    </div >
-                );
-            } else {
-                return (
-                    <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                        <p className="text-red-400 mb-4">Video format not supported for inline playback.</p>
-                    </div>
-                );
-            }
-        }
-
-        else if (resource.type === 'PDF' || resource.type === 'PAST_PAPER') {
-            const embedUrl = getEmbeddableUrl(resource.url);
-            return (
-                <div className="w-full h-full bg-white rounded-xl overflow-hidden relative group">
-                    {/* Loading Spinner */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-0">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
-                    </div>
-
-                    <iframe
-                        src={embedUrl}
-                        className="w-full h-full relative z-10 border-none"
-                        title={resource.title}
-                    />
-                </div>
-            );
-        }
-
-        else if (resource.type === 'QUIZ') {
-            return (
-                <div className="w-full h-full bg-white rounded-xl overflow-hidden relative">
-                    <iframe
-                        src={resource.url}
-                        className="w-full h-full border-none"
-                        title={resource.title}
-                    />
-                </div>
-            );
-        }
-
-        return (
-            <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <p className="text-gray-300 mb-6">This resource cannot be embedded directly.</p>
-            </div>
-        );
-    };
-
     return (
         <div className="min-h-screen bg-black text-white font-sans selection:bg-yellow-500/30 selection:text-yellow-200">
-            {/* Navigation */}
             <Navbar isHallOfFameEnabled={isHallOfFameEnabled} />
 
             <main className="pb-24">
                 {/* Hero Section */}
                 <section className="bg-black pt-20 pb-12 border-b border-white/5 relative overflow-hidden">
-                    {/* Background Gradient */}
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-900/20 via-black to-black pointer-events-none" />
-
                     <div className="container mx-auto px-4 text-center relative z-10">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -186,7 +223,6 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                                 and interactive quizzes. Completely free, no strings attached.
                             </p>
 
-                            {/* Search Bar */}
                             <div className="relative max-w-xl mx-auto">
                                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                                     <Search className="h-5 w-5 text-gray-500" />
@@ -301,7 +337,6 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                     )}
                 </section>
 
-                {/* Bottom CTA */}
                 <section className="container mx-auto px-4 mt-12 mb-12">
                     <div className="bg-linear-to-br from-gray-900 to-black rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden border border-white/10">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -320,46 +355,13 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
 
             <FooterSection />
 
-            {/* Universal Resource Modal */}
-            <AnimatePresence>
-                {selectedResource && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-100 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-8"
-                        onClick={() => setSelectedResource(null)}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
-                            className="relative w-full max-w-6xl h-[85vh] bg-[#0A0A0A] rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex flex-col"
-                            onClick={e => e.stopPropagation()}
-                        >
-                            {/* Modal Header */}
-                            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#111]">
-                                <h3 className="text-lg font-bold text-white truncate max-w-[80%]">
-                                    {selectedResource.title}
-                                </h3>
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={() => setSelectedResource(null)}
-                                        className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
-                                    >
-                                        <X className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Modal Content */}
-                            <div className="flex-1 bg-black relative">
-                                {renderModalContent(selectedResource)}
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {/* Clean Modal Implementation */}
+            {selectedResource && (
+                <ResourceModal
+                    resource={selectedResource}
+                    onClose={() => setSelectedResource(null)}
+                />
+            )}
         </div>
     );
 }
