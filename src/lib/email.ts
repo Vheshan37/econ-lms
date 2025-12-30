@@ -22,9 +22,9 @@ interface SendOTPEmailParams {
 export async function sendOTPEmail({ to, otp, userName }: SendOTPEmailParams) {
     try {
         const mailOptions = {
-            from: `"Econ LMS" <${process.env.SMTP_FROM}>`,
+            from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
             to,
-            subject: 'Your Login OTP - Econ LMS',
+            subject: 'Your Login OTP - Quality ම Econ',
             html: `
                 <!DOCTYPE html>
                 <html>
@@ -99,13 +99,13 @@ export async function sendOTPEmail({ to, otp, userName }: SendOTPEmailParams) {
                 <body>
                     <div class="container">
                         <div class="header">
-                            <h1>🎓 Econ LMS</h1>
+                            <h1>🎓 Quality ම Econ</h1>
                         </div>
                         <div class="content">
                             <div class="greeting">
                                 ${userName ? `Hello ${userName},` : 'Hello,'}
                             </div>
-                            <p>You requested to log in to your Econ LMS account. Use the OTP code below to complete your login:</p>
+                            <p>You requested to log in to your Quality ම Econ account. Use the OTP code below to complete your login:</p>
                             
                             <div class="otp-box">
                                 ${otp}
@@ -150,9 +150,9 @@ export async function sendInvitationEmail({ to, userName }: SendInvitationEmailP
         const loginUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
         const mailOptions = {
-            from: `"Econ LMS" <${process.env.SMTP_FROM}>`,
+            from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
             to,
-            subject: 'Welcome to Econ LMS - Your Account is Ready',
+            subject: 'Welcome to Quality ම Econ - Your Account is Ready',
             html: `
                 <!DOCTYPE html>
                 <html>
@@ -232,14 +232,14 @@ export async function sendInvitationEmail({ to, userName }: SendInvitationEmailP
                 <body>
                     <div class="container">
                         <div class="header">
-                            <h1>🎓 Econ LMS</h1>
+                            <h1>🎓 Quality ම Econ</h1>
                         </div>
                         <div class="content">
                             <div class="greeting">
                                 Hello ${userName},
                             </div>
                             <div class="message">
-                                <p>Welcome to Econ LMS! Your student account has been successfully created.</p>
+                                <p>Welcome to Quality ම Econ! Your student account has been successfully created.</p>
                                 <p>You can now access your classes, resources, and learning materials directly through our platform.</p>
                             </div>
                             
@@ -256,14 +256,14 @@ export async function sendInvitationEmail({ to, userName }: SendInvitationEmailP
                             </div>
                         </div>
                         <div class="footer">
-                            <p>© ${new Date().getFullYear()} Econ LMS. All rights reserved.</p>
+                            <p>© ${new Date().getFullYear()} Quality ම Econ. All rights reserved.</p>
                             <p>This is an automated email. Please do not reply.</p>
                         </div>
                     </div>
                 </body>
                 </html>
             `,
-            text: `Welcome to Econ LMS, ${userName}!\n\nYour account has been created. You can login at ${loginUrl}/login using your email: ${to}\n\nWe use a secure OTP-based login system, so no password is required.`,
+            text: `Welcome to Quality ම Econ, ${userName}!\n\nYour account has been created. You can login at ${loginUrl}/login using your email: ${to}\n\nWe use a secure OTP-based login system, so no password is required.`,
         };
 
         const info = await transporter.sendMail(mailOptions);
