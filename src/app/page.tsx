@@ -44,11 +44,14 @@ export default async function Home() {
   const aboutContent = await getLandingPageContent('about');
   const aboutData = aboutContent.success ? aboutContent.data : null;
 
+  const hallOfFameContent = await getLandingPageContent('hall-of-fame');
+  const isHallOfFameEnabled = hallOfFameContent.success && hallOfFameContent.data ? hallOfFameContent.data.isEnabled !== false : true;
+
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
       {/* Overlay Navbar for the landing page */}
       <div className="absolute top-0 left-0 right-0 z-50">
-        <Navbar />
+        <Navbar isHallOfFameEnabled={isHallOfFameEnabled} />
       </div>
 
       <main>

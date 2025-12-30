@@ -7,7 +7,22 @@ import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { FooterSection } from '@/components/landing/FooterSection';
 
+import { getLandingPageContent } from '@/lib/actions/content';
+import { useState, useEffect } from "react";
+
 export default function OLStudentsPage() {
+    const [isHallOfFameEnabled, setIsHallOfFameEnabled] = useState(true);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const content = await getLandingPageContent('hall-of-fame');
+            if (content.success && content.data) {
+                setIsHallOfFameEnabled(content.data.isEnabled !== false);
+            }
+        };
+        fetchSettings();
+    }, []);
+
     const container = {
         hidden: { opacity: 0 },
         show: {
@@ -56,7 +71,7 @@ export default function OLStudentsPage() {
         <div className="min-h-screen bg-[#050505] text-white selection:bg-yellow-500 selection:text-black">
             {/* Header / Navbar */}
             <div className="absolute top-0 left-0 right-0 z-50">
-                <Navbar />
+                <Navbar isHallOfFameEnabled={isHallOfFameEnabled} />
             </div>
 
             {/* Hero Section */}

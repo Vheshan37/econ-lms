@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, Trophy, Award, MapPin, Calendar, X, Image as ImageIcon, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,8 @@ export default function HallOfFamePage() {
         totalAPasses: '150+',
         passRate: '92%',
         districtRanks: '12',
-        islandRanks: '3'
+        islandRanks: '3',
+        isEnabled: true
     });
     const [isSavingStats, setIsSavingStats] = useState(false);
 
@@ -85,7 +87,11 @@ export default function HallOfFamePage() {
         const fetchStats = async () => {
             const content = await getLandingPageContent('hall-of-fame');
             if (content.success && content.data) {
-                setHallOfFameStats(prev => ({ ...prev, ...content.data }));
+                setHallOfFameStats(prev => ({
+                    ...prev,
+                    ...content.data,
+                    isEnabled: content.data.isEnabled !== undefined ? content.data.isEnabled : true
+                }));
             }
         };
 
@@ -215,53 +221,77 @@ export default function HallOfFamePage() {
                 </div>
             </div>
 
-            {/* Stats Management Section */}
+            {/* Page Settings Section */}
             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-8">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">Page Settings</h2>
-                        <p className="text-sm text-gray-500">Manage the analytics displayed on the Hall of Fame page</p>
+                        <p className="text-sm text-gray-500">Manage visibility and analytics for the Hall of Fame page</p>
                     </div>
                     <Button onClick={handleSaveStats} disabled={isSavingStats} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
                         {isSavingStats ? 'Saving...' : 'Save Settings'}
                     </Button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                        <Label className="text-gray-800">A Passes</Label>
-                        <Input
-                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                            value={hallOfFameStats.totalAPasses}
-                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, totalAPasses: e.target.value })}
-                            placeholder="150+"
-                        />
+
+                <div className="grid md:grid-cols-4 gap-8">
+                    {/* Visibility Toggle */}
+                    <div className="md:col-span-1 space-y-4 border-r border-gray-100 pr-8">
+                        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Visibility</h3>
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200">
+                            <Label className="text-gray-700 font-medium cursor-pointer" htmlFor="hof-toggle">Enable Section</Label>
+                            <Switch
+                                id="hof-toggle"
+                                checked={hallOfFameStats.isEnabled}
+                                onCheckedChange={(checked) => setHallOfFameStats(prev => ({ ...prev, isEnabled: checked }))}
+                                className="data-[state=checked]:bg-[#D4AF37]"
+                            />
+                        </div>
+                        <p className="text-xs text-gray-500">
+                            When disabled, the Hall of Fame link will be hidden from the navigation bar.
+                        </p>
                     </div>
-                    <div className="space-y-2">
-                        <Label className="text-gray-800">Pass Rate</Label>
-                        <Input
-                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                            value={hallOfFameStats.passRate}
-                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, passRate: e.target.value })}
-                            placeholder="92%"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label className="text-gray-800">District Ranks</Label>
-                        <Input
-                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                            value={hallOfFameStats.districtRanks}
-                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, districtRanks: e.target.value })}
-                            placeholder="12"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label className="text-gray-800">Island Ranks</Label>
-                        <Input
-                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                            value={hallOfFameStats.islandRanks}
-                            onChange={e => setHallOfFameStats({ ...hallOfFameStats, islandRanks: e.target.value })}
-                            placeholder="3"
-                        />
+
+                    {/* Stats Inputs */}
+                    <div className="md:col-span-3 space-y-4">
+                        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Statistics Display</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">A Passes</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={hallOfFameStats.totalAPasses}
+                                    onChange={e => setHallOfFameStats({ ...hallOfFameStats, totalAPasses: e.target.value })}
+                                    placeholder="150+"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Pass Rate</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={hallOfFameStats.passRate}
+                                    onChange={e => setHallOfFameStats({ ...hallOfFameStats, passRate: e.target.value })}
+                                    placeholder="92%"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">District Ranks</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={hallOfFameStats.districtRanks}
+                                    onChange={e => setHallOfFameStats({ ...hallOfFameStats, districtRanks: e.target.value })}
+                                    placeholder="12"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-gray-800">Island Ranks</Label>
+                                <Input
+                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                                    value={hallOfFameStats.islandRanks}
+                                    onChange={e => setHallOfFameStats({ ...hallOfFameStats, islandRanks: e.target.value })}
+                                    placeholder="3"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -9,8 +9,12 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-// NavbarProps removed as it is now empty.
-export function Navbar() {
+// NavbarProps interface
+interface NavbarProps {
+    isHallOfFameEnabled?: boolean;
+}
+
+export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
     const { currentUser, logout } = useStore();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -28,7 +32,7 @@ export function Navbar() {
 
     const navLinks = [
         { name: "Home", path: "/" },
-        { name: "Hall of Fame", path: "/hall-of-fame" },
+        ...(isHallOfFameEnabled ? [{ name: "Hall of Fame", path: "/hall-of-fame" }] : []),
         { name: "O/L Student?", path: "/ol-students" },
         { name: "Contact Us", path: "/contact" },
     ];

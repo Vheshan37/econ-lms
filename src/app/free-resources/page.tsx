@@ -4,6 +4,7 @@ import { FooterSection } from "@/components/landing/FooterSection";
 import { Play, FileText, ClipboardCheck, Search, Filter, ArrowRight, BookOpen, X, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getLandingPageContent } from '@/lib/actions/content';
 import { getFreeResources, incrementFreeResourceView } from "@/lib/actions/freeResource";
 import Link from "next/link";
 
@@ -59,6 +60,7 @@ export default function FreeResourcesPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [resources, setResources] = useState<Resource[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isHallOfFameEnabled, setIsHallOfFameEnabled] = useState(true);
 
     // Unified Selected Resource State
     const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
@@ -66,12 +68,20 @@ export default function FreeResourcesPage() {
     useEffect(() => {
         const fetchResources = async () => {
             try {
-                const result = await getFreeResources();
-                if (result.success && result.data) {
-                    setResources(result.data);
+                const [resourcesResult, contentResult] = await Promise.all([
+                    getFreeResources(),
+                    getLandingPageContent('hall-of-fame')
+                ]);
+
+                if (resourcesResult.success && resourcesResult.data) {
+                    setResources(resourcesResult.data);
+                }
+
+                if (contentResult.success && contentResult.data) {
+                    setIsHallOfFameEnabled(contentResult.data.isEnabled !== false);
                 }
             } catch (error) {
-                console.error("Failed to fetch resources:", error);
+                console.error("Failed to fetch data:", error);
             } finally {
                 setLoading(false);
             }
