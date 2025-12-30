@@ -9,9 +9,10 @@ interface VideoPlayerProps {
     isOpen: boolean;
     onClose: () => void;
     title?: string;
+    showWarning?: boolean;
 }
 
-export function VideoPlayer({ videoUrl, isOpen, onClose, title }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl, isOpen, onClose, title, showWarning = true }: VideoPlayerProps) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     // Detect video platform and extract ID/embed URL
@@ -164,11 +165,13 @@ export function VideoPlayer({ videoUrl, isOpen, onClose, title }: VideoPlayerPro
                         </div>
 
                         {/* Warning Message */}
-                        <div className="mt-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
-                            <p className="text-yellow-200 text-sm text-center">
-                                ⚠️ This video is for enrolled students only. Sharing is prohibited.
-                            </p>
-                        </div>
+                        {showWarning && (
+                            <div className="mt-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
+                                <p className="text-yellow-200 text-sm text-center">
+                                    ⚠️ This video is for enrolled students only. Sharing is prohibited.
+                                </p>
+                            </div>
+                        )}
                     </motion.div>
                 </motion.div>
             )}

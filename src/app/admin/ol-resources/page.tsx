@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertDialog } from '@/components/ui/alert-dialog';
+import { VideoPlayer } from '@/components/VideoPlayer';
 import { getFreeResources, createFreeResource, updateFreeResource, deleteFreeResource } from '@/lib/actions/freeResource';
 import { getLandingPageContent, updateLandingPageContent } from '@/lib/actions/content';
 import { getOLSubjects, createOLSubject, deleteOLSubject } from '@/lib/actions/ol-subject';
@@ -53,6 +54,7 @@ export default function OLResourcesPage() {
     const [ctaYear, setCtaYear] = useState('2027');
     const [ctaMessage, setCtaMessage] = useState('Want more advanced content? Join our {year} Batch');
     const [categoryCards, setCategoryCards] = useState([
+        { title: 'Video Lessons', description: 'Watch expert video tutorials', icon: 'Play', link: '#videos' },
         { title: 'Past Papers', description: 'Access previous exam papers', icon: 'File', link: '#past-papers' },
         { title: 'Study Guides', description: 'Comprehensive study materials', icon: 'BookOpen', link: '#guides' },
         { title: 'Practice Quizzes', description: 'Test your knowledge', icon: 'ClipboardList', link: '#quizzes' }
@@ -83,6 +85,21 @@ export default function OLResourcesPage() {
         message: ''
     });
 
+    // Video Player State
+    const [videoPlayer, setVideoPlayer] = useState<{ isOpen: boolean; url: string; title: string }>({
+        isOpen: false,
+        url: '',
+        title: ''
+    });
+
+    const handleResourceClick = (resource: Resource) => {
+        if (resource.type === 'VIDEO') {
+            setVideoPlayer({ isOpen: true, url: resource.url, title: resource.title });
+        } else {
+            window.open(resource.url, '_blank');
+        }
+    };
+
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -103,8 +120,14 @@ export default function OLResourcesPage() {
                     setCtaYear(data.cta.year || '2027');
                     setCtaMessage(data.cta.message || 'Want more advanced content? Join our {year} Batch');
                 }
-                if (data.categoryCards) {
-                    setCategoryCards(data.categoryCards);
+                if (data.categoryCards && Array.isArray(data.categoryCards) && data.categoryCards.length > 0) {
+                    // Check if we need to add the video card (migration for existing data)
+                    if (data.categoryCards.length === 3 && !data.categoryCards.find((c: any) => c.title === 'Video Lessons')) {
+                        const videoCard = { title: 'Video Lessons', description: 'Watch expert video tutorials', icon: 'Play', link: '#videos' };
+                        setCategoryCards([videoCard, ...data.categoryCards]);
+                    } else {
+                        setCategoryCards(data.categoryCards);
+                    }
                 }
             }
         } catch (error) {
@@ -378,7 +401,7 @@ export default function OLResourcesPage() {
                 {/* Category Cards */}
                 <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-800">Category Cards</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {categoryCards.map((card, index) => (
                             <div key={index} className="border border-gray-200 rounded-xl p-4 space-y-3">
                                 <div className="flex items-center justify-between mb-2">
@@ -557,21 +580,35 @@ export default function OLResourcesPage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, scale: 0.95 }}
                                             transition={{ delay: index * 0.05 }}
-                                            className="group relative bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300"
+                                            className="group relative bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                                            onClick={() => handleResourceClick(resource)}
                                         >
                                             <div className="flex items-start justify-between mb-4">
-                                                <div className={`p-3 rounded-xl ${tabInfo?.bgColor} bg-opacity-10`}>
+                                                <div className={`p-3 rounded-xl ${tabInfo?.bgColor} bg-opacity-10 relative`}>
                                                     <Icon className={`w-6 h-6 ${tabInfo?.color}`} />
+                                                    {resource.type === 'VIDEO' && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="bg-black/10 rounded-full p-1">
+                                                                <Play className="w-3 h-3 text-current opacity-50" />
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button
-                                                        onClick={() => handleEditResource(resource)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditResource(resource);
+                                                        }}
                                                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                                                     >
                                                         <Edit2 className="w-4 h-4 text-gray-600" />
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDeleteClick(resource)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeleteClick(resource);
+                                                        }}
                                                         className="p-2 hover:bg-red-50 rounded-lg transition-colors"
                                                     >
                                                         <Trash2 className="w-4 h-4 text-red-500" />
@@ -743,6 +780,14 @@ export default function OLResourcesPage() {
                 description={successAlert.message}
                 type="success"
                 cancelText="Close"
+            />
+            {/* Video Player */}
+            <VideoPlayer
+                isOpen={videoPlayer.isOpen}
+                onClose={() => setVideoPlayer({ isOpen: false, url: '', title: '' })}
+                videoUrl={videoPlayer.url}
+                title={videoPlayer.title}
+                showWarning={false}
             />
         </div>
     );
