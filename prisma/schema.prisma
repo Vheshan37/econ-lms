@@ -79,6 +79,19 @@ model FreeResource {
   updatedAt   DateTime     @updatedAt
   views       Int          @default(0)
   level       String       @default("Advanced Level") // "Advanced Level" or "Ordinary Level"
+  
+  // Relations
+  olSubjectId String?
+  olSubject   OLSubject?   @relation(fields: [olSubjectId], references: [id])
+}
+
+model OLSubject {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  resources FreeResource[] // Relation to resources
 }
 
 model Student {

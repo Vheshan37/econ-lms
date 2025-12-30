@@ -4,12 +4,15 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { ResourceType } from '@prisma/client';
 
-export async function getFreeResources(level: string = "Advanced Level") {
+export async function getFreeResources(level: string = "Advanced Level", olSubjectId?: string) {
     try {
+        const where: any = { level };
+        if (olSubjectId) {
+            where.olSubjectId = olSubjectId;
+        }
+
         const resources = await (prisma as any).freeResource.findMany({
-            where: {
-                level
-            },
+            where,
             orderBy: {
                 createdAt: 'desc'
             }
@@ -28,6 +31,7 @@ export async function createFreeResource(data: {
     url: string;
     description?: string;
     level?: string;
+    olSubjectId?: string;
 }) {
     try {
         const resource = await (prisma as any).freeResource.create({
@@ -37,6 +41,7 @@ export async function createFreeResource(data: {
                 url: data.url,
                 description: data.description,
                 level: data.level || "Advanced Level",
+                olSubjectId: data.olSubjectId,
             },
         });
 
@@ -55,6 +60,7 @@ export async function updateFreeResource(id: string, data: {
     url: string;
     description?: string;
     level?: string;
+    olSubjectId?: string;
 }) {
     try {
         const resource = await (prisma as any).freeResource.update({
@@ -65,6 +71,7 @@ export async function updateFreeResource(id: string, data: {
                 url: data.url,
                 description: data.description,
                 level: data.level,
+                olSubjectId: data.olSubjectId,
             },
         });
 

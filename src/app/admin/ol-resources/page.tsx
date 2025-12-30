@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, FileText, File, ClipboardList, ExternalLink, BookOpen, Save } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText, File, ClipboardList, ExternalLink, BookOpen, Save, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { getFreeResources, createFreeResource, updateFreeResource, deleteFreeResource } from '@/lib/actions/freeResource';
 import { getLandingPageContent, updateLandingPageContent } from '@/lib/actions/content';
+import { getOLSubjects, createOLSubject, deleteOLSubject } from '@/lib/actions/ol-subject';
 import { ResourceType } from '@prisma/client';
 
 interface Resource {
@@ -19,9 +20,19 @@ interface Resource {
     url: string;
     description: string | null;
     createdAt: Date;
+    olSubjectId?: string;
+}
+
+interface OLSubject {
+    id: string;
+    name: string;
+    _count?: {
+        resources: number;
+    }
 }
 
 const TABS = [
+    { id: 'VIDEO', label: 'Video Lessons', icon: Play, color: 'text-red-500', bgColor: 'bg-red-500' },
     { id: 'PDF', label: 'PDFs', icon: FileText, color: 'text-blue-500', bgColor: 'bg-blue-500' },
     { id: 'PAST_PAPER', label: 'Past Papers', icon: File, color: 'text-purple-500', bgColor: 'bg-purple-500' },
     { id: 'QUIZ', label: 'Quizzes', icon: ClipboardList, color: 'text-green-500', bgColor: 'bg-green-500' },
@@ -29,7 +40,11 @@ const TABS = [
 
 export default function OLResourcesPage() {
     const [resources, setResources] = useState<Resource[]>([]);
-    const [activeTab, setActiveTab] = useState<ResourceType>('PDF');
+    const [subjects, setSubjects] = useState<OLSubject[]>([]);
+    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+    const [newSubjectName, setNewSubjectName] = useState('');
+
+    const [activeTab, setActiveTab] = useState<ResourceType>('VIDEO');
     const [isLoading, setIsLoading] = useState(true);
     const [isAddingResource, setIsAddingResource] = useState(false);
     const [editingResource, setEditingResource] = useState<Resource | null>(null);
@@ -43,19 +58,21 @@ export default function OLResourcesPage() {
         { title: 'Practice Quizzes', description: 'Test your knowledge', icon: 'ClipboardList', link: '#quizzes' }
     ]);
     const [isSavingSettings, setIsSavingSettings] = useState(false);
+    const [isCreatingSubject, setIsCreatingSubject] = useState(false);
 
     // Form state
-    const [resourceType, setResourceType] = useState<ResourceType>('PDF');
+    const [resourceType, setResourceType] = useState<ResourceType>('VIDEO');
     const [title, setTitle] = useState('');
     const [url, setUrl] = useState('');
     const [description, setDescription] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Alert Dialog State
-    const [deleteAlert, setDeleteAlert] = useState<{ isOpen: boolean; resourceId: string | null; resourceTitle: string }>({
+    const [deleteAlert, setDeleteAlert] = useState<{ isOpen: boolean; resourceId: string | null; resourceTitle: string; type: 'resource' | 'subject' }>({
         isOpen: false,
         resourceId: null,
-        resourceTitle: ''
+        resourceTitle: '',
+        type: 'resource'
     });
     const [errorAlert, setErrorAlert] = useState<{ isOpen: boolean; message: string }>({
         isOpen: false,
@@ -69,15 +86,15 @@ export default function OLResourcesPage() {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const [resourcesResult, settingsResult] = await Promise.all([
-                getFreeResources("Ordinary Level"),
+            const [subjectsResult, settingsResult] = await Promise.all([
+                getOLSubjects(),
                 getLandingPageContent('ol-resources')
             ]);
 
-            if (resourcesResult.success && resourcesResult.data) {
-                setResources(resourcesResult.data);
+            if (subjectsResult.success && subjectsResult.data) {
+                setSubjects(subjectsResult.data);
             } else {
-                setErrorAlert({ isOpen: true, message: resourcesResult.error || 'Failed to fetch resources' });
+                setErrorAlert({ isOpen: true, message: subjectsResult.error || 'Failed to fetch subjects' });
             }
 
             if (settingsResult.success && settingsResult.data) {
@@ -98,9 +115,62 @@ export default function OLResourcesPage() {
         }
     };
 
+    const fetchResources = async () => {
+        if (!selectedSubject) return;
+
+        setIsLoading(true);
+        try {
+            const resourcesResult = await getFreeResources("Ordinary Level", selectedSubject);
+            if (resourcesResult.success && resourcesResult.data) {
+                setResources(resourcesResult.data);
+            }
+        } catch (error) {
+            console.error("Error fetching resources:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (selectedSubject) {
+            fetchResources();
+        } else {
+            setResources([]);
+        }
+    }, [selectedSubject]);
+
+    const handleCreateSubject = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsCreatingSubject(true);
+        try {
+            const result = await createOLSubject(newSubjectName);
+            if (result.success) {
+                setSuccessAlert({ isOpen: true, message: 'Subject created successfully' });
+                setNewSubjectName('');
+                fetchData();
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to create subject' });
+            }
+        } catch (error) {
+            console.error("Error creating subject:", error);
+            setErrorAlert({ isOpen: true, message: 'An error occurred while creating subject' });
+        } finally {
+            setIsCreatingSubject(false);
+        }
+    };
+
+    const handleDeleteSubjectClick = (subject: OLSubject) => {
+        setDeleteAlert({
+            isOpen: true,
+            resourceId: subject.id,
+            resourceTitle: subject.name,
+            type: 'subject'
+        });
+    };
 
     const handleSaveSettings = async () => {
         setIsSavingSettings(true);
@@ -131,7 +201,7 @@ export default function OLResourcesPage() {
     const handleAddResource = () => {
         setIsAddingResource(true);
         setEditingResource(null);
-        setResourceType('PDF');
+        setResourceType('VIDEO');
         setTitle('');
         setUrl('');
         setDescription('');
@@ -156,6 +226,11 @@ export default function OLResourcesPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!selectedSubject) {
+            setErrorAlert({ isOpen: true, message: 'Please select a subject first' });
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -164,7 +239,8 @@ export default function OLResourcesPage() {
                 type: resourceType,
                 url,
                 description,
-                level: "Ordinary Level"
+                level: "Ordinary Level",
+                olSubjectId: selectedSubject
             };
 
             let result;
@@ -177,7 +253,7 @@ export default function OLResourcesPage() {
             if (result.success) {
                 setSuccessAlert({ isOpen: true, message: `Resource ${editingResource ? 'updated' : 'created'} successfully` });
                 handleCloseModal();
-                fetchData();
+                fetchResources();
             } else {
                 setErrorAlert({ isOpen: true, message: result.error || 'Failed to save resource' });
             }
@@ -193,7 +269,8 @@ export default function OLResourcesPage() {
         setDeleteAlert({
             isOpen: true,
             resourceId: resource.id,
-            resourceTitle: resource.title
+            resourceTitle: resource.title,
+            type: 'resource'
         });
     };
 
@@ -201,18 +278,30 @@ export default function OLResourcesPage() {
         if (!deleteAlert.resourceId) return;
 
         try {
-            const result = await deleteFreeResource(deleteAlert.resourceId);
-            if (result.success) {
-                setSuccessAlert({ isOpen: true, message: 'Resource deleted successfully' });
+            let result;
+            if (deleteAlert.type === 'subject') {
+                result = await deleteOLSubject(deleteAlert.resourceId);
+                // If deleted active subject, clear selection
+                if (selectedSubject === deleteAlert.resourceId) {
+                    setSelectedSubject(null);
+                    setResources([]);
+                }
                 fetchData();
             } else {
-                setErrorAlert({ isOpen: true, message: result.error || 'Failed to delete resource' });
+                result = await deleteFreeResource(deleteAlert.resourceId);
+                fetchResources(); // Refresh resources instead of fetchData
+            }
+
+            if (result.success) {
+                setSuccessAlert({ isOpen: true, message: `${deleteAlert.type === 'subject' ? 'Subject' : 'Resource'} deleted successfully` });
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || `Failed to delete ${deleteAlert.type}` });
             }
         } catch (error) {
-            console.error("Error deleting resource:", error);
-            setErrorAlert({ isOpen: true, message: 'An error occurred while deleting the resource' });
+            console.error(`Error deleting ${deleteAlert.type}:`, error);
+            setErrorAlert({ isOpen: true, message: `An error occurred while deleting the ${deleteAlert.type}` });
         } finally {
-            setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '' });
+            setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '', type: 'resource' });
         }
     };
 
@@ -235,13 +324,6 @@ export default function OLResourcesPage() {
                             <p className="text-gray-400">Manage Ordinary Level free resources for students</p>
                         </div>
                     </div>
-                    <Button
-                        onClick={handleAddResource}
-                        className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30"
-                    >
-                        <Plus className="w-5 h-5" />
-                        Add Resource
-                    </Button>
                 </div>
             </div>
 
@@ -361,101 +443,170 @@ export default function OLResourcesPage() {
                 </div>
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-2 border-b border-gray-200">
-                {TABS.map((tab) => {
-                    const Icon = tab.icon;
-                    return (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id as ResourceType)}
-                            className={`flex items-center gap-2 px-6 py-3 font-medium transition-all relative ${activeTab === tab.id
-                                ? 'text-[#1a1a1a]'
-                                : 'text-gray-500 hover:text-gray-700'
+            {/* Subject Management Section */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <h2 className="text-xl font-bold text-gray-900 mb-6">Manage Subjects</h2>
+
+                {/* Create Subject Form */}
+                <form onSubmit={handleCreateSubject} className="flex gap-4 mb-8">
+                    <Input
+                        value={newSubjectName}
+                        onChange={(e) => setNewSubjectName(e.target.value)}
+                        placeholder="Enter new subject name"
+                        className="max-w-md"
+                    />
+                    <Button
+                        type="submit"
+                        disabled={isCreatingSubject || !newSubjectName.trim()}
+                        className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a]"
+                    >
+                        {isCreatingSubject ? 'Creating...' : 'Create Subject'}
+                    </Button>
+                </form>
+
+                {/* Subject List / Selection */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {subjects.map((subject) => (
+                        <div
+                            key={subject.id}
+                            onClick={() => setSelectedSubject(subject.id)}
+                            className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedSubject === subject.id
+                                ? 'border-[#D4AF37] bg-[#D4AF37]/5'
+                                : 'border-gray-200 hover:border-[#D4AF37]/50'
                                 }`}
                         >
-                            <Icon className={`w-5 h-5 ${activeTab === tab.id ? tab.color : ''}`} />
-                            {tab.label}
-                            {activeTab === tab.id && (
-                                <motion.div
-                                    layoutId="activeTab"
-                                    className={`absolute bottom-0 left-0 right-0 h-0.5 ${tab.bgColor}`}
-                                    initial={false}
-                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                />
-                            )}
-                        </button>
-                    );
-                })}
+                            <div className="font-semibold text-gray-900 mb-1">{subject.name}</div>
+                            <div className="text-xs text-gray-500">
+                                {subject._count?.resources || 0} resources
+                            </div>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteSubjectClick(subject);
+                                }}
+                                className="absolute top-2 right-2 p-1 text-gray-400 hover:text-red-500 rounded-full hover:bg-red-50"
+                            >
+                                <Trash2 className="w-3 h-3" />
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            {/* Resources Grid */}
-            {isLoading ? (
-                <div className="flex items-center justify-center py-12">
-                    <div className="text-gray-500">Loading resources...</div>
-                </div>
-            ) : filteredResources.length === 0 ? (
-                <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
-                    <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500 mb-4">No {TABS.find(t => t.id === activeTab)?.label.toLowerCase()} yet</p>
-                    <Button onClick={handleAddResource} variant="outline">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add First Resource
-                    </Button>
+            {/* Resources Section */}
+            {selectedSubject ? (
+                <div className="space-y-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <h2 className="text-2xl font-bold">
+                            Resources for <span className="text-[#D4AF37]">{subjects.find(s => s.id === selectedSubject)?.name}</span>
+                        </h2>
+
+                        {/* Tabs */}
+                        <div className="flex gap-2">
+                            {TABS.map((tab) => {
+                                const Icon = tab.icon;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id as ResourceType)}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${activeTab === tab.id
+                                            ? 'bg-white text-gray-900 shadow-md'
+                                            : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-[#D4AF37]'
+                                            }`}
+                                    >
+                                        <Icon className={`w-4 h-4 ${activeTab === tab.id ? tab.color : ''}`} />
+                                        {tab.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        <Button
+                            onClick={handleAddResource}
+                            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 font-bold shadow-lg shadow-[#D4AF37]/30"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Add Resource
+                        </Button>
+                    </div>
+
+                    {/* Resources Grid */}
+                    {isLoading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="text-gray-500">Loading resources...</div>
+                        </div>
+                    ) : filteredResources.length === 0 ? (
+                        <div className="text-center py-12 bg-white/5 rounded-2xl border border-white/10 border-dashed">
+                            <BookOpen className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                            <p className="text-gray-400 mb-4">No {TABS.find(t => t.id === activeTab)?.label.toLowerCase()} added yet</p>
+                            <Button onClick={handleAddResource} variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                                <Plus className="w-4 h-4 mr-2" />
+                                Add First Resource
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <AnimatePresence>
+                                {filteredResources.map((resource, index) => {
+                                    const tabInfo = TABS.find(t => t.id === resource.type);
+                                    const Icon = tabInfo?.icon || FileText;
+                                    return (
+                                        <motion.div
+                                            key={resource.id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.95 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            className="group relative bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300"
+                                        >
+                                            <div className="flex items-start justify-between mb-4">
+                                                <div className={`p-3 rounded-xl ${tabInfo?.bgColor} bg-opacity-10`}>
+                                                    <Icon className={`w-6 h-6 ${tabInfo?.color}`} />
+                                                </div>
+                                                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button
+                                                        onClick={() => handleEditResource(resource)}
+                                                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                                    >
+                                                        <Edit2 className="w-4 h-4 text-gray-600" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteClick(resource)}
+                                                        className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                                                    >
+                                                        <Trash2 className="w-4 h-4 text-red-500" />
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{resource.title}</h3>
+                                            {resource.description && (
+                                                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{resource.description}</p>
+                                            )}
+
+                                            <a
+                                                href={resource.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-2 text-sm text-[#D4AF37] hover:text-[#B5952F] font-medium"
+                                            >
+                                                View Resource
+                                                <ExternalLink className="w-4 h-4" />
+                                            </a>
+                                        </motion.div>
+                                    );
+                                })}
+                            </AnimatePresence>
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <AnimatePresence>
-                        {filteredResources.map((resource, index) => {
-                            const tabInfo = TABS.find(t => t.id === resource.type);
-                            const Icon = tabInfo?.icon || FileText;
-                            return (
-                                <motion.div
-                                    key={resource.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    className="group relative bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300"
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className={`p-3 rounded-xl ${tabInfo?.bgColor} bg-opacity-10`}>
-                                            <Icon className={`w-6 h-6 ${tabInfo?.color}`} />
-                                        </div>
-                                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button
-                                                onClick={() => handleEditResource(resource)}
-                                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                                            >
-                                                <Edit2 className="w-4 h-4 text-gray-600" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteClick(resource)}
-                                                className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                                            >
-                                                <Trash2 className="w-4 h-4 text-red-500" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{resource.title}</h3>
-                                    {resource.description && (
-                                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{resource.description}</p>
-                                    )}
-
-                                    <a
-                                        href={resource.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 text-sm text-[#D4AF37] hover:text-[#B5952F] font-medium"
-                                    >
-                                        View Resource
-                                        <ExternalLink className="w-4 h-4" />
-                                    </a>
-                                </motion.div>
-                            );
-                        })}
-                    </AnimatePresence>
+                <div className="text-center py-20 bg-white/5 rounded-3xl border border-white/10">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 mb-6">
+                        <BookOpen className="w-8 h-8 text-gray-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">No Subject Selected</h3>
+                    <p className="text-gray-400">Select a subject above to view and manage its resources</p>
                 </div>
             )}
 
@@ -563,10 +714,9 @@ export default function OLResourcesPage() {
                 )}
             </AnimatePresence>
 
-            {/* Delete Confirmation Dialog */}
             <AlertDialog
                 isOpen={deleteAlert.isOpen}
-                onClose={() => setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '' })}
+                onClose={() => setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '', type: 'resource' })}
                 onConfirm={handleDeleteConfirm}
                 title="Delete Resource"
                 description={`Are you sure you want to delete "${deleteAlert.resourceTitle}"? This action cannot be undone.`}
