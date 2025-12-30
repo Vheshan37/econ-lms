@@ -13,6 +13,8 @@ import { FooterSection } from "@/components/landing/FooterSection";
 import { prisma } from "@/lib/prisma";
 import { getLandingPageContent } from "@/lib/actions/content";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const years = await prisma.academicYear.findMany({
     where: { isActive: true },

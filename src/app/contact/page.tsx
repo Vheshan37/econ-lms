@@ -4,6 +4,8 @@ import { ContactSection } from "@/components/landing/ContactSection";
 
 import { getLandingPageContent } from "@/lib/actions/content";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ContactPage() {
     const hallOfFameContent = await getLandingPageContent('hall-of-fame');
     const isEnabled = hallOfFameContent.success && hallOfFameContent.data ? hallOfFameContent.data.isEnabled !== false : true;
