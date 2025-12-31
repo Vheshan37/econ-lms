@@ -13,6 +13,7 @@ function getMimeType(filename: string): string {
         case 'jpeg': return 'image/jpeg';
         case 'gif': return 'image/gif';
         case 'webp': return 'image/webp';
+        case 'pdf': return 'application/pdf';
         case 'mp4': return 'video/mp4';
         case 'webm': return 'video/webm';
         case 'svg': return 'image/svg+xml';
@@ -20,11 +21,12 @@ function getMimeType(filename: string): string {
     }
 }
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ filename: string }> }) {
-    const { filename } = await params;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+    const { path: segments } = await params;
+    const filename = segments.join('/');
 
     const uploadDir = await getPersistentUploadDir();
-    const filepath = join(uploadDir, filename);
+    const filepath = join(uploadDir, ...segments);
 
     if (!existsSync(filepath)) {
         return new NextResponse('File Not Found', { status: 404 });
@@ -34,10 +36,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ file
         const fileBuffer = await readFile(filepath);
         const contentType = getMimeType(filename);
 
+        const isInline = ['image/', 'video/', 'application/pdf'].some(type => contentType.startsWith(type));
+
         return new NextResponse(fileBuffer, {
             headers: {
                 'Content-Type': contentType,
                 'Cache-Control': 'public, max-age=31536000, immutable',
+                'Content-Disposition': isInline ? 'inline' : `attachment; filename="${segments[segments.length - 1]}"`,
             },
         });
     } catch (error) {
