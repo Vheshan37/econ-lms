@@ -269,6 +269,56 @@ export async function getDevAnalytics() {
     }
 }
 
+// Notification Management Actions
+export async function getDevNotifications() {
+    const session = await getDevSession();
+    if (!session) throw new Error('Unauthorized');
+
+    return await prisma.notification.findMany({
+        orderBy: { createdAt: 'desc' }
+    });
+}
+
+export async function devCreateNotification(data: {
+    type: string;
+    title: string;
+    message: string;
+    priority: string;
+}) {
+    const session = await getDevSession();
+    if (!session) throw new Error('Unauthorized');
+
+    try {
+        await prisma.notification.create({
+            data: {
+                type: data.type,
+                title: data.title,
+                message: data.message,
+                priority: data.priority,
+                isRead: false
+            }
+        });
+        return { success: true };
+    } catch (error) {
+        console.error('Create notification error:', error);
+        return { success: false, error: 'Database error' };
+    }
+}
+
+export async function devDeleteNotification(id: string) {
+    const session = await getDevSession();
+    if (!session) throw new Error('Unauthorized');
+
+    try {
+        await prisma.notification.delete({
+            where: { id }
+        });
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: 'Database error' };
+    }
+}
+
 // Logout dev
 export async function devLogout() {
     try {

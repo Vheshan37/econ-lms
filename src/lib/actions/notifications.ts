@@ -23,6 +23,19 @@ export async function getNotifications(filter?: { type?: string; isRead?: boolea
     }
 }
 
+export async function getNotificationTypes() {
+    try {
+        const types = await prisma.notification.groupBy({
+            by: ['type'],
+            _count: true
+        });
+        return { success: true, data: types.map(t => t.type) };
+    } catch (error) {
+        console.error("Error fetching notification types:", error);
+        return { success: false, error: "Failed to fetch types" };
+    }
+}
+
 export async function getUnreadCount() {
     try {
         const count = await prisma.notification.count({
@@ -46,6 +59,20 @@ export async function markAsRead(id: string) {
     } catch (error) {
         console.error("Error marking notification as read:", error);
         return { success: false, error: "Failed to mark as read" };
+    }
+}
+
+export async function markAsUnread(id: string) {
+    try {
+        await prisma.notification.update({
+            where: { id },
+            data: { isRead: false },
+        });
+        revalidatePath("/admin/notifications");
+        return { success: true };
+    } catch (error) {
+        console.error("Error marking notification as unread:", error);
+        return { success: false, error: "Failed to mark as unread" };
     }
 }
 

@@ -8,13 +8,18 @@ import {
     Building2,
     AlertTriangle,
     UserPlus,
-    Check,
     Trash2,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Eye,
+    EyeOff,
+    Megaphone,
+    RefreshCcw,
+    Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { markAsRead, deleteNotification } from "@/lib/actions/notifications";
+import { markAsRead, markAsUnread, deleteNotification } from "@/lib/actions/notifications";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface NotificationCardProps {
@@ -29,9 +34,12 @@ export function NotificationCard({ notification, onUpdate }: NotificationCardPro
     const getIcon = () => {
         switch (notification.type) {
             case "payment": return <CreditCard className="w-5 h-5 text-green-500" />;
-            case "company": return <Building2 className="w-5 h-5 text-blue-500" />;
+            case "company":
+            case "announcement": return <Megaphone className="w-5 h-5 text-blue-500" />;
             case "system": return <AlertTriangle className="w-5 h-5 text-red-500" />;
             case "student": return <UserPlus className="w-5 h-5 text-purple-500" />;
+            case "update": return <RefreshCcw className="w-5 h-5 text-orange-500" />;
+            case "improvement": return <Sparkles className="w-5 h-5 text-yellow-500" />;
             default: return <Bell className="w-5 h-5 text-gray-500" />;
         }
     };
@@ -45,17 +53,23 @@ export function NotificationCard({ notification, onUpdate }: NotificationCardPro
         }
     };
 
-    const handleMarkAsRead = async (e: React.MouseEvent) => {
+    const handleToggleRead = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        await markAsRead(notification.id);
+        if (notification.isRead) {
+            await markAsUnread(notification.id);
+        } else {
+            await markAsRead(notification.id);
+        }
         onUpdate();
     };
 
     const handleDelete = async (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (!confirm("Are you sure you want to delete this notification?")) return;
         setIsDeleting(true);
         await deleteNotification(notification.id);
         onUpdate();
+        setIsDeleting(false);
     };
 
     return (
@@ -89,24 +103,33 @@ export function NotificationCard({ notification, onUpdate }: NotificationCardPro
                             {notification.message}
                         </p>
                     </div>
-                    <div className="flex flex-col gap-2 ml-2">
-                        {!notification.isRead && (
-                            <button
-                                onClick={handleMarkAsRead}
-                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-                                title="Mark as read"
-                            >
-                                <Check className="w-4 h-4" />
-                            </button>
-                        )}
-                        <button
+                    <div className="flex flex-col gap-2 ml-2 min-w-[140px]">
+                        <Button
+                            onClick={handleToggleRead}
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                                "flex items-center gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-lg border",
+                                notification.isRead
+                                    ? "text-gray-400 border-gray-100 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50"
+                                    : "text-blue-600 border-blue-100 bg-blue-50/50 hover:bg-blue-100"
+                            )}
+                        >
+                            {notification.isRead ? (
+                                <><EyeOff className="w-3 h-3" /> Mark Unread</>
+                            ) : (
+                                <><Eye className="w-3 h-3" /> Mark Read</>
+                            )}
+                        </Button>
+                        <Button
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                            title="Delete"
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-2 h-8 text-[10px] uppercase font-bold tracking-wider rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors border border-transparent hover:border-red-100"
                         >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+                            <Trash2 className="w-3 h-3" /> Delete
+                        </Button>
                     </div>
                 </div>
 
@@ -134,8 +157,8 @@ export function NotificationCard({ notification, onUpdate }: NotificationCardPro
                                     </span>
                                 </div>
                                 {notification.metadata && (
-                                    <div className="col-span-2 mt-2 bg-gray-50 p-3 rounded-lg font-mono text-xs text-gray-600 overflow-x-auto">
-                                        {JSON.stringify(notification.metadata, null, 2)}
+                                    <div className="col-span-2 mt-2 bg-gray-50 p-3 rounded-lg font-mono text-xs text-gray-600 overflow-x-auto whitespace-pre-wrap">
+                                        <pre>{JSON.stringify(notification.metadata, null, 2)}</pre>
                                     </div>
                                 )}
                             </div>

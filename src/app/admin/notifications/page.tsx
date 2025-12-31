@@ -10,7 +10,7 @@ import {
     Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getNotifications, markAllAsRead } from "@/lib/actions/notifications";
+import { getNotifications, markAllAsRead, getNotificationTypes } from "@/lib/actions/notifications";
 import { NotificationCard } from "@/components/admin/NotificationCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,31 +24,46 @@ import {
 
 export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<any[]>([]);
+    const [availableTypes, setAvailableTypes] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterType, setFilterType] = useState<string>("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [refreshing, setRefreshing] = useState(false);
 
     const fetchNotifications = async () => {
-        const result = await getNotifications();
-        if (result.success && result.data) {
-            setNotifications(result.data);
+        const [notifResult, typesResult] = await Promise.all([
+            getNotifications(),
+            getNotificationTypes()
+        ]);
+
+        if (notifResult.success && notifResult.data) {
+            setNotifications(notifResult.data);
+        }
+        if (typesResult.success && typesResult.data) {
+            setAvailableTypes(typesResult.data);
         }
         setLoading(false);
         setRefreshing(false);
     };
 
     useEffect(() => {
-        const fetchNotificationsData = async () => {
-            const result = await getNotifications();
-            if (result.success && result.data) {
-                setNotifications(result.data);
+        const initData = async () => {
+            const [notifResult, typesResult] = await Promise.all([
+                getNotifications(),
+                getNotificationTypes()
+            ]);
+
+            if (notifResult.success && notifResult.data) {
+                setNotifications(notifResult.data);
+            }
+            if (typesResult.success && typesResult.data) {
+                setAvailableTypes(typesResult.data);
             }
             setLoading(false);
             setRefreshing(false);
         };
 
-        fetchNotificationsData();
+        initData();
     }, []);
 
     const handleRefresh = () => {
@@ -123,16 +138,17 @@ export default function NotificationsPage() {
                     </div>
                     <div className="w-full md:w-48">
                         <Select value={filterType} onValueChange={setFilterType}>
-                            <SelectTrigger className="border-gray-200 bg-white">
+                            <SelectTrigger className="border-gray-200 bg-white! shadow-sm ring-offset-white">
                                 <Filter className="w-4 h-4 mr-2 text-gray-400" />
                                 <SelectValue placeholder="Filter by type" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white">
                                 <SelectItem value="all">All Types</SelectItem>
-                                <SelectItem value="payment">Payments</SelectItem>
-                                <SelectItem value="company">Company</SelectItem>
-                                <SelectItem value="system">System</SelectItem>
-                                <SelectItem value="student">Students</SelectItem>
+                                {availableTypes.map(type => (
+                                    <SelectItem key={type} value={type} className="capitalize">
+                                        {type}s
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>

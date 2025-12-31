@@ -4,12 +4,16 @@ import { useState, useEffect } from 'react';
 import {
     Terminal, Shield, Codepen, Activity, LogOut,
     Users, UserPlus, Database, Download, CheckCircle2,
-    XCircle, RefreshCcw, Loader2, Trash2, ToggleLeft, ToggleRight
+    XCircle, RefreshCcw, Loader2, Trash2, ToggleLeft, ToggleRight,
+    Bell, Send, AlertTriangle, Info, Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { devLogout, getAllTeachers, devCreateTeacher, toggleTeacherStatus, getDevAnalytics } from '@/lib/actions/dev-auth';
+import {
+    devLogout, getAllTeachers, devCreateTeacher, toggleTeacherStatus,
+    getDevAnalytics, getDevNotifications, devCreateNotification, devDeleteNotification
+} from '@/lib/actions/dev-auth';
 import { useRouter } from 'next/navigation';
 
 export default function DevDashboardClient() {
@@ -23,6 +27,17 @@ export default function DevDashboardClient() {
     const [formMsg, setFormMsg] = useState({ type: '', msg: '' });
     const [analytics, setAnalytics] = useState<any>(null);
     const [isAnalyticsLoading, setIsAnalyticsLoading] = useState(true);
+
+    // Notifications state
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [isNotifLoading, setIsNotifLoading] = useState(true);
+    const [newNotif, setNewNotif] = useState({
+        title: '',
+        message: '',
+        type: 'system',
+        priority: 'normal'
+    });
+    const [notifFormMsg, setNotifFormMsg] = useState({ type: '', msg: '' });
 
     const fetchTeachers = async () => {
         try {
@@ -47,9 +62,22 @@ export default function DevDashboardClient() {
         }
     };
 
+    const fetchNotifications = async () => {
+        setIsNotifLoading(true);
+        try {
+            const data = await getDevNotifications();
+            setNotifications(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsNotifLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchTeachers();
         fetchAnalytics();
+        fetchNotifications();
     }, []);
 
     const handleLogout = async () => {
@@ -78,6 +106,34 @@ export default function DevDashboardClient() {
         const result = await toggleTeacherStatus(id, currentStatus);
         if (result.success) {
             fetchTeachers();
+        }
+        setIsActionLoading(false);
+    };
+
+    const handleCreateNotification = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsActionLoading(true);
+        setNotifFormMsg({ type: '', msg: '' });
+
+        const result = await devCreateNotification(newNotif);
+        if (result.success) {
+            setNotifFormMsg({ type: 'success', msg: 'Notification sent successfully!' });
+            setNewNotif({ title: '', message: '', type: 'system', priority: 'normal' });
+            fetchNotifications();
+            fetchAnalytics(); // Update count
+        } else {
+            setNotifFormMsg({ type: 'error', msg: result.error || 'Failed to send' });
+        }
+        setIsActionLoading(false);
+    };
+
+    const handleDeleteNotif = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this notification?')) return;
+        setIsActionLoading(true);
+        const result = await devDeleteNotification(id);
+        if (result.success) {
+            fetchNotifications();
+            fetchAnalytics();
         }
         setIsActionLoading(false);
     };
@@ -301,6 +357,154 @@ export default function DevDashboardClient() {
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Notification Management Section */}
+            <div className="max-w-7xl mx-auto mt-16 space-y-8 pb-20">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                            <Bell className="text-orange-500 w-5 h-5" />
+                        </div>
+                        <h2 className="text-xl font-bold">Broadcast Center</h2>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Create Notification Form */}
+                    <div className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-8">
+                        <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+                            <Send className="w-4 h-4 text-orange-500" />
+                            Push Notification
+                        </h3>
+                        <form onSubmit={handleCreateNotification} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label className="text-gray-400 text-xs tracking-widest pl-1">Title</Label>
+                                <Input
+                                    value={newNotif.title}
+                                    onChange={e => setNewNotif(prev => ({ ...prev, title: e.target.value }))}
+                                    placeholder="Announcement Title"
+                                    required
+                                    className="bg-white/5 border-white/10 rounded-xl h-11"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-gray-400 text-xs tracking-widest pl-1">Message Content</Label>
+                                <textarea
+                                    value={newNotif.message}
+                                    onChange={e => setNewNotif(prev => ({ ...prev, message: e.target.value }))}
+                                    required
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 min-h-[100px] text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+                                    placeholder="Enter system broadcast message..."
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-gray-400 text-xs tracking-widest pl-1">Type</Label>
+                                    <select
+                                        value={newNotif.type}
+                                        onChange={e => setNewNotif(prev => ({ ...prev, type: e.target.value }))}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl h-11 px-3 text-sm"
+                                    >
+                                        <option value="system">System</option>
+                                        <option value="announcement">Announcement</option>
+                                        <option value="student">Student Alert</option>
+                                        <option value="payment">Payment Alert</option>
+                                        <option value="update">System Update</option>
+                                        <option value="improvement">Improvement</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-gray-400 text-xs tracking-widest pl-1">Priority</Label>
+                                    <select
+                                        value={newNotif.priority}
+                                        onChange={e => setNewNotif(prev => ({ ...prev, priority: e.target.value }))}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl h-11 px-3 text-sm"
+                                    >
+                                        <option value="normal">Normal</option>
+                                        <option value="low">Low</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                </div>
+                            </div>
+                            {notifFormMsg.msg && (
+                                <p className={`text-xs ${notifFormMsg.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                                    {notifFormMsg.msg}
+                                </p>
+                            )}
+                            <Button
+                                disabled={isActionLoading}
+                                type="submit"
+                                className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 mt-4"
+                            >
+                                {isActionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-4 h-4" /> Ship Broadcast</>}
+                            </Button>
+                        </form>
+                    </div>
+
+                    {/* Notification History */}
+                    <div className="lg:col-span-2 bg-[#0A0A0A] border border-white/5 rounded-3xl p-8 overflow-hidden flex flex-col">
+                        <div className="flex items-center justify-between mb-8">
+                            <h3 className="text-lg font-bold flex items-center gap-2">
+                                <RefreshCcw className="w-4 h-4 text-gray-500" />
+                                Transmission History
+                            </h3>
+                            <div className="flex items-center gap-2">
+                                {isNotifLoading && <Loader2 className="w-4 h-4 animate-spin text-gray-700" />}
+                                <Button onClick={fetchNotifications} variant="ghost" size="sm" className="text-[10px] uppercase tracking-wider text-gray-500">Refresh</Button>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+                            {notifications.length === 0 && !isNotifLoading ? (
+                                <div className="text-center py-20 text-gray-600">
+                                    <Bell className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                                    <p>No broadcast history found</p>
+                                </div>
+                            ) : notifications.map(notif => (
+                                <div key={notif.id} className="bg-white/2 border border-white/5 rounded-2xl p-5 group hover:border-white/10 transition-colors">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className={`w-2 h-2 rounded-full ${notif.priority === 'urgent' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' :
+                                                    notif.priority === 'high' ? 'bg-orange-500' :
+                                                        'bg-blue-500'
+                                                    }`} />
+                                                <h4 className="font-bold text-sm">{notif.title}</h4>
+                                                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded-md text-gray-500 uppercase tracking-tighter">
+                                                    {notif.type}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-400 text-xs line-clamp-2 leading-relaxed">{notif.message}</p>
+                                            <div className="flex items-center gap-3 mt-3">
+                                                <span className="text-[10px] text-gray-600 flex items-center gap-1">
+                                                    <Clock className="w-3 h-3" />
+                                                    {new Date(notif.createdAt).toLocaleString()}
+                                                </span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-widest ${notif.priority === 'urgent' ? 'text-red-500 animate-pulse' :
+                                                    notif.priority === 'high' ? 'text-orange-500' :
+                                                        'text-blue-500'
+                                                    }`}>
+                                                    {notif.priority}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            onClick={() => handleDeleteNotif(notif.id)}
+                                            disabled={isActionLoading}
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-gray-600 hover:text-red-500 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
