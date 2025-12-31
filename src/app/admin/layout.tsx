@@ -44,7 +44,7 @@ export default function AdminLayout({
 
     const bottomNavigation = [
         { name: 'Next Improvements', href: '/admin/next-improvements', icon: Sparkles },
-        { name: 'Test Drive', href: '/admin/test-drive', icon: TestTube },
+        // { name: 'Test Drive', href: '/admin/test-drive', icon: TestTube }, // Hidden per user request
     ];
 
 
