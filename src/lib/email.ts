@@ -148,7 +148,7 @@ interface SendInvitationEmailParams {
 
 export async function sendInvitationEmail({ to, userName, role }: SendInvitationEmailParams) {
     try {
-        const loginUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const loginUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://krishankasthuriarachchi.lk';
         const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
 
         const mailOptions = {
@@ -269,7 +269,10 @@ export async function sendInvitationEmail({ to, userName, role }: SendInvitation
         };
 
         const info = await transporter.sendMail(mailOptions);
-        console.log('Invitation email sent:', info.messageId);
+        console.log(`[EMAIL_DEBUG] Invitation email sent successfully!`);
+        console.log(`[EMAIL_DEBUG] To: ${to}`);
+        console.log(`[EMAIL_DEBUG] Role: ${role}`);
+        console.log(`[EMAIL_DEBUG] Message-ID: ${info.messageId}`);
         return { success: true, messageId: info.messageId };
     } catch (error) {
         console.error('Failed to send invitation email:', error);
