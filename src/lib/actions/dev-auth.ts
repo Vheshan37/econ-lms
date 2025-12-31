@@ -194,6 +194,81 @@ export async function toggleTeacherStatus(id: string, currentStatus: boolean) {
     }
 }
 
+// Analytics Actions
+export async function getDevAnalytics() {
+    const session = await getDevSession();
+    if (!session) throw new Error('Unauthorized');
+
+    try {
+        const [
+            students,
+            teachers,
+            academicYears,
+            classTypes,
+            topics,
+            resources,
+            freeResources,
+            institutes,
+            testimonials,
+            hallOfFame,
+            notifications,
+            olSubjects,
+            timetables,
+            courses,
+            features
+        ] = await Promise.all([
+            prisma.student.count(),
+            prisma.teacher.count(),
+            prisma.academicYear.count(),
+            prisma.classType.count(),
+            prisma.topic.count(),
+            prisma.resource.count(),
+            prisma.freeResource.count(),
+            prisma.institute.count(),
+            prisma.testimonial.count(),
+            prisma.hallOfFame.count(),
+            prisma.notification.count(),
+            prisma.oLSubject.count(),
+            prisma.timetable.count(),
+            prisma.course.count(),
+            prisma.modernFeature.count()
+        ]);
+
+        // Get student status breakdown
+        const [activeStudents, inactiveStudents] = await Promise.all([
+            prisma.student.count({ where: { isActive: true } }),
+            prisma.student.count({ where: { isActive: false } })
+        ]);
+
+        return {
+            counts: {
+                students,
+                teachers,
+                academicYears,
+                classTypes,
+                topics,
+                resources,
+                freeResources,
+                institutes,
+                testimonials,
+                hallOfFame,
+                notifications,
+                olSubjects,
+                timetables,
+                courses,
+                features
+            },
+            studentsStatus: {
+                active: activeStudents,
+                inactive: inactiveStudents
+            }
+        };
+    } catch (error) {
+        console.error('Analytics error:', error);
+        throw new Error('Failed to fetch analytics');
+    }
+}
+
 // Logout dev
 export async function devLogout() {
     try {

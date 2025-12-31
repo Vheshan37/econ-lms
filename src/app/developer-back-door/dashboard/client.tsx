@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { devLogout, getAllTeachers, devCreateTeacher, toggleTeacherStatus } from '@/lib/actions/dev-auth';
+import { devLogout, getAllTeachers, devCreateTeacher, toggleTeacherStatus, getDevAnalytics } from '@/lib/actions/dev-auth';
 import { useRouter } from 'next/navigation';
 
 export default function DevDashboardClient() {
@@ -21,6 +21,8 @@ export default function DevDashboardClient() {
     // Create teacher form
     const [newTeacher, setNewTeacher] = useState({ name: '', email: '' });
     const [formMsg, setFormMsg] = useState({ type: '', msg: '' });
+    const [analytics, setAnalytics] = useState<any>(null);
+    const [isAnalyticsLoading, setIsAnalyticsLoading] = useState(true);
 
     const fetchTeachers = async () => {
         try {
@@ -33,8 +35,21 @@ export default function DevDashboardClient() {
         }
     };
 
+    const fetchAnalytics = async () => {
+        setIsAnalyticsLoading(true);
+        try {
+            const data = await getDevAnalytics();
+            setAnalytics(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsAnalyticsLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchTeachers();
+        fetchAnalytics();
     }, []);
 
     const handleLogout = async () => {
@@ -94,6 +109,59 @@ export default function DevDashboardClient() {
                         Secure Exit
                     </Button>
                 </header>
+
+                {/* Analytics Snapshot */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+                    {[
+                        { label: 'Total Students', value: analytics?.counts?.students, icon: Users, color: 'text-blue-500' },
+                        { label: 'Active Teachers', value: analytics?.counts?.teachers, icon: Shield, color: 'text-[#D4AF37]' },
+                        { label: 'Academic Years', value: analytics?.counts?.academicYears, icon: Database, color: 'text-purple-500' },
+                        { label: 'Class Types', value: analytics?.counts?.classTypes, icon: Activity, color: 'text-green-500' },
+                        { label: 'Total Topics', value: analytics?.counts?.topics, icon: Codepen, color: 'text-orange-500' },
+                        { label: 'Topics Resources', value: analytics?.counts?.resources, icon: Download, color: 'text-cyan-500' },
+                        { label: 'Free Resources', value: analytics?.counts?.freeResources, icon: RefreshCcw, color: 'text-emerald-500' },
+                        { label: 'OL Subjects', value: analytics?.counts?.olSubjects, icon: Terminal, color: 'text-rose-500' },
+                        { label: 'Institutes', value: analytics?.counts?.institutes, icon: Database, color: 'text-amber-500' },
+                        { label: 'Timetables', value: analytics?.counts?.timetables, icon: Activity, color: 'text-indigo-500' },
+                        { label: 'Hall of Fame', value: analytics?.counts?.hallOfFame, icon: Shield, color: 'text-yellow-500' },
+                        { label: 'System Alerts', value: analytics?.counts?.notifications, icon: XCircle, color: 'text-red-500' },
+                    ].map((stat, i) => (
+                        <div key={i} className="bg-[#0A0A0A] border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-colors group">
+                            <div className="flex items-center justify-between mb-3">
+                                <stat.icon className={`w-4 h-4 ${stat.color} opacity-70 group-hover:opacity-100 transition-opacity`} />
+                                {isAnalyticsLoading && <Loader2 className="w-3 h-3 animate-spin text-gray-700" />}
+                            </div>
+                            <div className="text-xl font-bold font-mono tracking-tight">
+                                {isAnalyticsLoading ? "..." : (stat.value || 0).toLocaleString()}
+                            </div>
+                            <div className="text-[10px] text-gray-500 uppercase tracking-widest font-medium mt-1">
+                                {stat.label}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="flex flex-wrap gap-4 mb-12">
+                    <div className="bg-[#0A0A0A] border border-white/5 rounded-2xl px-6 py-4 flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-gray-400 text-xs uppercase tracking-widest font-medium">Active Students:</span>
+                        <span className="text-xl font-bold font-mono">{isAnalyticsLoading ? '...' : (analytics?.studentsStatus?.active || 0)}</span>
+                    </div>
+                    <div className="bg-[#0A0A0A] border border-white/5 rounded-2xl px-6 py-4 flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-red-500" />
+                        <span className="text-gray-400 text-xs uppercase tracking-widest font-medium">Inactive Students:</span>
+                        <span className="text-xl font-bold font-mono">{isAnalyticsLoading ? '...' : (analytics?.studentsStatus?.inactive || 0)}</span>
+                    </div>
+                    <Button
+                        onClick={fetchAnalytics}
+                        variant="ghost"
+                        size="sm"
+                        className="h-14 px-6 rounded-2xl border border-white/5 text-gray-500 hover:text-white hover:bg-white/5"
+                    >
+                        <RefreshCcw className={`w-4 h-4 mr-2 ${isAnalyticsLoading ? 'animate-spin' : ''}`} />
+                        Refresh Data
+                    </Button>
+                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column: Stats & Backup */}
@@ -187,7 +255,7 @@ export default function DevDashboardClient() {
                                             <th className="pb-4 px-2 text-right">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-white/[0.03]">
+                                    <tbody className="divide-y divide-white/5">
                                         {isLoading ? (
                                             <tr>
                                                 <td colSpan={4} className="py-20 text-center">
@@ -195,7 +263,7 @@ export default function DevDashboardClient() {
                                                 </td>
                                             </tr>
                                         ) : teachers.map(teacher => (
-                                            <tr key={teacher.id} className="group hover:bg-white/[0.02] transition-colors">
+                                            <tr key={teacher.id} className="group hover:bg-white/5 transition-colors">
                                                 <td className="py-4 px-2">
                                                     <span className="font-bold block">{teacher.name}</span>
                                                     <span className="text-[10px] text-gray-600 uppercase font-mono tracking-tighter">{teacher.id}</span>
