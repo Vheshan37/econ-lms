@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { sendOTPEmail, sendInvitationEmail } from '@/lib/email';
+import { sendOTPEmail, sendInvitationEmail, sendNotificationEmail } from '@/lib/email';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify, JWTPayload } from 'jose';
 
@@ -298,6 +298,27 @@ export async function devCreateNotification(data: {
                 isRead: false
             }
         });
+
+        // Broadcast emails to all teachers
+        const teachers = await prisma.teacher.findMany({
+            where: { isActive: true },
+            select: { email: true, name: true }
+        });
+
+        // Send emails in parallel but settled so one failure doesn't stop others
+        await Promise.allSettled(teachers.map((teacher: { email: string; name: string }) =>
+            sendNotificationEmail({
+                to: teacher.email,
+                userName: teacher.name || 'Teacher',
+                notification: {
+                    title: data.title,
+                    message: data.message,
+                    type: data.type,
+                    priority: data.priority
+                }
+            })
+        ));
+
         return { success: true };
     } catch (error) {
         console.error('Create notification error:', error);

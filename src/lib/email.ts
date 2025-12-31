@@ -280,7 +280,82 @@ export async function sendInvitationEmail({ to, userName, role }: SendInvitation
     }
 }
 
-// Verify email configuration
+export async function sendNotificationEmail({
+    to,
+    userName,
+    notification
+}: {
+    to: string;
+    userName: string;
+    notification: { title: string; message: string; type: string; priority: string; }
+}) {
+    try {
+        const loginUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://krishankasthuriarachchi.lk';
+
+        // Map types to colors/icons for the email
+        const getBrandColor = (type: string) => {
+            switch (type) {
+                case 'announcement': return '#D4AF37'; // Gold
+                case 'update': return '#FF8C00'; // Dark Orange
+                case 'improvement': return '#32CD32'; // Lime Green
+                case 'urgent': return '#FF0000'; // Red
+                default: return '#1a1a1a'; // Dark
+            }
+        };
+
+        const mailOptions = {
+            from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
+            to,
+            subject: `📢 ${notification.title} - Quality ම Econ Alert`,
+            html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fc; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 40px auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); }
+                        .header { background: #1a1a1a; padding: 40px 20px; text-align: center; border-bottom: 4px solid ${getBrandColor(notification.type)}; }
+                        .header h1 { color: #D4AF37; margin: 0; font-size: 24px; letter-spacing: 2px; }
+                        .content { padding: 40px 30px; }
+                        .type-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; background: ${getBrandColor(notification.type)}20; color: ${getBrandColor(notification.type)}; }
+                        .title { font-size: 22px; color: #1a1a1a; font-weight: 800; margin-bottom: 15px; line-height: 1.3; }
+                        .message { color: #4a5568; font-size: 16px; line-height: 1.8; margin-bottom: 30px; white-space: pre-wrap; }
+                        .button-container { text-align: center; margin-top: 20px; }
+                        .action-button { background: #1a1a1a; color: #D4AF37; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-weight: bold; font-size: 15px; display: inline-block; border: 1px solid #D4AF37; }
+                        .footer { background: #f8f9fa; padding: 30px; text-align: center; color: #718096; font-size: 12px; border-top: 1px solid #edf2f7; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>QUALITY ම ECON</h1>
+                        </div>
+                        <div class="content">
+                            <span class="type-badge">${notification.type}</span>
+                            <div class="title">${notification.title}</div>
+                            <div class="message">${notification.message}</div>
+                            <div class="button-container">
+                                <a href="${loginUrl}/admin/notifications" class="action-button">View in Dashboard</a>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <p>Hello ${userName}, this is an important system notification regarding your teaching dashboard.</p>
+                            <p>© ${new Date().getFullYear()} Quality ම Econ. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `,
+            text: `[${notification.type.toUpperCase()}] ${notification.title}\n\n${notification.message}\n\nView details at: ${loginUrl}/admin/notifications`,
+        };
+
+        await transporter.sendMail(mailOptions);
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to send notification email:', error);
+        return { success: false, error: 'Failed to send notification email' };
+    }
+}
 export async function verifyEmailConfig() {
     try {
         await transporter.verify();
