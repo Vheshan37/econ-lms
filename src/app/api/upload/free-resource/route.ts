@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import { getPersistentUploadDir } from '@/lib/storage-helper';
 
 export async function POST(request: NextRequest) {
     try {
@@ -24,7 +25,8 @@ export async function POST(request: NextRequest) {
         }
 
         // Create upload directory if it doesn't exist
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'free-resources');
+        const persistentDir = await getPersistentUploadDir();
+        const uploadDir = path.join(persistentDir, 'free-resources');
         await mkdir(uploadDir, { recursive: true });
 
         // Generate unique filename

@@ -23,20 +23,11 @@ function getMimeType(filename: string): string {
 export async function GET(req: NextRequest, { params }: { params: Promise<{ filename: string }> }) {
     const { filename } = await params;
 
-    // 1. Try Persistent Directory (Root/uploads)
-    const persistentDir = await getPersistentUploadDir();
-    let filepath = join(persistentDir, filename);
+    const uploadDir = await getPersistentUploadDir();
+    const filepath = join(uploadDir, filename);
 
     if (!existsSync(filepath)) {
-        // 2. Fallback: Try Standard Public Directory (Legacy/Static assets)
-        // In standalone, this is inside .next/standalone/public/uploads
-        // In dev, it is project-root/public/uploads
-        // We can just use process.cwd()/public/uploads generally as it aligns with Next.js structure
-        filepath = join(process.cwd(), 'public', 'uploads', filename);
-
-        if (!existsSync(filepath)) {
-            return new NextResponse('File Not Found', { status: 404 });
-        }
+        return new NextResponse('File Not Found', { status: 404 });
     }
 
     try {

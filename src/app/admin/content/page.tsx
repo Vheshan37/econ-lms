@@ -210,10 +210,11 @@ export default function ContentManagementPage() {
             if (teacherImageFile) {
                 const formData = new FormData();
                 formData.append('file', teacherImageFile);
-                formData.append('customName', 'teacher-hero-image'); // Enforce fixed filename
+                formData.append('customName', 'teacher-hero-image'); // Fixed filename to overwrite
                 const uploadResult = await uploadImage(formData);
                 if (uploadResult.success && uploadResult.url) {
-                    teacherImageUrl = uploadResult.url;
+                    // Append timestamp to bust browser cache while keeping same file on disk
+                    teacherImageUrl = `${uploadResult.url}?t=${new Date().getTime()}`;
                 } else {
                     throw new Error(uploadResult.error || 'Failed to upload image');
                 }
@@ -225,20 +226,12 @@ export default function ContentManagementPage() {
             if (videoFile) {
                 const formData = new FormData();
                 formData.append('file', videoFile);
-                formData.append('customName', 'about-trailer-video'); // Fixed name for simplicity, or timestamped
-                // For video, we might want to keep the original extension or assume mp4
-                // The uploadImage action handles extension preservation if customName is provided without one?
-                // Actually uploadImage expects customName to NOT have extension if we want it to auto-append?
-                // Let's re-read upload.ts logic.
-                // upload.ts: if customName, it uses customName + original extension.
-                // So 'about-trailer-video' is safe.
-
-                // Use a timestamp to avoid caching issues with the same filename if updated
-                formData.append('customName', `about-trailer-${new Date().getTime()}`);
+                formData.append('customName', 'about-trailer-video'); // Fixed filename to overwrite
 
                 const vidResult = await uploadImage(formData);
                 if (vidResult.success && vidResult.url) {
-                    videoUrl = vidResult.url;
+                    // Append timestamp to bust cache
+                    videoUrl = `${vidResult.url}?t=${new Date().getTime()}`;
                 }
             }
 
@@ -325,17 +318,14 @@ export default function ContentManagementPage() {
         if (file) {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('customName', 'about-video-preview-' + new Date().getTime());
+            formData.append('customName', 'about-video-preview'); // Fixed name to overwrite
 
             setIsSaving(true);
             const result = await uploadImage(formData);
             if (result.success && result.url) {
-                // Clean URL (remove old query params if any)
-                let url = result.url;
-                if (url.startsWith('/uploads/')) {
-                    url = url.split('?')[0];
-                }
-                setAboutContent(prev => ({ ...prev, videoPreviewImage: url }));
+                // Append timestamp to bust browser cache
+                const urlWithCacheBust = `${result.url}?t=${new Date().getTime()}`;
+                setAboutContent(prev => ({ ...prev, videoPreviewImage: urlWithCacheBust }));
             }
             setIsSaving(false);
         }
@@ -352,17 +342,13 @@ export default function ContentManagementPage() {
                 if (file) {
                     const formData = new FormData();
                     formData.append('file', file);
-                    // Unique name for banner images
-                    formData.append('customName', `banner-slide-${i + 1}-${new Date().getTime()}`);
+                    // Fixed name for banner images to overwrite
+                    formData.append('customName', `banner-slide-${i + 1}`);
 
                     const uploadResult = await uploadImage(formData);
                     if (uploadResult.success && uploadResult.url) {
-                        // Clean URL (remove old query params if any)
-                        let url = uploadResult.url;
-                        if (url.startsWith('/uploads/')) {
-                            url = url.split('?')[0];
-                        }
-                        updatedBanners[i].image = url;
+                        // Append timestamp to bust browser cache
+                        updatedBanners[i].image = `${uploadResult.url}?t=${new Date().getTime()}`;
                     }
                 }
             }
