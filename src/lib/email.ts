@@ -356,6 +356,95 @@ export async function sendNotificationEmail({
         return { success: false, error: 'Failed to send notification email' };
     }
 }
+
+export async function sendDeveloperTicket({
+    fromName,
+    fromEmail,
+    requestType,
+    subject,
+    message
+}: {
+    fromName: string;
+    fromEmail: string;
+    requestType: string;
+    subject: string;
+    message: string;
+}) {
+    try {
+        const developerEmail = 'vihangaheshan37@gmail.com';
+
+        const mailOptions = {
+            from: `"LMS Support Ticket" <${process.env.SMTP_FROM}>`,
+            to: developerEmail,
+            replyTo: fromEmail,
+            subject: `[${requestType.toUpperCase()}] ${subject}`,
+            html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; }
+                        .container { max-width: 650px; margin: 30px auto; background: white; border-top: 5px solid #D4AF37; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+                        .header { padding: 30px; background: #1a1a1a; color: white; }
+                        .header h1 { margin: 0; font-size: 20px; color: #D4AF37; letter-spacing: 1px; }
+                        .content { padding: 35px; }
+                        .meta-grid { display: grid; grid-template-cols: 1fr 1fr; gap: 20px; margin-bottom: 30px; background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; }
+                        .meta-item { font-size: 13px; }
+                        .meta-label { color: #6b7280; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; display: block; }
+                        .meta-value { color: #111827; font-weight: 600; }
+                        .message-box { border-left: 4px solid #D4AF37; padding: 20px; background: #fffcf0; color: #374151; line-height: 1.6; font-size: 15px; margin-top: 25px; white-space: pre-wrap; }
+                        .footer { padding: 20px; text-align: center; color: #9ca3af; font-size: 11px; background: #f9fafb; border-top: 1px solid #eee; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>NEW DEVELOPER REQUEST</h1>
+                        </div>
+                        <div class="content">
+                            <div class="meta-grid">
+                                <div class="meta-item">
+                                    <span class="meta-label">Sender Name</span>
+                                    <span class="meta-value">${fromName}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Request Type</span>
+                                    <span class="meta-value" style="text-transform: capitalize;">${requestType}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Email Address</span>
+                                    <span class="meta-value">${fromEmail}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Timestamp</span>
+                                    <span class="meta-value">${new Date().toLocaleString()}</span>
+                                </div>
+                            </div>
+                            
+                            <h2 style="font-size: 18px; color: #111827; margin-bottom: 10px;">Subject: ${subject}</h2>
+                            <div class="message-box">
+                                ${message}
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <p>This inquiry was sent directly from the Econ LMS Admin Panel Contact Developer form.</p>
+                            <p>© ${new Date().getFullYear()} Econ LMS System Automations</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `,
+            text: `NEW DEVELOPER REQUEST\n\nFrom: ${fromName} (${fromEmail})\nType: ${requestType}\nSubject: ${subject}\n\nMessage:\n${message}`,
+        };
+
+        await transporter.sendMail(mailOptions);
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to send developer ticket:', error);
+        return { success: false, error: 'Failed to deliver message to developer.' };
+    }
+}
+
 export async function verifyEmailConfig() {
     try {
         await transporter.verify();

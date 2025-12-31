@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers, Sparkles, TestTube } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers, Sparkles, TestTube, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { logout } from "@/lib/actions/auth";
@@ -43,6 +43,7 @@ export default function AdminLayout({
     ];
 
     const bottomNavigation = [
+        { name: 'Contact Developer', href: '/admin/contact-developer', icon: MessageSquare },
         { name: 'Next Improvements', href: '/admin/next-improvements', icon: Sparkles },
         // { name: 'Test Drive', href: '/admin/test-drive', icon: TestTube }, // Hidden per user request
     ];
