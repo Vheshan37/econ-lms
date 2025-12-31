@@ -10,6 +10,32 @@ import {
 
 const upcomingFeatures = [
     {
+        category: "Mobile Ecosystem",
+        icon: Smartphone,
+        color: "from-indigo-600 via-blue-600 to-cyan-600",
+        bgGlow: "bg-indigo-500/20",
+        features: [
+            {
+                title: "Student Mobile App",
+                description: "Premium iOS and Android apps for students with offline video lessons, quiz participation, and resource downloads.",
+                icon: Smartphone,
+                impact: "High",
+            },
+            {
+                title: "Teacher Management App",
+                description: "Dedicated app for teachers to manage classes, mark attendance, and broadcast notifications on-the-go.",
+                icon: Shield,
+                impact: "High",
+            },
+            {
+                title: "In-App Push Notifications",
+                description: "Direct real-time engagement with students via personalized push notifications for new content and reminders.",
+                icon: Bell,
+                impact: "High",
+            }
+        ]
+    },
+    {
         category: "Student Engagement",
         icon: Users,
         color: "from-blue-500 via-blue-600 to-cyan-600",
@@ -20,21 +46,18 @@ const upcomingFeatures = [
                 description: "Conduct real-time video classes with screen sharing, whiteboard, and recording capabilities",
                 icon: Video,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Discussion Forums",
                 description: "Enable students to ask questions, discuss topics, and collaborate with peers",
                 icon: MessageSquare,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Gamification System",
                 description: "Reward students with points, badges, and leaderboards to boost motivation",
                 icon: Award,
                 impact: "Medium",
-                timeline: "Q2 2025",
             }
         ]
     },
@@ -49,21 +72,18 @@ const upcomingFeatures = [
                 description: "Track student performance, engagement metrics, and learning patterns with AI insights",
                 icon: TrendingUp,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Auto-Grading System",
                 description: "Automatically grade quizzes and assignments with detailed feedback generation",
                 icon: FileCheck,
                 impact: "High",
-                timeline: "Q2 2025",
             },
             {
                 title: "Progress Reports",
                 description: "Generate comprehensive PDF reports for students and parents with performance insights",
                 icon: Target,
                 impact: "Medium",
-                timeline: "Q2 2025",
             }
         ]
     },
@@ -78,21 +98,18 @@ const upcomingFeatures = [
                 description: "Push notifications for assignments, announcements, and upcoming classes",
                 icon: Bell,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "WhatsApp Integration",
                 description: "Send automated reminders and updates directly to students' WhatsApp",
                 icon: MessageSquare,
                 impact: "High",
-                timeline: "Q2 2025",
             },
             {
                 title: "Email Campaigns",
                 description: "Create and schedule email campaigns for announcements and marketing",
                 icon: Globe,
                 impact: "Medium",
-                timeline: "Q2 2025",
             }
         ]
     },
@@ -107,21 +124,12 @@ const upcomingFeatures = [
                 description: "Generate quizzes, flashcards, and study materials using AI from your lessons",
                 icon: Brain,
                 impact: "High",
-                timeline: "Q2 2025",
             },
             {
                 title: "Interactive Simulations",
                 description: "Create interactive economic simulations and case studies for better understanding",
                 icon: Zap,
                 impact: "Medium",
-                timeline: "Q3 2025",
-            },
-            {
-                title: "Mobile App",
-                description: "Native iOS and Android apps for students to learn on-the-go",
-                icon: Smartphone,
-                impact: "High",
-                timeline: "Q3 2025",
             }
         ]
     },
@@ -136,28 +144,24 @@ const upcomingFeatures = [
                 description: "Automatically send personalized welcome emails to new students with credentials",
                 icon: Mail,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Class Assignment Notifications",
                 description: "Instant email notifications when students are assigned to new classes",
                 icon: Bell,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Resource Upload Alerts",
                 description: "Notify students via email when new resources are uploaded to their classes",
                 icon: FileCheck,
                 impact: "Medium",
-                timeline: "Q2 2025",
             },
             {
                 title: "Weekly Digest Emails",
                 description: "Automated weekly summary emails with upcoming classes and announcements",
                 icon: Calendar,
                 impact: "Medium",
-                timeline: "Q2 2025",
             }
         ]
     },
@@ -172,21 +176,18 @@ const upcomingFeatures = [
                 description: "Prevent spam by limiting OTP requests per email/phone with cooldown periods",
                 icon: Shield,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Login Attempt Protection",
                 description: "Block accounts after multiple failed login attempts with automatic unlock",
                 icon: Lock,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "API Rate Limiting",
                 description: "Protect your system from abuse with intelligent rate limiting on all API endpoints",
                 icon: Zap,
                 impact: "Medium",
-                timeline: "Q2 2025",
             }
         ]
     },
@@ -201,28 +202,24 @@ const upcomingFeatures = [
                 description: "Accept payments via credit card, debit card, and digital wallets",
                 icon: CreditCard,
                 impact: "High",
-                timeline: "Q2 2025",
             },
             {
                 title: "Payment History & Tracking",
                 description: "Complete payment history with filtering, search, and export capabilities",
                 icon: Receipt,
                 impact: "High",
-                timeline: "Q2 2025",
             },
             {
                 title: "Automated Invoice Generation",
                 description: "Generate professional PDF invoices automatically with custom branding",
                 icon: FileSpreadsheet,
                 impact: "Medium",
-                timeline: "Q2 2025",
             },
             {
                 title: "Payment Reminders",
                 description: "Automated email and SMS reminders for pending payments and due dates",
                 icon: Bell,
                 impact: "Medium",
-                timeline: "Q3 2025",
             }
         ]
     },
@@ -237,28 +234,24 @@ const upcomingFeatures = [
                 description: "Mark student attendance digitally with present/absent/late status",
                 icon: UserCheck,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Attendance Reports & Analytics",
                 description: "Generate detailed attendance reports with visual analytics",
                 icon: BarChart3,
                 impact: "High",
-                timeline: "Q1 2025",
             },
             {
                 title: "Student Attendance Dashboard",
                 description: "Students can view their own attendance history, percentage, and trends",
                 icon: TrendingUp,
                 impact: "Medium",
-                timeline: "Q2 2025",
             },
             {
                 title: "Attendance Alerts",
                 description: "Automatic notifications to parents when student attendance falls below threshold",
                 icon: Bell,
                 impact: "Medium",
-                timeline: "Q2 2025",
             }
         ]
     },
@@ -273,7 +266,6 @@ const upcomingFeatures = [
                 description: "Manage class schedules, exams, and events with calendar integration",
                 icon: Calendar,
                 impact: "Medium",
-                timeline: "Q2 2025",
             }
         ]
     },
@@ -288,21 +280,18 @@ const upcomingFeatures = [
                 description: "24/7 AI chatbot to answer student questions and provide instant support",
                 icon: Brain,
                 impact: "High",
-                timeline: "Q3 2025",
             },
             {
                 title: "Certificate Generation",
                 description: "Auto-generate and send completion certificates with custom branding",
                 icon: GraduationCap,
                 impact: "Medium",
-                timeline: "Q2 2025",
             },
             {
                 title: "Multi-Language Support",
                 description: "Support for Sinhala, Tamil, and English interfaces",
                 icon: Globe,
                 impact: "Medium",
-                timeline: "Q3 2025",
             }
         ]
     }
@@ -322,16 +311,26 @@ interface NextImprovementsClientProps {
 }
 
 export default function NextImprovementsClient({ contact }: NextImprovementsClientProps) {
+    const totalFeaturesCount = upcomingFeatures.reduce((acc, cat) => acc + cat.features.length, 0);
+    const categoriesCount = upcomingFeatures.length;
+    const highImpactCount = upcomingFeatures.reduce((acc, cat) => acc + cat.features.filter(f => f.impact === 'High').length, 0);
+
+    const stats = [
+        { label: "Total Features", value: `${totalFeaturesCount}+`, icon: Sparkles, gradient: "from-blue-500 to-cyan-500" },
+        { label: "Categories", value: categoriesCount.toString(), icon: Target, gradient: "from-purple-500 to-pink-500" },
+        { label: "High Impact", value: highImpactCount.toString(), icon: TrendingUp, gradient: "from-green-500 to-emerald-500" }
+    ];
+
     return (
         <div className="min-h-screen">
             <div className="space-y-10 pb-16">
                 {/* Hero Header - Enhanced */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-16 shadow-2xl border border-[#D4AF37]/20">
+                <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-16 shadow-2xl border border-[#D4AF37]/20">
                     {/* Animated Background */}
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-3xl animate-pulse" />
                         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-linear-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
                     </div>
 
                     <div className="relative z-10 text-center max-w-5xl mx-auto">
@@ -345,7 +344,7 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ delay: 0.2 }}
-                                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#D4AF37]/20 to-[#F4C430]/20 border border-[#D4AF37]/30 mb-8 backdrop-blur-sm"
+                                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-linear-to-r from-[#D4AF37]/20 to-[#F4C430]/20 border border-[#D4AF37]/30 mb-8 backdrop-blur-sm"
                             >
                                 <Star className="w-5 h-5 text-[#D4AF37] animate-pulse" />
                                 <span className="text-[#D4AF37] text-base font-bold tracking-wide">PREMIUM FEATURES SHOWCASE</span>
@@ -357,7 +356,7 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D4AF37] to-white mb-6 leading-tight"
+                                className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-linear-to-r from-white via-[#D4AF37] to-white mb-6 leading-tight"
                             >
                                 Next-Level Features
                             </motion.h1>
@@ -377,7 +376,7 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.5 }}
-                                className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500/20 to-red-500/20 border-2 border-orange-500/40 backdrop-blur-sm"
+                                className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-linear-to-r from-orange-500/20 to-red-500/20 border-2 border-orange-500/40 backdrop-blur-sm"
                             >
                                 <Rocket className="w-6 h-6 text-orange-400" />
                                 <span className="text-orange-300 font-bold text-lg">Premium Add-Ons • Custom Pricing • Contact Developer</span>
@@ -387,13 +386,8 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                 </div>
 
                 {/* Stats Overview - Enhanced */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {[
-                        { label: "Total Features", value: "33+", icon: Sparkles, gradient: "from-blue-500 to-cyan-500" },
-                        { label: "Categories", value: "10", icon: Target, gradient: "from-purple-500 to-pink-500" },
-                        { label: "High Impact", value: "21", icon: TrendingUp, gradient: "from-green-500 to-emerald-500" },
-                        { label: "Coming Q1", value: "12", icon: Clock, gradient: "from-orange-500 to-red-500" }
-                    ].map((stat, index) => {
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {stats.map((stat, index) => {
                         const Icon = stat.icon;
                         return (
                             <motion.div
@@ -404,10 +398,10 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                 whileHover={{ scale: 1.05, y: -5 }}
                                 className="relative group"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl blur-xl"
+                                <div className="absolute inset-0 bg-linear-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl blur-xl"
                                     style={{ background: `linear-gradient(135deg, var(--tw-gradient-stops))` }} />
-                                <div className="relative bg-gradient-to-br from-[#1a1a1a] to-[#2a2a2a] rounded-2xl p-8 border border-gray-800 group-hover:border-[#D4AF37]/50 transition-all duration-300 shadow-xl">
-                                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                                <div className="relative bg-linear-to-br from-[#1a1a1a] to-[#2a2a2a] rounded-2xl p-8 border border-gray-800 group-hover:border-[#D4AF37]/50 transition-all duration-300 shadow-xl">
+                                    <div className={`w-16 h-16 rounded-2xl bg-linear-to-br ${stat.gradient} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                                         <Icon className="w-8 h-8 text-white" />
                                     </div>
                                     <div className="text-5xl font-black text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{stat.value}</div>
@@ -433,9 +427,9 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                 {/* Glow Effect */}
                                 <div className={`absolute -inset-1 ${category.bgGlow} rounded-3xl blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500`} />
 
-                                <div className="relative bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-3xl border border-gray-800 group-hover:border-gray-700 overflow-hidden shadow-2xl transition-all duration-300">
+                                <div className="relative bg-linear-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-3xl border border-gray-800 group-hover:border-gray-700 overflow-hidden shadow-2xl transition-all duration-300">
                                     {/* Category Header - Enhanced */}
-                                    <div className={`relative bg-gradient-to-r ${category.color} p-8 overflow-hidden`}>
+                                    <div className={`relative bg-linear-to-r ${category.color} p-8 overflow-hidden`}>
                                         <div className="absolute inset-0 bg-black/20" />
                                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
 
@@ -464,9 +458,9 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                                     className="group/card relative"
                                                 >
                                                     {/* Card Glow */}
-                                                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${category.color} rounded-2xl opacity-0 group-hover/card:opacity-30 blur transition-opacity duration-300`} />
+                                                    <div className={`absolute -inset-0.5 bg-linear-to-r ${category.color} rounded-2xl opacity-0 group-hover/card:opacity-30 blur transition-opacity duration-300`} />
 
-                                                    <div className="relative bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] rounded-2xl p-7 border border-gray-800 group-hover/card:border-[#D4AF37]/50 transition-all duration-300 h-full">
+                                                    <div className="relative bg-linear-to-br from-[#0a0a0a] to-[#1a1a1a] rounded-2xl p-7 border border-gray-800 group-hover/card:border-[#D4AF37]/50 transition-all duration-300 h-full">
                                                         {/* Impact Badge */}
                                                         <div className="absolute top-5 right-5">
                                                             <span className={`text-xs px-3 py-1.5 rounded-full border font-bold ${impactColors[feature.impact as keyof typeof impactColors]}`}>
@@ -475,7 +469,7 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                                         </div>
 
                                                         {/* Icon */}
-                                                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-5 shadow-lg group-hover/card:scale-110 group-hover/card:rotate-3 transition-all duration-300`}>
+                                                        <div className={`w-14 h-14 rounded-xl bg-linear-to-br ${category.color} flex items-center justify-center mb-5 shadow-lg group-hover/card:scale-110 group-hover/card:rotate-3 transition-all duration-300`}>
                                                             <FeatureIcon className="w-7 h-7 text-white" />
                                                         </div>
 
@@ -485,17 +479,9 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                                                         </h3>
 
                                                         {/* Description */}
-                                                        <p className="text-sm text-gray-400 mb-5 leading-relaxed line-clamp-3">
+                                                        <p className="text-sm text-gray-400 leading-relaxed line-clamp-3">
                                                             {feature.description}
                                                         </p>
-
-                                                        {/* Timeline */}
-                                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-800/50">
-                                                            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
-                                                                <Clock className="w-4 h-4" />
-                                                                <span>{feature.timeline}</span>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </motion.div>
                                             );
@@ -512,7 +498,7 @@ export default function NextImprovementsClient({ contact }: NextImprovementsClie
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.5, duration: 0.8 }}
-                    className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#D4AF37] via-[#F4C430] to-[#D4AF37] p-16 text-center shadow-2xl"
+                    className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#D4AF37] via-[#F4C430] to-[#D4AF37] p-16 text-center shadow-2xl"
                 >
                     {/* Animated Grid Background */}
                     <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20" />
