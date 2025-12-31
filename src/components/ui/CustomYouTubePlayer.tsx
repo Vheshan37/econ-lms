@@ -26,16 +26,26 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
     const [duration, setDuration] = useState(0);
     const [hasStarted, setHasStarted] = useState(false);
 
-    // Progress Loop
+    // Progress Loop - with auto-pause before end to prevent suggestions
     useEffect(() => {
         let interval: NodeJS.Timeout;
 
         if (isReady && isPlaying) {
             interval = setInterval(() => {
                 if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
-                    setCurrentTime(playerRef.current.getCurrentTime());
+                    const current = playerRef.current.getCurrentTime();
+                    const videoDuration = playerRef.current.getDuration();
+
+                    setCurrentTime(current);
+
                     // Update duration periodically just in case
-                    if (!duration) setDuration(playerRef.current.getDuration());
+                    if (!duration) setDuration(videoDuration);
+
+                    // Auto-pause 1.5 seconds before end to prevent YouTube suggestions
+                    if (videoDuration && (videoDuration - current) <= 1.5) {
+                        playerRef.current.pauseVideo();
+                        setIsPlaying(false);
+                    }
                 }
             }, 500); // Check every 500ms
         }
@@ -123,7 +133,7 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
 
     const handleStart = () => {
         setHasStarted(true);
-        if (playerRef.current && isReady) {
+        if (playerRef.current && isReady && typeof playerRef.current.playVideo === 'function') {
             playerRef.current.playVideo();
         }
     };
@@ -131,6 +141,8 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
     // Controls
     const togglePlay = () => {
         if (!playerRef.current || !isReady) return;
+        if (typeof playerRef.current.playVideo !== 'function') return;
+
         if (isPlaying) {
             playerRef.current.pauseVideo();
         } else {
@@ -140,12 +152,18 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
 
     const seek = (seconds: number) => {
         if (!playerRef.current || !isReady) return;
+        if (typeof playerRef.current.getCurrentTime !== 'function') return;
+        if (typeof playerRef.current.seekTo !== 'function') return;
+
         const currentTime = playerRef.current.getCurrentTime();
         playerRef.current.seekTo(currentTime + seconds, true);
     };
 
     const toggleMute = () => {
         if (!playerRef.current || !isReady) return;
+        if (typeof playerRef.current.mute !== 'function') return;
+        if (typeof playerRef.current.unMute !== 'function') return;
+
         if (isMuted) {
             playerRef.current.unMute();
             setIsMuted(false);
