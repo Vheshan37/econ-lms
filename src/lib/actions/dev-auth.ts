@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { sendOTPEmail } from '@/lib/email';
+import { sendOTPEmail, sendInvitationEmail } from '@/lib/email';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify, JWTPayload } from 'jose';
 
@@ -30,7 +30,7 @@ async function createDevToken(payload: DevSessionPayload): Promise<string> {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime('24h') // Developer session is shorter for security
+        .setExpirationTime('24h')
         .sign(JWT_SECRET);
 }
 
@@ -48,17 +48,10 @@ export async function verifyDevToken(token: string): Promise<DevSessionPayload |
 // Step 1: Validate Password and Send OTP
 export async function sendDevOTP(email: string, password: string) {
     try {
-        // Validate credentials
         if (email !== DEV_EMAIL || password !== DEV_PASSWORD) {
             return { success: false, error: 'Invalid developer credentials' };
         }
 
-        // Check if dev user is tracked in some way? 
-        // We'll use the 'teacher' user type in OTP table but mark it as developer in role if needed
-        // Or just use 'teacher' as a proxy if we don't want to change the schema.
-        // Actually the OTP table has userType string. We can use 'developer'.
-
-        // Invalidate previous OTPs for this email
         await prisma.oTP.deleteMany({
             where: {
                 email,
@@ -67,11 +60,9 @@ export async function sendDevOTP(email: string, password: string) {
             }
         });
 
-        // Generate new OTP
         const otpCode = generateOTP();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-        // Save OTP to database
         await prisma.oTP.create({
             data: {
                 email,
@@ -82,7 +73,6 @@ export async function sendDevOTP(email: string, password: string) {
             }
         });
 
-        // Send OTP via email
         const emailResult = await sendOTPEmail({
             to: email,
             otp: otpCode,
@@ -93,11 +83,7 @@ export async function sendDevOTP(email: string, password: string) {
             return { success: false, error: 'Failed to send OTP email' };
         }
 
-        return {
-            success: true,
-            message: 'Developer OTP sent successfully'
-        };
-
+        return { success: true, message: 'Developer OTP sent successfully' };
     } catch (error) {
         console.error('Dev Send OTP error:', error);
         return { success: false, error: 'An error occurred during authentication' };
@@ -107,11 +93,8 @@ export async function sendDevOTP(email: string, password: string) {
 // Step 2: Verify OTP and set Developer Session
 export async function verifyDevOTP(email: string, otp: string) {
     try {
-        if (email !== DEV_EMAIL) {
-            return { success: false, error: 'Invalid request' };
-        }
+        if (email !== DEV_EMAIL) return { success: false, error: 'Invalid request' };
 
-        // Find valid OTP
         const otpRecord = await prisma.oTP.findFirst({
             where: {
                 email,
@@ -123,36 +106,26 @@ export async function verifyDevOTP(email: string, otp: string) {
             orderBy: { createdAt: 'desc' }
         });
 
-        if (!otpRecord) {
-            return { success: false, error: 'Invalid or expired OTP' };
-        }
+        if (!otpRecord) return { success: false, error: 'Invalid or expired OTP' };
 
-        // Mark OTP as verified
         await prisma.oTP.update({
             where: { id: otpRecord.id },
             data: { isVerified: true }
         });
 
-        // Create dev session
-        const payload: DevSessionPayload = {
-            role: 'developer',
-            email: DEV_EMAIL
-        };
-
+        const payload: DevSessionPayload = { role: 'developer', email: DEV_EMAIL };
         const token = await createDevToken(payload);
 
-        // Set cookie
         const cookieStore = await cookies();
         cookieStore.set('dev_session', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
-            maxAge: 60 * 60 * 24, // 24 hours
+            maxAge: 60 * 60 * 24,
             path: '/'
         });
 
         return { success: true };
-
     } catch (error) {
         console.error('Dev Verify OTP error:', error);
         return { success: false, error: 'An error occurred. Please try again.' };
@@ -164,12 +137,60 @@ export async function getDevSession(): Promise<DevSessionPayload | null> {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('dev_session')?.value;
-
         if (!token) return null;
-
         return await verifyDevToken(token);
     } catch {
         return null;
+    }
+}
+
+// Teacher Management Actions
+export async function getAllTeachers() {
+    const session = await getDevSession();
+    if (!session) throw new Error('Unauthorized');
+
+    return await prisma.teacher.findMany({
+        orderBy: { createdAt: 'desc' }
+    });
+}
+
+export async function devCreateTeacher(name: string, email: string) {
+    const session = await getDevSession();
+    if (!session) throw new Error('Unauthorized');
+
+    try {
+        const existing = await prisma.teacher.findUnique({ where: { email } });
+        if (existing) return { success: false, error: 'Email already exists' };
+
+        const teacher = await prisma.teacher.create({
+            data: { name, email, isActive: true }
+        });
+
+        // Send onboarding email
+        await sendInvitationEmail({
+            to: email,
+            userName: name,
+            role: 'teacher'
+        });
+
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: 'Database error' };
+    }
+}
+
+export async function toggleTeacherStatus(id: string, currentStatus: boolean) {
+    const session = await getDevSession();
+    if (!session) throw new Error('Unauthorized');
+
+    try {
+        await prisma.teacher.update({
+            where: { id },
+            data: { isActive: !currentStatus }
+        });
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: 'Database error' };
     }
 }
 

@@ -143,16 +143,18 @@ export async function sendOTPEmail({ to, otp, userName }: SendOTPEmailParams) {
 interface SendInvitationEmailParams {
     to: string;
     userName: string;
+    role: 'student' | 'teacher';
 }
 
-export async function sendInvitationEmail({ to, userName }: SendInvitationEmailParams) {
+export async function sendInvitationEmail({ to, userName, role }: SendInvitationEmailParams) {
     try {
         const loginUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
 
         const mailOptions = {
             from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
             to,
-            subject: 'Welcome to Quality ම Econ - Your Account is Ready',
+            subject: `Welcome to Quality ම Econ - Your ${roleLabel} Account is Ready`,
             html: `
                 <!DOCTYPE html>
                 <html>
@@ -239,8 +241,8 @@ export async function sendInvitationEmail({ to, userName }: SendInvitationEmailP
                                 Hello ${userName},
                             </div>
                             <div class="message">
-                                <p>Welcome to Quality ම Econ! Your student account has been successfully created.</p>
-                                <p>You can now access your classes, resources, and learning materials directly through our platform.</p>
+                                <p>Welcome to Quality ම Econ! Your <strong>${role}</strong> account has been successfully created.</p>
+                                <p>You can now access your management dashboard and resources directly through our platform.</p>
                             </div>
                             
                             <div class="button-container">
@@ -251,7 +253,7 @@ export async function sendInvitationEmail({ to, userName }: SendInvitationEmailP
                                 <p><strong>How to Login:</strong></p>
                                 <p>1. Click the button above or go to the login page.</p>
                                 <p>2. Enter your email address: <strong>${to}</strong></p>
-                                <p>3. Select "Student" as your user type.</p>
+                                <p>3. Select "<strong>${roleLabel}</strong>" as your user type.</p>
                                 <p>4. You will receive a secure OTP code via email to log in.</p>
                             </div>
                         </div>
@@ -263,7 +265,7 @@ export async function sendInvitationEmail({ to, userName }: SendInvitationEmailP
                 </body>
                 </html>
             `,
-            text: `Welcome to Quality ම Econ, ${userName}!\n\nYour account has been created. You can login at ${loginUrl}/login using your email: ${to}\n\nWe use a secure OTP-based login system, so no password is required.`,
+            text: `Welcome to Quality ම Econ, ${userName}!\n\nYour ${role} account has been created. You can login at ${loginUrl}/login using your email: ${to}\n\nWe use a secure OTP-based login system, so no password is required.`,
         };
 
         const info = await transporter.sendMail(mailOptions);

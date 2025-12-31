@@ -143,7 +143,8 @@ export async function createStudent(data: {
         const { sendInvitationEmail } = await import('@/lib/email');
         await sendInvitationEmail({
             to: student.email,
-            userName: student.name
+            userName: student.name,
+            role: 'student'
         });
 
         revalidatePath('/admin/students');
