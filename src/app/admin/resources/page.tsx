@@ -51,7 +51,9 @@ export default function FreeResourcesPage() {
     const [title, setTitle] = useState('');
     const [url, setUrl] = useState('');
     const [description, setDescription] = useState('');
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     // Alert Dialog State
     const [deleteAlert, setDeleteAlert] = useState<{ isOpen: boolean; resourceId: string | null; resourceTitle: string }>({
@@ -167,19 +169,50 @@ export default function FreeResourcesPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setUploadProgress(0);
 
-        const result = editingResource
-            ? await updateFreeResource(editingResource.id, { title, type: resourceType, url, description })
-            : await createFreeResource({ title, type: resourceType, url, description });
+        try {
+            let finalUrl = url;
 
-        if (result.success) {
-            await fetchResources();
-            closeModal();
-            setSuccessAlert({ isOpen: true, message: `Resource ${editingResource ? 'updated' : 'added'} successfully` });
-        } else {
-            setErrorAlert({ isOpen: true, message: result.error || 'Failed to save resource' });
+            // If it's a PDF or Past Paper and a file is selected, upload it first
+            if ((resourceType === 'PDF' || resourceType === 'PAST_PAPER') && selectedFile) {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                setUploadProgress(50);
+                const uploadResponse = await fetch('/api/upload/free-resource', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const uploadResult = await uploadResponse.json();
+                if (!uploadResult.success) {
+                    throw new Error(uploadResult.error || 'Failed to upload file');
+                }
+
+                finalUrl = uploadResult.url;
+                setUploadProgress(75);
+            }
+
+            // Now create/update the resource with the URL (either uploaded file path or entered URL)
+            const result = editingResource
+                ? await updateFreeResource(editingResource.id, { title, type: resourceType, url: finalUrl, description })
+                : await createFreeResource({ title, type: resourceType, url: finalUrl, description });
+
+            if (result.success) {
+                setUploadProgress(100);
+                await fetchResources();
+                closeModal();
+                setSuccessAlert({ isOpen: true, message: `Resource ${editingResource ? 'updated' : 'added'} successfully` });
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to save resource' });
+            }
+        } catch (error: any) {
+            setErrorAlert({ isOpen: true, message: error.message || 'An error occurred' });
+        } finally {
+            setIsSubmitting(false);
+            setUploadProgress(0);
         }
-        setIsSubmitting(false);
     };
 
     const handleEdit = (resource: Resource) => {
@@ -222,6 +255,8 @@ export default function FreeResourcesPage() {
         setTitle('');
         setUrl('');
         setDescription('');
+        setSelectedFile(null);
+        setUploadProgress(0);
         setResourceType('VIDEO');
     };
 
@@ -501,17 +536,61 @@ export default function FreeResourcesPage() {
                                         />
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-300 ml-1">URL</Label>
-                                        <Input
-                                            placeholder="https://..."
-                                            value={url}
-                                            onChange={e => setUrl(e.target.value)}
-                                            required
-                                            type="url"
-                                            className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
-                                        />
-                                    </div>
+                                    {/* Conditional Input: File Upload for PDF/Past Paper, URL for Video/Quiz */}
+                                    {(resourceType === 'PDF' || resourceType === 'PAST_PAPER') ? (
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300 ml-1">Upload File</Label>
+                                            <div className="relative">
+                                                <input
+                                                    type="file"
+                                                    accept=".pdf"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) {
+                                                            setSelectedFile(file);
+                                                            setUrl(''); // Clear URL when file is selected
+                                                        }
+                                                    }}
+                                                    className="hidden"
+                                                    id="file-upload"
+                                                    required={!editingResource && !url}
+                                                />
+                                                <label
+                                                    htmlFor="file-upload"
+                                                    className="flex items-center justify-center gap-2 w-full h-12 px-4 bg-white/5 border border-white/10 text-gray-400 rounded-xl cursor-pointer hover:bg-white/10 hover:border-[#D4AF37]/50 transition-all"
+                                                >
+                                                    <FileText className="w-4 h-4" />
+                                                    <span className="text-sm">
+                                                        {selectedFile ? selectedFile.name : 'Choose PDF file...'}
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            {selectedFile && (
+                                                <p className="text-xs text-gray-500 ml-1">
+                                                    Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                                                </p>
+                                            )}
+                                            {editingResource && url && (
+                                                <p className="text-xs text-[#D4AF37] ml-1">
+                                                    Current: {url.split('/').pop()}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            <Label className="text-gray-300 ml-1">
+                                                {resourceType === 'VIDEO' ? 'YouTube URL' : 'URL'}
+                                            </Label>
+                                            <Input
+                                                placeholder={resourceType === 'VIDEO' ? 'https://youtube.com/watch?v=...' : 'https://...'}
+                                                value={url}
+                                                onChange={e => setUrl(e.target.value)}
+                                                required
+                                                type="url"
+                                                className="bg-white/5 border-white/10 text-white h-12 rounded-xl focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all placeholder:text-gray-600"
+                                            />
+                                        </div>
+                                    )}
 
                                     <div className="space-y-2">
                                         <Label className="text-gray-300 ml-1">Description <span className="text-gray-600 text-xs">(Optional)</span></Label>
