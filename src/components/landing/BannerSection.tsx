@@ -83,9 +83,9 @@ export function BannerSection({ content }: { content?: any[] }) {
     const prevSlide = () => paginate(-1);
 
     return (
-        <section className="py-12 md:py-20 bg-black">
+        <section className="py-8 md:py-20 bg-black">
             <div className="container mx-auto px-4">
-                <div className="relative w-full h-[500px] md:h-[600px] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl isolate group">
+                <div className="relative w-full h-[450px] sm:h-[500px] md:h-[600px] rounded-[24px] md:rounded-[32px] overflow-hidden border border-white/10 shadow-2xl isolate group">
                     <AnimatePresence initial={false} custom={direction}>
                         <motion.div
                             key={currentIndex}
@@ -114,13 +114,25 @@ export function BannerSection({ content }: { content?: any[] }) {
                         >
 
 
-                            {/* Background Gradient for readability */}
-                            <div className="absolute inset-0 bg-black/60" />
+                            {/* Background Layers */}
+                            <div className="absolute inset-0 bg-black" />
+                            
+                            {/* Blurred background for wide/tall images to avoid letterboxing */}
+                            <img
+                                src={banners[currentIndex].image}
+                                alt=""
+                                className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-40 scale-110 pointer-events-none"
+                            />
+
+                            {/* Main image - Using object-contain on small screens to show full landscape images */}
                             <img
                                 src={banners[currentIndex].image}
                                 alt={banners[currentIndex].title}
-                                className="absolute inset-0 w-full h-full object-cover"
+                                className="absolute inset-0 w-full h-full object-contain md:object-cover"
                             />
+                            
+                            {/* Sophisticated gradient overlay for text readability */}
+                            <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent sm:bg-linear-to-r sm:from-black/80 sm:via-black/30 sm:to-transparent" />
 
                             {/* Content Overlay */}
                             <div className="relative h-full px-4 flex flex-col justify-center items-center text-center z-10 space-y-6">
@@ -142,7 +154,7 @@ export function BannerSection({ content }: { content?: any[] }) {
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.4 }}
-                                        className="text-4xl md:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]"
+                                        className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] px-2"
                                     >
                                         {banners[currentIndex].title}
                                     </motion.h1>
@@ -153,7 +165,7 @@ export function BannerSection({ content }: { content?: any[] }) {
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.6 }}
-                                        className="text-lg md:text-xl text-gray-200 max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                                        className="text-base md:text-xl text-gray-200 max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4"
                                     >
                                         {banners[currentIndex].description}
                                     </motion.p>
