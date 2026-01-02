@@ -362,13 +362,15 @@ export async function sendDeveloperTicket({
     fromEmail,
     requestType,
     subject,
-    message
+    message,
+    ticketId
 }: {
     fromName: string;
     fromEmail: string;
     requestType: string;
     subject: string;
     message: string;
+    ticketId: string;
 }) {
     try {
         const developerEmail = 'vihangaheshan37@gmail.com';
@@ -377,7 +379,7 @@ export async function sendDeveloperTicket({
             from: `"LMS Support Ticket" <${process.env.SMTP_FROM}>`,
             to: developerEmail,
             replyTo: fromEmail,
-            subject: `[${requestType.toUpperCase()}] ${subject}`,
+            subject: `[${ticketId}] [${requestType.toUpperCase()}] ${subject}`,
             html: `
                 <!DOCTYPE html>
                 <html>
@@ -399,17 +401,21 @@ export async function sendDeveloperTicket({
                 <body>
                     <div class="container">
                         <div class="header">
-                            <h1>NEW DEVELOPER REQUEST</h1>
+                            <h1>NEW DEVELOPER REQUEST #${ticketId}</h1>
                         </div>
                         <div class="content">
                             <div class="meta-grid">
                                 <div class="meta-item">
-                                    <span class="meta-label">Sender Name</span>
-                                    <span class="meta-value">${fromName}</span>
+                                    <span class="meta-label">Ticket ID</span>
+                                    <span class="meta-value" style="color: #D4AF37;">${ticketId}</span>
                                 </div>
                                 <div class="meta-item">
                                     <span class="meta-label">Request Type</span>
                                     <span class="meta-value" style="text-transform: capitalize;">${requestType}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Sender Name</span>
+                                    <span class="meta-value">${fromName}</span>
                                 </div>
                                 <div class="meta-item">
                                     <span class="meta-label">Email Address</span>
@@ -434,7 +440,7 @@ export async function sendDeveloperTicket({
                 </body>
                 </html>
             `,
-            text: `NEW DEVELOPER REQUEST\n\nFrom: ${fromName} (${fromEmail})\nType: ${requestType}\nSubject: ${subject}\n\nMessage:\n${message}`,
+            text: `NEW DEVELOPER REQUEST [${ticketId}]\n\nFrom: ${fromName} (${fromEmail})\nType: ${requestType}\nSubject: ${subject}\n\nMessage:\n${message}`,
         };
 
         await transporter.sendMail(mailOptions);
@@ -442,6 +448,104 @@ export async function sendDeveloperTicket({
     } catch (error) {
         console.error('Failed to send developer ticket:', error);
         return { success: false, error: 'Failed to deliver message to developer.' };
+    }
+}
+
+export async function sendTicketConfirmation({
+    toName,
+    toEmail,
+    ticketId,
+    subject,
+    requestType,
+    message
+}: {
+    toName: string;
+    toEmail: string;
+    ticketId: string;
+    subject: string;
+    requestType: string;
+    message: string;
+}) {
+    try {
+        const mailOptions = {
+            from: `"Quality ම Econ Support" <${process.env.SMTP_FROM}>`,
+            to: toEmail,
+            subject: `Ticket Received: ${subject} [${ticketId}]`,
+            html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 40px auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+                        .header { background: #1a1a1a; padding: 40px 30px; text-align: center; }
+                        .header h1 { color: #D4AF37; margin: 10px 0 0 0; font-size: 24px; letter-spacing: 1px; }
+                        .ticket-status { background: #fff8e6; border: 1px solid #ffeeba; color: #856404; padding: 12px; text-align: center; font-size: 14px; font-weight: 500; }
+                        .content { padding: 40px 35px; color: #444; }
+                        .greeting { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 20px; }
+                        .summary-box { background: #f9fafb; border: 1px solid #eee; padding: 25px; border-radius: 8px; margin: 25px 0; }
+                        .summary-title { font-size: 13px; font-weight: bold; color: #999; text-transform: uppercase; margin-bottom: 15px; }
+                        .detail-row { display: flex; margin-bottom: 12px; font-size: 14px; }
+                        .detail-label { width: 100px; color: #777; flex-shrink: 0; }
+                        .detail-value { color: #1a1a1a; font-weight: 500; }
+                        .message-quote { border-left: 3px solid #D4AF37; padding: 15px; background: #fffcf0; font-style: italic; color: #555; margin-top: 15px; font-size: 14px; }
+                        .next-steps { border-top: 1px solid #eee; padding-top: 30px; margin-top: 30px; font-size: 14px; line-height: 1.6; }
+                        .footer { background: #f8f9fa; padding: 25px; text-align: center; color: #999; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <span style="font-size: 32px;">🎓</span>
+                            <h1>Quality ම Econ</h1>
+                        </div>
+                        <div class="ticket-status">
+                            Ticket Ref: <strong style="color: #1a1a1a;">${ticketId}</strong> • Status: Received
+                        </div>
+                        <div class="content">
+                            <div class="greeting">Hello ${toName},</div>
+                            <p>Thank you for reaching out. We have received your request regarding <strong>"${subject}"</strong>. Our development team has been notified and will review your inquiry shortly.</p>
+                            
+                            <div class="summary-box">
+                                <div class="summary-title">Ticket Information</div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Ticket ID</div>
+                                    <div class="detail-value" style="color: #D4AF37;">${ticketId}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Type</div>
+                                    <div class="detail-value" style="text-transform: capitalize;">${requestType}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Subject</div>
+                                    <div class="detail-value">${subject}</div>
+                                </div>
+                                <div class="message-quote">
+                                    "${message.length > 200 ? message.substring(0, 200) + '...' : message}"
+                                </div>
+                            </div>
+
+                            <div class="next-steps">
+                                <p><strong>What happens next?</strong></p>
+                                <p>A developer will investigate your request. You will receive a response at this email address within 24-48 hours. If this is an urgent technical issue, please mention it in a follow-up if needed.</p>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <p>Please do not reply directly to this automated confirmation.</p>
+                            <p>© ${new Date().getFullYear()} Quality ම Econ. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `,
+            text: `Hello ${toName},\n\nWe have received your ticket #${ticketId} regarding "${subject}". Our team will review it and get back to you shortly.\n\nTicket Summary:\nID: ${ticketId}\nType: ${requestType}\nSubject: ${subject}\n\nThank you for using Quality ම Econ.`,
+        };
+
+        await transporter.sendMail(mailOptions);
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to send teacher confirmation email:', error);
+        return { success: false, error: 'Failed to send confirmation email.' };
     }
 }
 
