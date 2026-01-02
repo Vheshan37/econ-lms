@@ -2,11 +2,12 @@ import { join } from 'path';
 import { mkdir } from 'fs/promises';
 
 export async function getPersistentUploadDir() {
-    // Always use public/uploads directory
-    // In development: project-root/public/uploads
-    // In production standalone: .next/standalone/public/uploads
-    // This works because Next.js copies public/ to standalone during build
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
+    // Check for an environment variable to support persistent storage outside the project root
+    // This is crucial for standalone deployments (VPS/Docker)
+    const envUploadDir = process.env.UPLOAD_DIR;
+    
+    // Fallback to project-root/public/uploads for local development
+    const uploadDir = envUploadDir ? envUploadDir : join(process.cwd(), 'public', 'uploads');
 
     // Ensure directory exists
     await mkdir(uploadDir, { recursive: true });
