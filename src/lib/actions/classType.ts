@@ -79,8 +79,9 @@ export async function getClassTypeById(id: string) {
                 topics: {
                     orderBy: { order: 'asc' },
                     include: {
-                        // @ts-ignore
-                        resources: true
+                        _count: {
+                            select: { resources: true }
+                        }
                     }
                 }
             }
