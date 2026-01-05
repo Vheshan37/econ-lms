@@ -53,6 +53,8 @@ export default function OLResourcesPage() {
     // Page Settings State
     const [ctaYear, setCtaYear] = useState('2027');
     const [ctaMessage, setCtaMessage] = useState('Want more advanced content? Join our {year} Batch');
+    const [heroBadge, setHeroBadge] = useState('Calling all O/L Students');
+    const [heroTitle, setHeroTitle] = useState('Start Your A/L Econ Journey Today');
     const [categoryCards, setCategoryCards] = useState([
         { title: 'Video Lessons', description: 'Watch expert video tutorials', icon: 'Play', link: '#videos' },
         { title: 'Past Papers', description: 'Access previous exam papers', icon: 'File', link: '#past-papers' },
@@ -119,6 +121,10 @@ export default function OLResourcesPage() {
                 if (data.cta) {
                     setCtaYear(data.cta.year || '2027');
                     setCtaMessage(data.cta.message || 'Want more advanced content? Join our {year} Batch');
+                }
+                if (data.hero) {
+                    setHeroBadge(data.hero.badge || 'Calling all O/L Students');
+                    setHeroTitle(data.hero.title || 'Start Your A/L Econ Journey Today');
                 }
                 if (data.categoryCards && Array.isArray(data.categoryCards) && data.categoryCards.length > 0) {
                     // Check if we need to add the video card (migration for existing data)
@@ -199,6 +205,10 @@ export default function OLResourcesPage() {
         setIsSavingSettings(true);
         try {
             const settingsData = {
+                hero: {
+                    badge: heroBadge,
+                    title: heroTitle
+                },
                 cta: {
                     year: ctaYear,
                     message: ctaMessage
@@ -367,9 +377,37 @@ export default function OLResourcesPage() {
                     </Button>
                 </div>
 
+                {/* Hero Settings */}
+                <div className="space-y-4 mb-8">
+                    <h3 className="text-lg font-semibold text-gray-800">Hero Section Headers</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="heroBadge">Badge Text</Label>
+                            <Input
+                                id="heroBadge"
+                                value={heroBadge}
+                                onChange={(e) => setHeroBadge(e.target.value)}
+                                placeholder="Calling all O/L Students"
+                                className="bg-white border-gray-300"
+                            />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="heroTitle">Hero Title</Label>
+                            <Textarea
+                                id="heroTitle"
+                                value={heroTitle}
+                                onChange={(e) => setHeroTitle(e.target.value)}
+                                placeholder="Start Your A/L Econ Journey Today"
+                                rows={2}
+                                className="bg-white border-gray-300"
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {/* CTA Settings */}
                 <div className="space-y-4 mb-8">
-                    <h3 className="text-lg font-semibold text-gray-800">Call-to-Action Banner</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 border-t pt-8">Call-to-Action Banner</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="ctaYear">Batch Year</Label>

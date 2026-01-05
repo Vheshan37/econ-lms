@@ -185,12 +185,18 @@ export default function OLStudentsClient({ isHallOfFameEnabled, initialSubjects,
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-500 text-sm font-medium">
                             <Sparkles className="w-4 h-4" />
-                            <span>Calling all O/L Students</span>
+                            <span>{pageSettings?.hero?.badge || "Calling all O/L Students"}</span>
                         </div>
 
                         <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-tight">
-                            Start Your <span className="text-yellow-500">A/L Econ</span><br />
-                            Journey Today
+                            {pageSettings?.hero?.title ? (
+                                <span dangerouslySetInnerHTML={{ __html: pageSettings.hero.title.replace('Econ', '<span class="text-yellow-500">Econ</span>') }} />
+                            ) : (
+                                <>
+                                    Start Your <span className="text-yellow-500">A/L Econ</span><br />
+                                    Journey Today
+                                </>
+                            )}
                         </h1>
 
                         <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
