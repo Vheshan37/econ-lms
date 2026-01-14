@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { fmGemunu, impact } from "./fonts";
@@ -24,14 +23,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.png" },
-      { url: "/icon.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.jpg" },
+      { url: "/favicon.jpg", sizes: "32x32", type: "image/jpeg" },
+      { url: "/favicon.jpg", sizes: "16x16", type: "image/jpeg" },
     ],
-    apple: [
-      { url: "/icon.png" },
-    ],
-    shortcut: ["/icon.png"],
+    apple: [{ url: "/favicon.jpg" }],
+    shortcut: ["/favicon.jpg"],
   },
 };
 
@@ -45,9 +42,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fmGemunu.variable} ${impact.variable} antialiased`}
       >
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
-Allow: /icon.png
+Allow: /favicon.jpg
 
 Sitemap: https://www.krishankasthuriarachchi.lk/sitemap.xml
