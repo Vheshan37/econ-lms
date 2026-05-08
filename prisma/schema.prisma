@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -15,10 +15,9 @@ enum ResourceType {
   QUIZ
 }
 
-
 model AcademicYear {
   id          String      @id @default(uuid())
-  year        String      // e.g., "2025 A/L"
+  year        String // e.g., "2025 A/L"
   description String?
   isActive    Boolean     @default(true)
   createdAt   DateTime    @default(now())
@@ -27,29 +26,29 @@ model AcademicYear {
 }
 
 model ClassType {
-  id        String        @id @default(uuid())
-  name      String        // Custom names allowed
-  yearId    String
-  year      AcademicYear  @relation(fields: [yearId], references: [id], onDelete: Cascade)
-  isActive  Boolean       @default(true)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  topics    Topic[]
+  id                 String             @id @default(uuid())
+  name               String // Custom names allowed
+  yearId             String
+  year               AcademicYear       @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  isActive           Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  topics             Topic[]
   studentAssignments StudentClassType[]
 
   @@index([yearId])
 }
 
 model Topic {
-  id          String      @id @default(uuid())
+  id          String     @id @default(uuid())
   title       String
   description String?
-  order       Int         @default(0)
+  order       Int        @default(0)
   classTypeId String
-  classType   ClassType   @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  isActive    Boolean     @default(true)
+  classType   ClassType  @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  isActive    Boolean    @default(true)
   resources   Resource[]
 
   @@index([classTypeId])
@@ -79,10 +78,10 @@ model FreeResource {
   updatedAt   DateTime     @updatedAt
   views       Int          @default(0)
   level       String       @default("Advanced Level") // "Advanced Level" or "Ordinary Level"
-  
+
   // Relations
   olSubjectId String?
-  olSubject   OLSubject?   @relation(fields: [olSubjectId], references: [id])
+  olSubject   OLSubject? @relation(fields: [olSubjectId], references: [id])
 }
 
 model OLSubject {
@@ -95,47 +94,47 @@ model OLSubject {
 }
 
 model Student {
-  id              String              @id @default(uuid())
+  id          String   @id @default(uuid())
   // Personal Information
-  name            String
-  school          String
-  dateOfBirth     DateTime
-  
+  name        String
+  school      String
+  dateOfBirth DateTime
+
   // Account
-  email           String              @unique
-  
+  email String @unique
+
   // Status
-  isActive        Boolean             @default(true)
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
   classAssignments StudentClassType[]
 }
 
 model StudentClassType {
-  id          String      @id @default(uuid())
+  id          String    @id @default(uuid())
   studentId   String
-  student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
   classTypeId String
-  classType   ClassType   @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
-  assignedAt  DateTime    @default(now())
-  
+  classType   ClassType @relation(fields: [classTypeId], references: [id], onDelete: Cascade)
+  assignedAt  DateTime  @default(now())
+
   @@unique([studentId, classTypeId])
   @@index([studentId])
   @@index([classTypeId])
 }
 
 model HallOfFame {
-  id            String   @id @default(uuid())
-  name          String
-  district      String
-  academicYear  String   // e.g. "2022 A/L"
-  islandRank    Int?     // Nullable for cases where student didn't get island rank
-  districtRank  Int?     // Nullable for cases where student didn't get district rank
-  imageUrl      String?  // URL to student image
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  district     String
+  academicYear String // e.g. "2022 A/L"
+  islandRank   Int? // Nullable for cases where student didn't get island rank
+  districtRank Int? // Nullable for cases where student didn't get district rank
+  imageUrl     String? // URL to student image
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Institute {
@@ -151,10 +150,10 @@ model Timetable {
   id           String    @id @default(uuid())
   instituteId  String
   institute    Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
-  day          String    // Monday, Tuesday, etc.
-  startTime    String    // e.g. "09:00"
-  endTime      String    // e.g. "11:00"
-  academicYear String    // e.g. "2025 A/L"
+  day          String // Monday, Tuesday, etc.
+  startTime    String // e.g. "09:00"
+  endTime      String // e.g. "11:00"
+  academicYear String // e.g. "2025 A/L"
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -173,8 +172,8 @@ model Teacher {
 model OTP {
   id         String   @id @default(uuid())
   email      String
-  code       String   // 6-digit OTP
-  userType   String   // 'student' or 'teacher'
+  code       String // 6-digit OTP
+  userType   String // 'student' or 'teacher'
   expiresAt  DateTime
   isVerified Boolean  @default(false)
   createdAt  DateTime @default(now())
@@ -184,10 +183,10 @@ model OTP {
 }
 
 model LandingPageContent {
-  id          String   @id @default(uuid())
-  section     String   @unique // "hero", "about", "contact"
-  content     Json     // Flexible JSON storage
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  section   String   @unique // "hero", "about", "contact"
+  content   Json // Flexible JSON storage
+  updatedAt DateTime @updatedAt
 }
 
 model Testimonial {
@@ -207,8 +206,8 @@ model ModernFeature {
   id          String   @id @default(uuid())
   title       String
   description String
-  icon        String   // Lucide icon name
-  color       String?  // Tailwind gradient classes
+  icon        String // Lucide icon name
+  color       String? // Tailwind gradient classes
   order       Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -217,12 +216,12 @@ model ModernFeature {
 
 model Course {
   id          String   @id @default(uuid())
-  year        String   // e.g. "2025"
-  title       String   // e.g. "Advanced Level"
-  status      String   // e.g. "Revision & Paper Class"
+  year        String // e.g. "2025"
+  title       String // e.g. "Advanced Level"
+  status      String // e.g. "Revision & Paper Class"
   description String   @db.Text
-  schedule    String   // e.g. "Saturday 8:00 AM"
-  color       String   // Tailwind gradient classes
+  schedule    String // e.g. "Saturday 8:00 AM"
+  color       String // Tailwind gradient classes
   order       Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -231,16 +230,52 @@ model Course {
 
 model Notification {
   id        String   @id @default(uuid())
-  type      String   // 'payment', 'company', 'system', 'student'
+  type      String // 'payment', 'company', 'system', 'student'
   title     String
   message   String   @db.Text
   priority  String   @default("normal") // 'low', 'normal', 'high', 'urgent'
   isRead    Boolean  @default(false)
-  userId    String?  // Optional: specific admin user
-  metadata  Json?    // Additional data (payment details, student info, etc.)
+  userId    String? // Optional: specific admin user
+  metadata  Json? // Additional data (payment details, student info, etc.)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+model index {
+  id        Int      @id @default(autoincrement())
+  index_no  String // 'payment', 'company', 'system', 'student'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  marks     marks[]
+
+  @@index([createdAt])
+}
+
+model exam {
+  id        Int      @id @default(autoincrement())
+  title     String
+  exam_date DateTime
+  desc      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  marks     marks[]
+
+  @@index([createdAt])
+}
+
+model marks {
+  id        Int      @id @default(autoincrement())
+  index_id  Int
+  exam_id   Int
+  marks     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  index index @relation(fields: [index_id], references: [id], onDelete: Cascade)
+  exam  exam  @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+
   @@index([createdAt])
 }
