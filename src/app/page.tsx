@@ -7,7 +7,7 @@ import { AboutSection } from "@/components/landing/AboutSection";
 import { CoursesSection } from "@/components/landing/CoursesSection";
 import { TimetableSection } from "@/components/landing/TimetableSection";
 import { ModernFeaturesSection } from "@/components/landing/ModernFeaturesSection";
-import { FreeLessonsSection } from "@/components/landing/FreeLessonsSection";
+// import { FreeLessonsSection } from "@/components/landing/FreeLessonsSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { FooterSection } from "@/components/landing/FooterSection";
 import { ExamResultsTeaser } from "@/components/landing/exam-results/ExamResultsTeaser";
@@ -60,12 +60,12 @@ export default async function Home() {
       <main>
         <HeroSection content={heroData} timestamp={timestamp} />
         <AboutSection content={aboutData} />
-        <BannerSection content={bannerData} />
         <ExamResultsTeaser />
         <CoursesSection years={years} whatsappNumber={process.env.WHATSAPP_NUMBER || ''} />
         <TimetableSection institutes={institutes} />
         <ModernFeaturesSection />
-        <FreeLessonsSection />
+        {/* <FreeLessonsSection /> */}
+        <BannerSection content={bannerData} />
         <TestimonialsSection />
       </main>
 

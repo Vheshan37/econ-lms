@@ -35,7 +35,7 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
     ...(isHallOfFameEnabled
       ? [{ name: "Hall of Fame", path: "/hall-of-fame" }]
       : []),
-    { name: "O/L Student?", path: "/ol-students" },
+    { name: "For O/L Student", path: "/ol-students" },
     { name: "Exam Results", path: "/exam-results" },
     { name: "Contact Us", path: "/contact" },
   ];

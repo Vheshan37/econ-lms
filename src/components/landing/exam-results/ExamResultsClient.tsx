@@ -205,9 +205,9 @@ export function ExamResultsClient() {
                         <Search className="w-5 h-5 text-yellow-500" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-white">Search Again</h3>
+                        <h3 className="font-bold text-white">Search Result</h3>
                         <p className="text-xs text-gray-500">
-                          Look up another student
+                          Enter your index number
                         </p>
                       </div>
                     </div>
