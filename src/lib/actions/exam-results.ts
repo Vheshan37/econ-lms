@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
+import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 interface ExamResultInput {
   id?: string;
@@ -16,7 +16,8 @@ interface ExamInput {
   results: ExamResultInput[];
 }
 
-// Check if index number exists in database
+export type { Exam, ExamMark } from "@/types/exam";
+
 export async function checkIndexNumber(indexNumber: string) {
   try {
     const existingIndex = await prisma.index.findFirst({
@@ -29,16 +30,15 @@ export async function checkIndexNumber(indexNumber: string) {
       indexData: existingIndex || null,
     };
   } catch (error) {
-    console.error('Error checking index:', error);
+    console.error("Error checking index:", error);
     return {
       success: false,
       exists: false,
-      error: 'Failed to check index number',
+      error: "Failed to check index number",
     };
   }
 }
 
-// Check if index number already has marks for a specific exam
 export async function checkIndexInExam(indexNumber: string, examId: number) {
   try {
     const existingIndex = await prisma.index.findFirst({
@@ -67,17 +67,16 @@ export async function checkIndexInExam(indexNumber: string, examId: number) {
       existingMarks: existingMark?.marks || null,
     };
   } catch (error) {
-    console.error('Error checking index in exam:', error);
+    console.error("Error checking index in exam:", error);
     return {
       success: false,
       exists: false,
       hasMarks: false,
-      error: 'Failed to check index in exam',
+      error: "Failed to check index in exam",
     };
   }
 }
 
-// Check if exam with same title and date already exists
 export async function checkExamExists(title: string, examDate: string) {
   try {
     const existingExam = await prisma.exam.findFirst({
@@ -100,16 +99,15 @@ export async function checkExamExists(title: string, examDate: string) {
       examData: existingExam || null,
     };
   } catch (error) {
-    console.error('Error checking exam:', error);
+    console.error("Error checking exam:", error);
     return {
       success: false,
       exists: false,
-      error: 'Failed to check exam',
+      error: "Failed to check exam",
     };
   }
 }
 
-// Get all exams with their marks
 export async function getExams() {
   try {
     const exams = await prisma.exam.findMany({
@@ -119,46 +117,42 @@ export async function getExams() {
             index: true,
           },
           orderBy: {
-            createdAt: 'desc',
+            createdAt: "desc",
           },
         },
       },
       orderBy: {
-        exam_date: 'desc',
+        exam_date: "desc",
       },
     });
 
-    return { 
-      success: true, 
-      data: exams || [] 
+    return {
+      success: true,
+      data: exams || [],
     };
   } catch (error) {
-    console.error('Error fetching exams:', error);
+    console.error("Error fetching exams:", error);
     return {
       success: false,
-      error: 'Failed to fetch exams',
+      error: "Failed to fetch exams",
       data: [],
     };
   }
 }
 
-// Create new exam with marks
 export async function createExam(data: ExamInput) {
   try {
     const newExam = await prisma.$transaction(async (tx) => {
-      // Create the exam
       const exam = await tx.exam.create({
         data: {
           title: data.title,
           exam_date: new Date(data.examDate),
-          desc: data.description || '',
+          desc: data.description || "",
         },
       });
 
-      // Process each result
       if (data.results && data.results.length > 0) {
         for (const result of data.results) {
-          // Check if index exists, if not create it
           let indexRecord = await tx.index.findFirst({
             where: { index_no: result.indexNumber },
           });
@@ -169,7 +163,6 @@ export async function createExam(data: ExamInput) {
             });
           }
 
-          // Create new mark for this exam
           await tx.marks.create({
             data: {
               index_id: indexRecord.id,
@@ -180,7 +173,6 @@ export async function createExam(data: ExamInput) {
         }
       }
 
-      // Return exam with marks
       const examWithMarks = await tx.exam.findUnique({
         where: { id: exam.id },
         include: {
@@ -189,7 +181,7 @@ export async function createExam(data: ExamInput) {
               index: true,
             },
             orderBy: {
-              createdAt: 'desc',
+              createdAt: "desc",
             },
           },
         },
@@ -198,25 +190,25 @@ export async function createExam(data: ExamInput) {
       return examWithMarks;
     });
 
-    revalidatePath('/admin/exam-results');
+    revalidatePath("/admin/exam-results");
     return { success: true, data: newExam };
   } catch (error) {
-    console.error('Error creating exam:', error);
+    console.error("Error creating exam:", error);
     return {
       success: false,
-      error: 'Failed to create exam results',
+      error: "Failed to create exam results",
     };
   }
 }
 
-// Update exam - add new marks to existing exam
-export async function updateExam(examId: number, data: { results: ExamResultInput[] }) {
+export async function updateExam(
+  examId: number,
+  data: { results: ExamResultInput[] },
+) {
   try {
     const updatedExam = await prisma.$transaction(async (tx) => {
-      // Only add new marks - never delete existing
       if (data.results && data.results.length > 0) {
         for (const result of data.results) {
-          // Check if index exists, if not create it
           let indexRecord = await tx.index.findFirst({
             where: { index_no: result.indexNumber },
           });
@@ -227,7 +219,6 @@ export async function updateExam(examId: number, data: { results: ExamResultInpu
             });
           }
 
-          // Check if marks already exist for this index in this exam
           const existingMark = await tx.marks.findFirst({
             where: {
               index_id: indexRecord.id,
@@ -236,13 +227,11 @@ export async function updateExam(examId: number, data: { results: ExamResultInpu
           });
 
           if (existingMark) {
-            // Update existing mark
             await tx.marks.update({
               where: { id: existingMark.id },
               data: { marks: result.marks.toString() },
             });
           } else {
-            // Create new mark
             await tx.marks.create({
               data: {
                 index_id: indexRecord.id,
@@ -262,7 +251,7 @@ export async function updateExam(examId: number, data: { results: ExamResultInpu
               index: true,
             },
             orderBy: {
-              createdAt: 'desc',
+              createdAt: "desc",
             },
           },
         },
@@ -271,18 +260,83 @@ export async function updateExam(examId: number, data: { results: ExamResultInpu
       return examWithMarks;
     });
 
-    revalidatePath('/admin/exam-results');
+    revalidatePath("/admin/exam-results");
     return { success: true, data: updatedExam };
   } catch (error) {
-    console.error('Error updating exam:', error);
+    console.error("Error updating exam:", error);
     return {
       success: false,
-      error: 'Failed to update exam',
+      error: "Failed to update exam",
     };
   }
 }
 
-// Delete exam
+export async function lookupStudentResults(indexNumber: string) {
+  try {
+    const indexRecord = await prisma.index.findFirst({
+      where: { index_no: indexNumber.trim() },
+    });
+
+    if (!indexRecord) {
+      return {
+        success: false,
+        error:
+          "No results found for this index number. Please check and try again.",
+      };
+    }
+
+    const marks = await prisma.marks.findMany({
+      where: {
+        index_id: indexRecord.id,
+      },
+      include: {
+        exam: {
+          select: {
+            id: true,
+            title: true,
+            exam_date: true,
+            desc: true,
+          },
+        },
+        index: {
+          select: {
+            id: true,
+            index_no: true,
+          },
+        },
+      },
+      orderBy: {
+        exam: {
+          exam_date: "desc",
+        },
+      },
+    });
+
+    if (marks.length === 0) {
+      return {
+        success: false,
+        error: "No exam results have been released yet for this index number.",
+      };
+    }
+
+    const serializedMarks = JSON.parse(JSON.stringify(marks));
+
+    return {
+      success: true,
+      data: {
+        indexNumber: indexRecord.index_no,
+        marks: serializedMarks,
+      },
+    };
+  } catch (error) {
+    console.error("Error looking up student results:", error);
+    return {
+      success: false,
+      error: "An error occurred while fetching results. Please try again.",
+    };
+  }
+}
+
 export async function deleteExam(examId: number) {
   try {
     await prisma.$transaction(async (tx) => {
@@ -295,13 +349,13 @@ export async function deleteExam(examId: number) {
       });
     });
 
-    revalidatePath('/admin/exam-results');
-    return { success: true, message: 'Exam deleted successfully' };
+    revalidatePath("/admin/exam-results");
+    return { success: true, message: "Exam deleted successfully" };
   } catch (error) {
-    console.error('Error deleting exam:', error);
+    console.error("Error deleting exam:", error);
     return {
       success: false,
-      error: 'Failed to delete exam',
+      error: "Failed to delete exam",
     };
   }
 }

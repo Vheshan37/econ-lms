@@ -10,6 +10,7 @@ import { ModernFeaturesSection } from "@/components/landing/ModernFeaturesSectio
 import { FreeLessonsSection } from "@/components/landing/FreeLessonsSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { FooterSection } from "@/components/landing/FooterSection";
+import { ExamResultsTeaser } from "@/components/landing/exam-results/ExamResultsTeaser";
 import { prisma } from "@/lib/prisma";
 import { getLandingPageContent } from "@/lib/actions/content";
 
@@ -60,6 +61,7 @@ export default async function Home() {
         <HeroSection content={heroData} timestamp={timestamp} />
         <AboutSection content={aboutData} />
         <BannerSection content={bannerData} />
+        <ExamResultsTeaser />
         <CoursesSection years={years} whatsappNumber={process.env.WHATSAPP_NUMBER || ''} />
         <TimetableSection institutes={institutes} />
         <ModernFeaturesSection />
