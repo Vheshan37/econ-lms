@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, BookOpen, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers, Sparkles, TestTube, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen,Sheet, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers, Sparkles, TestTube, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { logout } from "@/lib/actions/auth";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { NotificationBubble } from "@/components/admin/NotificationBubble";
+import { name } from "next/dist/server/ci-info";
 
 export default function AdminLayout({
     children,
@@ -37,6 +38,7 @@ export default function AdminLayout({
         { name: 'Students', href: '/admin/students', icon: Users },
         { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
         { name: 'O/L Resources', href: '/admin/ol-resources', icon: BookOpen },
+        {name:'Exam Results', href:'/admin/exam-results',icon:Sheet},
         { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
         { name: 'Site Content', href: '/admin/content', icon: Layers },
