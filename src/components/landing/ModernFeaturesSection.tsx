@@ -109,10 +109,9 @@ export function ModernFeaturesSection() {
                 </div>
 
                 {/* Student Benefits Section - Redesigned */}
-                <div className="mt-24 relative">
+                {/* <div className="mt-24 relative">
                     <div className="absolute inset-0 bg-yellow-500/5 blur-3xl rounded-full" />
                     <div className="relative bg-black/40 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/10 overflow-hidden">
-                        {/* Inner stroke */}
                         <div className="absolute inset-0 border border-white/5 rounded-3xl pointer-events-none" />
 
                         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -138,9 +137,7 @@ export function ModernFeaturesSection() {
                             </div>
 
                             <div className="relative">
-                                {/* Success Rate Card - Premium Design */}
                                 <div className="aspect-square max-w-md mx-auto relative">
-                                    {/* Rotating borders */}
                                     <div className="absolute inset-0 border border-yellow-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
                                     <div className="absolute inset-4 border border-dashed border-white/10 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
 
@@ -156,7 +153,6 @@ export function ModernFeaturesSection() {
                                         <div className="text-sm text-gray-500 mt-2">{featuresMeta.studentLove?.successRate?.description}</div>
                                     </div>
 
-                                    {/* Floating Badges */}
                                     <div className="absolute top-10 right-0 animate-bounce delay-700">
                                         <div className="bg-black/80 backdrop-blur-md border border-yellow-500/20 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
                                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -172,7 +168,7 @@ export function ModernFeaturesSection() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </section>
     );
