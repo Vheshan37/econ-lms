@@ -245,11 +245,12 @@ model Notification {
 }
 
 model index {
-  id        Int      @id @default(autoincrement())
-  index_no  String // 'payment', 'company', 'system', 'student'
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  marks     marks[]
+  id           Int      @id @default(autoincrement())
+  index_no     String
+  student_name String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  marks        marks[]
 
   @@index([createdAt])
 }

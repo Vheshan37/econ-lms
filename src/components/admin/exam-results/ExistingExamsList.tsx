@@ -8,7 +8,11 @@ import { Input } from '@/components/ui/input';
 interface ExamMark {
   id: number;
   marks: string;
-  index: { id: number; index_no: string };
+  index: {
+    id: number;
+    index_no: string;
+    student_name: string;  
+  };
 }
 
 interface Exam {
@@ -142,8 +146,18 @@ export function ExistingExamsList({
                                 const grade = marksValue >= 75 ? 'A' : marksValue >= 65 ? 'B' : marksValue >= 55 ? 'C' : marksValue >= 35 ? 'S' : 'F';
                                 return (
                                   <tr key={mark.id} onDoubleClick={() => onDoubleClickMark(exam, mark)} className="hover:bg-gray-50 transition-colors cursor-pointer" title="Double‑click to edit this mark">
-                                    <td className="py-2 px-4 text-sm font-medium">{index + 1}{index === 0 && '🥇'}{index === 1 && '🥈'}{index === 2 && '🥉'}</td>
-                                    <td className="py-2 px-4 font-medium text-gray-900"><div className="flex items-center gap-2"><Hash className="w-3 h-3 text-gray-400" />{mark.index.index_no}</div></td>
+                                    <td className="py-2 px-4 text-sm font-medium">{index + 1}{index === 0 && ' 🥇'}{index === 1 && ' 🥈'}{index === 2 && ' 🥉'}</td>
+                                    <td className="py-2 px-4 font-medium text-gray-900">
+                                      <div className="space-y-0.5">
+                                        <div className="flex items-center gap-2">
+                                          <Hash className="w-3 h-3 text-gray-400" />
+                                          {mark.index.index_no}
+                                        </div>
+                                        {mark.index.student_name && (
+                                          <p className="text-xs text-gray-500 ml-5">{mark.index.student_name}</p>
+                                        )}
+                                      </div>
+                                    </td>
                                     <td className="py-2 px-4">
                                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${grade === 'A' ? 'bg-green-100 text-green-800' : grade === 'F' ? 'bg-amber-100 text-amber-800' : 'bg-yellow-100 text-yellow-800'}`}>{marksValue}%</span>
                                     </td>

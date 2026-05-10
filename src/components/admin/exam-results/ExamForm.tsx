@@ -10,15 +10,9 @@ import { EntriesTable } from './EntriesTable';
 interface ExamEntry {
   id: string;
   indexNumber: string;
+  studentName: string;
   marks: number;
 }
-
-// interface Exam {
-//   id: number;
-//   title: string;
-//   exam_date: Date | string;
-//   desc: string;
-// }
 
 interface ExamFormProps {
   continuingExamId: number | null;
@@ -31,6 +25,7 @@ interface ExamFormProps {
   isCheckingExam: boolean;
   duplicateExamId: number | null;
   indexNumber: string;
+  studentName: string;
   marks: string;
   editingEntryId: string | null;
   entries: ExamEntry[];
@@ -42,6 +37,7 @@ interface ExamFormProps {
   onExamDateChange: (value: string) => void;
   onExamDescChange: (value: string) => void;
   onIndexChange: (value: string) => void;
+  onStudentNameChange: (value: string) => void;
   onMarksChange: (value: string) => void;
   onAddOrUpdate: () => void;
   onClearEntry: () => void;
@@ -64,6 +60,7 @@ export function ExamForm({
   isCheckingExam,
   duplicateExamId,
   indexNumber,
+  studentName,
   marks,
   editingEntryId,
   entries,
@@ -75,6 +72,7 @@ export function ExamForm({
   onExamDateChange,
   onExamDescChange,
   onIndexChange,
+  onStudentNameChange,
   onMarksChange,
   onAddOrUpdate,
   onClearEntry,
@@ -94,10 +92,18 @@ export function ExamForm({
         </div>
         <div className="flex-1">
           <h2 className="text-2xl font-bold text-gray-900">
-            {editingExistingMark ? `Update Mark for #${editingExistingMark.indexNumber}` : continuingExamId ? `Continue: ${continuingExamTitle}` : 'Create New Exam'}
+            {editingExistingMark
+              ? `Update Mark for #${editingExistingMark.indexNumber}`
+              : continuingExamId
+              ? `Continue: ${continuingExamTitle}`
+              : 'Create New Exam'}
           </h2>
           <p className="text-sm text-gray-500">
-            {editingExistingMark ? 'Change the marks below and click Update Mark' : continuingExamId ? 'Add more student marks to this existing exam' : 'Enter exam details and add student marks'}
+            {editingExistingMark
+              ? 'Change the marks below and click Update Mark'
+              : continuingExamId
+              ? 'Add more student marks to this existing exam'
+              : 'Enter exam details and add student marks'}
           </p>
         </div>
         {isEditing && (
@@ -111,7 +117,7 @@ export function ExamForm({
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="space-y-2">
-              <Label className="text-gray-700 ml-1">Exam Title</Label>
+              <Label className="text-gray-700 ml-1">Exam Title or Hall</Label>
               <div className="relative">
                 <Input
                   placeholder="e.g., First Term Test 2026"
@@ -148,15 +154,19 @@ export function ExamForm({
       )}
 
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{editingExistingMark ? 'Edit Marks' : continuingExamId ? 'Add More Student Marks' : 'Add Student Marks'}</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          {editingExistingMark ? 'Edit Marks' : continuingExamId ? 'Add More Student Marks' : 'Add Student Marks'}
+        </h3>
         <MarksInputRow
           indexNumber={indexNumber}
+          studentName={studentName}
           marks={marks}
           isBlocked={isBlocked}
           isCheckingIndex={isCheckingIndex}
           indexWarning={editingExistingMark ? '' : indexWarning}
           isEditing={!!(editingEntryId || editingExistingMark)}
           onIndexChange={onIndexChange}
+          onStudentNameChange={onStudentNameChange}
           onMarksChange={onMarksChange}
           onAddOrUpdate={onAddOrUpdate}
           onClear={onClearEntry}

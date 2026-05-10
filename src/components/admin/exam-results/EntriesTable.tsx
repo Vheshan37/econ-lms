@@ -5,6 +5,7 @@ import { Hash, X, AlertTriangle } from 'lucide-react';
 interface ExamEntry {
   id: string;
   indexNumber: string;
+  studentName: string;
   marks: number;
 }
 
@@ -51,7 +52,15 @@ export function EntriesTable({ entries, editingEntryId, title, onDoubleClick, on
                 >
                   <td className="px-6 py-3 text-sm text-gray-500">{index + 1}</td>
                   <td className="px-6 py-3 font-medium text-gray-900">
-                    <div className="flex items-center gap-2"><Hash className="w-3 h-3 text-gray-400" />{entry.indexNumber}</div>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <Hash className="w-3 h-3 text-gray-400" />
+                        {entry.indexNumber}
+                      </div>
+                      {entry.studentName && (
+                        <p className="text-xs text-gray-500 ml-5">{entry.studentName}</p>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-3">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

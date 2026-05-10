@@ -7,17 +7,45 @@ import { ExamHeader } from '@/components/admin/exam-results/ExamHeader';
 import { ExamForm } from '@/components/admin/exam-results/ExamForm';
 import { ExistingExamsList } from '@/components/admin/exam-results/ExistingExamsList';
 
-interface ExamEntry { id: string; indexNumber: string; marks: number; }
-interface ExamMark { id: number; marks: string; index: { id: number; index_no: string; }; }
-interface Exam { id: number; title: string; exam_date: Date | string; desc: string; marks: ExamMark[]; }
+interface ExamEntry {
+  id: string;
+  indexNumber: string;
+  studentName: string;
+  marks: number;
+}
+
+interface ExamMark {
+  id: number;
+  marks: string;
+  index: {
+    id: number;
+    index_no: string;
+    student_name: string;
+  };
+}
+
+interface Exam {
+  id: number;
+  title: string;
+  exam_date: Date | string;
+  desc: string;
+  marks: ExamMark[];
+}
 
 export default function ExamResultsPage() {
   const [continuingExamId, setContinuingExamId] = useState<number | null>(null);
   const [continuingExamTitle, setContinuingExamTitle] = useState('');
-  const [editingExistingMark, setEditingExistingMark] = useState<{ examId: number; markId: number; indexNumber: string; currentMarks: number; } | null>(null);
+  const [editingExistingMark, setEditingExistingMark] = useState<{
+    examId: number;
+    markId: number;
+    indexNumber: string;
+    currentMarks: number;
+    studentName: string;
+  } | null>(null);
   const [examTitle, setExamTitle] = useState('');
   const [examDate, setExamDate] = useState('');
   const [examDesc, setExamDesc] = useState('');
+  const [studentName, setStudentName] = useState('');
   const [indexNumber, setIndexNumber] = useState('');
   const [marks, setMarks] = useState('');
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
@@ -108,6 +136,7 @@ export default function ExamResultsPage() {
 
   const clearEntryForm = () => {
     setIndexNumber('');
+    setStudentName('');
     setMarks('');
     setEditingEntryId(null);
     setIndexWarning('');
@@ -130,7 +159,7 @@ export default function ExamResultsPage() {
 
   const handleAddOrUpdateEntry = () => {
     if (!indexNumber.trim()) { setErrorAlert({ isOpen: true, message: 'Please enter an index number.' }); return; }
-    
+
     if (editingExistingMark) {
       const mark = Number(marks);
       if (isNaN(mark) || mark < 0 || mark > 100) {
@@ -139,7 +168,7 @@ export default function ExamResultsPage() {
       }
       setIsSubmitting(true);
       updateExam(editingExistingMark.examId, {
-        results: [{ indexNumber: indexNumber.trim(), marks: mark }],
+        results: [{ indexNumber: indexNumber.trim(), studentName: studentName.trim(), marks: mark }],
       })
         .then(r => {
           if (r.success) {
@@ -154,7 +183,7 @@ export default function ExamResultsPage() {
         .finally(() => setIsSubmitting(false));
       return;
     }
-    
+
     if (isBlocked) {
       setErrorAlert({ isOpen: true, message: `Student #${indexNumber.trim()} already has marks in this exam.` });
       return;
@@ -168,11 +197,11 @@ export default function ExamResultsPage() {
       setErrorAlert({ isOpen: true, message: 'Please enter a valid mark between 0 and 100.' });
       return;
     }
-    
+
     if (editingEntryId) {
-      setEntries(prev => prev.map(e => e.id === editingEntryId ? { ...e, indexNumber: indexNumber.trim(), marks: mark } : e));
+      setEntries(prev => prev.map(e => e.id === editingEntryId ? { ...e, indexNumber: indexNumber.trim(), studentName: studentName.trim(), marks: mark } : e));
     } else {
-      setEntries(prev => [...prev, { id: Date.now().toString(), indexNumber: indexNumber.trim(), marks: mark }]);
+      setEntries(prev => [...prev, { id: Date.now().toString(), indexNumber: indexNumber.trim(), studentName: studentName.trim(), marks: mark }]);
     }
     clearEntryForm();
   };
@@ -184,32 +213,27 @@ export default function ExamResultsPage() {
       if (examTitleWarning) { setErrorAlert({ isOpen: true, message: 'This exam already exists.' }); return; }
     }
     if (entries.length === 0) { setErrorAlert({ isOpen: true, message: 'Please add at least one student mark.' }); return; }
-    
+
     setIsSubmitting(true);
     try {
       const result = continuingExamId
-        ? await updateExam(continuingExamId, { results: entries.map(e => ({ indexNumber: e.indexNumber, marks: e.marks })) })
+        ? await updateExam(continuingExamId, { results: entries.map(e => ({ indexNumber: e.indexNumber, studentName: e.studentName, marks: e.marks })) })
         : await createExam({
             title: examTitle.trim(),
             examDate,
             description: examDesc.trim(),
-            results: entries.map(e => ({ indexNumber: e.indexNumber, marks: e.marks })),
+            results: entries.map(e => ({ indexNumber: e.indexNumber, studentName: e.studentName, marks: e.marks })),
           });
-      
+
       if (result.success) {
-        setSuccessAlert({
-          isOpen: true,
-          message: continuingExamId
-            ? `Successfully added ${entries.length} mark(s)!`
-            : `Exam "${examTitle.trim()}" created!`,
-        });
+        setSuccessAlert({ isOpen: true, message: continuingExamId ? `Successfully added ${entries.length} mark(s)!` : `Exam "${examTitle.trim()}" created!` });
         clearAll();
         fetchExams();
       } else {
         setErrorAlert({ isOpen: true, message: result.error || 'Failed to save.' });
       }
     } catch (error) {
-      setErrorAlert({ isOpen: true, message: `An unexpected error occurred.${error}` });
+      setErrorAlert({ isOpen: true, message: 'An unexpected error occurred.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -249,6 +273,7 @@ export default function ExamResultsPage() {
   const handleEntryDoubleClick = (entry: ExamEntry) => {
     setEditingEntryId(entry.id);
     setIndexNumber(entry.indexNumber);
+    setStudentName(entry.studentName || '');
     setMarks(entry.marks.toString());
     setIndexWarning('');
     setIsBlocked(false);
@@ -266,8 +291,10 @@ export default function ExamResultsPage() {
       markId: mark.id,
       indexNumber: mark.index.index_no,
       currentMarks: parseFloat(mark.marks),
+      studentName: mark.index.student_name || '',
     });
     setIndexNumber(mark.index.index_no);
+    setStudentName(mark.index.student_name || '');
     setMarks(mark.marks);
     setIndexWarning('');
     setIsBlocked(false);
@@ -293,7 +320,7 @@ export default function ExamResultsPage() {
   return (
     <div className="space-y-8">
       <ExamHeader title="Exam Results Management" subtitle={headerSubtitle} examCount={exams.length} />
-      
+
       <ExamForm
         continuingExamId={continuingExamId}
         continuingExamTitle={continuingExamTitle}
@@ -305,6 +332,7 @@ export default function ExamResultsPage() {
         isCheckingExam={isCheckingExam}
         duplicateExamId={duplicateExamId}
         indexNumber={indexNumber}
+        studentName={studentName}
         marks={marks}
         editingEntryId={editingEntryId}
         entries={entries}
@@ -328,6 +356,7 @@ export default function ExamResultsPage() {
         }}
         onExamDescChange={setExamDesc}
         onIndexChange={handleIndexChange}
+        onStudentNameChange={setStudentName}
         onMarksChange={setMarks}
         onAddOrUpdate={handleAddOrUpdateEntry}
         onClearEntry={clearEntryForm}
@@ -338,7 +367,7 @@ export default function ExamResultsPage() {
         onEntryDoubleClick={handleEntryDoubleClick}
         onRemoveEntry={handleRemoveEntry}
       />
-      
+
       <ExistingExamsList
         exams={exams}
         continuingExamId={continuingExamId}
@@ -348,35 +377,10 @@ export default function ExamResultsPage() {
         onDeleteExam={(id, title) => setDeleteAlert({ isOpen: true, examId: id, examTitle: title })}
         onDoubleClickMark={handleDoubleClickMark}
       />
-      
-      <AlertDialog
-        isOpen={errorAlert.isOpen}
-        onClose={() => setErrorAlert({ isOpen: false, message: '' })}
-        title="Error"
-        description={errorAlert.message}
-        type="error"
-        cancelText="Close"
-      />
-      
-      <AlertDialog
-        isOpen={successAlert.isOpen}
-        onClose={() => setSuccessAlert({ isOpen: false, message: '' })}
-        title="Success"
-        description={successAlert.message}
-        type="success"
-        cancelText="Close"
-      />
-      
-      <AlertDialog
-        isOpen={deleteAlert.isOpen}
-        onClose={() => setDeleteAlert({ isOpen: false, examId: null, examTitle: '' })}
-        onConfirm={handleDeleteConfirm}
-        title="Delete Exam"
-        description={`Are you sure you want to delete "${deleteAlert.examTitle}"?`}
-        type="error"
-        confirmText="Delete"
-        cancelText="Cancel"
-      />
+
+      <AlertDialog isOpen={errorAlert.isOpen} onClose={() => setErrorAlert({ isOpen: false, message: '' })} title="Error" description={errorAlert.message} type="error" cancelText="Close" />
+      <AlertDialog isOpen={successAlert.isOpen} onClose={() => setSuccessAlert({ isOpen: false, message: '' })} title="Success" description={successAlert.message} type="success" cancelText="Close" />
+      <AlertDialog isOpen={deleteAlert.isOpen} onClose={() => setDeleteAlert({ isOpen: false, examId: null, examTitle: '' })} onConfirm={handleDeleteConfirm} title="Delete Exam" description={`Are you sure you want to delete "${deleteAlert.examTitle}"?`} type="error" confirmText="Delete" cancelText="Cancel" />
     </div>
   );
 }

@@ -1,18 +1,20 @@
 'use client';
 
-import { Hash, Plus, CheckCircle, Ban, X, Loader2, AlertTriangle } from 'lucide-react';
+import { Hash, User, Plus, CheckCircle, Ban, X, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 interface MarksInputRowProps {
   indexNumber: string;
+  studentName: string;
   marks: string;
   isBlocked: boolean;
   isCheckingIndex: boolean;
   indexWarning: string;
   isEditing: boolean;
   onIndexChange: (value: string) => void;
+  onStudentNameChange: (value: string) => void;
   onMarksChange: (value: string) => void;
   onAddOrUpdate: () => void;
   onClear: () => void;
@@ -20,12 +22,14 @@ interface MarksInputRowProps {
 
 export function MarksInputRow({
   indexNumber,
+  studentName,
   marks,
   isBlocked,
   isCheckingIndex,
   indexWarning,
   isEditing,
   onIndexChange,
+  onStudentNameChange,
   onMarksChange,
   onAddOrUpdate,
   onClear,
@@ -58,6 +62,22 @@ export function MarksInputRow({
               </div>
             )}
           </div>
+        </div>
+
+        <div className="flex-1 flex flex-col gap-2">
+          <Label className="text-gray-700 ml-1 flex items-center gap-2">
+            <User className="w-4 h-4 text-[#D4AF37]" />
+            Student Name
+          </Label>
+          <Input
+            placeholder="Enter student name"
+            value={studentName}
+            onChange={(e) => onStudentNameChange(e.target.value)}
+            disabled={isBlocked}
+            className={`h-12 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 ${
+              isBlocked ? 'bg-red-50 border-red-300' : 'border-gray-300'
+            } focus:border-[#D4AF37] focus:ring-[#D4AF37]`}
+          />
         </div>
 
         <div className="flex-1 flex flex-col gap-2">

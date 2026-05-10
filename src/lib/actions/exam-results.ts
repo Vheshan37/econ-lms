@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 interface ExamResultInput {
   id?: string;
   indexNumber: string;
+  studentName?: string;
   marks: number;
 }
 
@@ -159,7 +160,15 @@ export async function createExam(data: ExamInput) {
 
           if (!indexRecord) {
             indexRecord = await tx.index.create({
-              data: { index_no: result.indexNumber },
+              data: {
+                index_no: result.indexNumber,
+                student_name: result.studentName || "",
+              },
+            });
+          } else if (result.studentName && result.studentName !== indexRecord.student_name) {
+            indexRecord = await tx.index.update({
+              where: { id: indexRecord.id },
+              data: { student_name: result.studentName },
             });
           }
 
@@ -215,7 +224,15 @@ export async function updateExam(
 
           if (!indexRecord) {
             indexRecord = await tx.index.create({
-              data: { index_no: result.indexNumber },
+              data: {
+                index_no: result.indexNumber,
+                student_name: result.studentName || "",
+              },
+            });
+          } else if (result.studentName && result.studentName !== indexRecord.student_name) {
+            indexRecord = await tx.index.update({
+              where: { id: indexRecord.id },
+              data: { student_name: result.studentName },
             });
           }
 
@@ -280,8 +297,7 @@ export async function lookupStudentResults(indexNumber: string) {
     if (!indexRecord) {
       return {
         success: false,
-        error:
-          "No results found for this index number. Please check and try again.",
+        error: "No results found for this index number. Please check and try again.",
       };
     }
 
@@ -302,6 +318,7 @@ export async function lookupStudentResults(indexNumber: string) {
           select: {
             id: true,
             index_no: true,
+            student_name: true,
           },
         },
       },
@@ -325,6 +342,7 @@ export async function lookupStudentResults(indexNumber: string) {
       success: true,
       data: {
         indexNumber: indexRecord.index_no,
+        studentName: indexRecord.student_name,
         marks: serializedMarks,
       },
     };
