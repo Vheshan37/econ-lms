@@ -31,12 +31,11 @@ export default async function Home() {
   const institutes = await prisma.institute.findMany({
     include: {
       timetables: {
-        orderBy: { day: 'asc' } // Or however you want to sort
+        orderBy: { day: 'asc' }
       }
     }
   });
 
-  // Generate consistent timestamp for hydration matching
   const timestamp = new Date().getTime();
   const heroContent = await getLandingPageContent('hero');
   const heroData = heroContent.success ? heroContent.data : null;
@@ -52,7 +51,6 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
-      {/* Overlay Navbar for the landing page */}
       <div className="absolute top-0 left-0 right-0 z-50">
         <Navbar isHallOfFameEnabled={isHallOfFameEnabled} />
       </div>
