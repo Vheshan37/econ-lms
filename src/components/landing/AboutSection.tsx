@@ -41,9 +41,10 @@ export function AboutSection({ content }: { content?: any }) {
           </h2>
           <span className="text-4xl md:text-5xl text-white mb-6 font-impact">
             Why Choose Quality
-            <span className="text-4xl md:text-6xl font-bold text-white mb-6 font-fm-gemunu">
-              {" "}ම
-            </span>{" "}
+            <span className="font-fm-gemunu text-yellow-500 font-black text-6xl">
+              {" "}
+              ම{" "}
+            </span>
             Econ?
           </span>
           <div className="w-24 h-1 bg-yellow-500 mx-auto rounded-full" />
