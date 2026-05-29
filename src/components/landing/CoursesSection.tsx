@@ -36,7 +36,7 @@ export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
 
   const getColors = (index: number) => {
     const colors = [
-      { gradient: "from-yellow-600 to-yellow-800", bar: "bg-yellow-500", bg: "bg-yellow-500/10", text: "text-yellow-400", border: "border-yellow-500/20", dot: "bg-yellow-400", btnHover: "hover:bg-yellow-500" },
+      { gradient: "from-yellow-600 to-yellow-800", bar: "bg-[#fdf021]", bg: "bg-[#fdf021]/10", text: "text-yellow-400", border: "border-[#fdf021]/20", dot: "bg-yellow-400", btnHover: "hover:bg-[#fdf021]" },
       { gradient: "from-blue-600 to-blue-800", bar: "bg-blue-500", bg: "bg-blue-500/10", text: "text-blue-400", border: "border-blue-500/20", dot: "bg-blue-400", btnHover: "hover:bg-blue-500" },
       { gradient: "from-purple-600 to-purple-800", bar: "bg-purple-500", bg: "bg-purple-500/10", text: "text-purple-400", border: "border-purple-500/20", dot: "bg-purple-400", btnHover: "hover:bg-purple-500" },
     ];
@@ -50,8 +50,8 @@ export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
           <div className="bg-[#111] rounded-2xl border border-gray-800 overflow-hidden">
             <div className="p-5 border-b border-gray-800 bg-gradient-to-r from-gray-900 to-[#111]">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-yellow-500" />
+                <div className="h-10 w-10 rounded-xl bg-[#fdf021]/10 border border-[#fdf021]/20 flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-[#fdf021]" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Available Batches</h3>
@@ -135,7 +135,7 @@ export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
 
                             <Button
                               size="lg"
-                              className="w-full bg-white hover:bg-yellow-500 text-black hover:text-black font-semibold rounded-xl transition-all mt-3"
+                              className="w-full bg-white hover:bg-[#fdf021] text-black hover:text-black font-semibold rounded-xl transition-all mt-3"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleEnroll(year.year);
@@ -153,7 +153,7 @@ export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
               })}
             </div>
 
-            <div className="p-4 bg-yellow-500/5 border-t border-yellow-500/10">
+            <div className="p-4 bg-[#fdf021]/5 border-t border-[#fdf021]/10">
               <p className="text-xs text-gray-500 text-center">
                 💡 All classes include comprehensive study materials and past paper discussions
               </p>
@@ -169,7 +169,7 @@ export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
             return (
               <div
                 key={year.id}
-                className="group relative bg-[#111] rounded-2xl overflow-hidden border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/5 flex flex-col"
+                className="group relative bg-[#111] rounded-2xl overflow-hidden border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/5 flex flex-col"
               >
                 <div className={`h-2 bg-gradient-to-r ${colors.gradient} flex-shrink-0`} />
 
@@ -185,7 +185,7 @@ export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
                         </p>
                       </div>
                       <div className={`p-2.5 rounded-xl ${colors.bg} ${colors.border} border`}>
-                        <Calendar className="h-5 w-5 text-yellow-500" />
+                        <Calendar className="h-5 w-5 text-[#fdf021]" />
                       </div>
                     </div>
 
@@ -224,7 +224,7 @@ export function CoursesSection({ years, whatsappNumber }: CoursesSectionProps) {
                   <div className="pt-4 border-t border-gray-800 mt-auto">
                     <Button
                       size="lg"
-                      className={`w-full bg-white hover:bg-yellow-500 text-black hover:text-black font-semibold rounded-xl transition-all duration-300`}
+                      className={`w-full bg-white hover:bg-[#fdf021] text-black hover:text-black font-semibold rounded-xl transition-all duration-300`}
                       onClick={() => handleEnroll(year.year)}
                     >
                       Enroll Now

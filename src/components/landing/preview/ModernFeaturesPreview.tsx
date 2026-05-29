@@ -22,13 +22,13 @@ export function ModernFeaturesPreview({ data }: ModernFeaturesPreviewProps) {
     return (
         <section className="py-24 bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white relative overflow-hidden">
             {/* Abstract Background Elements */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-[120px]" />
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-[120px]" />
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center mb-16">
                     <div className="inline-block">
-                        <span className="text-yellow-500 font-semibold text-sm uppercase tracking-wider mb-4 block">
+                        <span className="text-[#fdf021] font-semibold text-sm uppercase tracking-wider mb-4 block">
                             Why Choose Us
                         </span>
                         <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
@@ -81,7 +81,7 @@ export function ModernFeaturesPreview({ data }: ModernFeaturesPreviewProps) {
                 )}
 
                 {/* Student Benefits Section */}
-                <div className="mt-20 bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-3xl p-12 border border-yellow-500/20">
+                <div className="mt-20 bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-3xl p-12 border border-[#fdf021]/20">
                     <div className="grid md:grid-cols-2 gap-8 items-center">
                         <div>
                             <h3 className="text-3xl font-bold text-white mb-4">
@@ -99,7 +99,7 @@ export function ModernFeaturesPreview({ data }: ModernFeaturesPreviewProps) {
                                     "Competitive environment that motivates excellence"
                                 ].map((benefit, idx) => (
                                     <li key={idx} className="flex items-start gap-3 text-gray-300">
-                                        <div className="min-w-[24px] min-h-[24px] rounded-full bg-yellow-500 flex items-center justify-center mt-0.5">
+                                        <div className="min-w-[24px] min-h-[24px] rounded-full bg-[#fdf021] flex items-center justify-center mt-0.5">
                                             <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                             </svg>
@@ -118,7 +118,7 @@ export function ModernFeaturesPreview({ data }: ModernFeaturesPreviewProps) {
                                 </div>
                             </div>
                             {/* Floating Elements */}
-                            <div className="absolute -top-4 -right-4 w-24 h-24 bg-yellow-500/20 rounded-full blur-2xl animate-pulse" />
+                            <div className="absolute -top-4 -right-4 w-24 h-24 bg-[#fdf021]/20 rounded-full blur-2xl animate-pulse" />
                             <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: "1s" }} />
                         </div>
                     </div>

@@ -179,7 +179,7 @@ export default function DevDashboardClient() {
                         { label: 'OL Subjects', value: analytics?.counts?.olSubjects, icon: Terminal, color: 'text-rose-500' },
                         { label: 'Institutes', value: analytics?.counts?.institutes, icon: Database, color: 'text-amber-500' },
                         { label: 'Timetables', value: analytics?.counts?.timetables, icon: Activity, color: 'text-indigo-500' },
-                        { label: 'Hall of Fame', value: analytics?.counts?.hallOfFame, icon: Shield, color: 'text-yellow-500' },
+                        { label: 'Hall of Fame', value: analytics?.counts?.hallOfFame, icon: Shield, color: 'text-[#fdf021]' },
                         { label: 'System Alerts', value: analytics?.counts?.notifications, icon: XCircle, color: 'text-red-500' },
                     ].map((stat, i) => (
                         <div key={i} className="bg-[#0A0A0A] border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-colors group">

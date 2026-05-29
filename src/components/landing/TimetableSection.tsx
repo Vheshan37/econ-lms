@@ -31,8 +31,8 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center mb-10 md:mb-16">
-                    <div className="inline-flex items-center justify-center p-3 bg-yellow-500/10 rounded-full mb-6">
-                        <Calendar className="h-8 w-8 text-yellow-500" />
+                    <div className="inline-flex items-center justify-center p-3 bg-[#fdf021]/10 rounded-full mb-6">
+                        <Calendar className="h-8 w-8 text-[#fdf021]" />
                     </div>
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
                         Class Timetable
@@ -46,8 +46,8 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
                     <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl border border-gray-800 overflow-hidden">
                         <div className="p-5 border-b border-gray-800 bg-gradient-to-r from-gray-900 to-[#111]">
                             <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
-                                    <Calendar className="w-5 h-5 text-yellow-500" />
+                                <div className="h-10 w-10 rounded-xl bg-[#fdf021]/10 border border-[#fdf021]/20 flex items-center justify-center">
+                                    <Calendar className="w-5 h-5 text-[#fdf021]" />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-white">Class Schedule</h3>
@@ -61,7 +61,7 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
                                 <div key={institute.id} className="p-5">
                                     <div className="mb-4">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <MapPin className="w-4 h-4 text-yellow-500" />
+                                            <MapPin className="w-4 h-4 text-[#fdf021]" />
                                             <span className="text-xs text-gray-400">{institute.location}</span>
                                         </div>
                                         <h3 className="text-lg font-bold text-white">{institute.name}</h3>
@@ -72,14 +72,14 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
                                         {institute.timetables.map((classItem) => (
                                             <div
                                                 key={classItem.id}
-                                                className="bg-black/40 rounded-xl px-4 py-3 border border-gray-800 hover:border-yellow-500/30 transition-colors flex-shrink-0"
+                                                className="bg-black/40 rounded-xl px-4 py-3 border border-gray-800 hover:border-[#fdf021]/30 transition-colors flex-shrink-0"
                                             >
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full" />
+                                                    <div className="w-1.5 h-1.5 bg-[#fdf021] rounded-full" />
                                                     <span className="font-semibold text-white text-sm">
                                                         {classItem.day}
                                                     </span>
-                                                    <span className="text-[10px] bg-yellow-500/10 text-yellow-500 px-1.5 py-0.5 rounded-full">
+                                                    <span className="text-[10px] bg-[#fdf021]/10 text-[#fdf021] px-1.5 py-0.5 rounded-full">
                                                         {classItem.academicYear}
                                                     </span>
                                                 </div>
@@ -98,7 +98,7 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
                             ))}
                         </div>
 
-                        <div className="p-4 bg-yellow-500/5 border-t border-yellow-500/10">
+                        <div className="p-4 bg-[#fdf021]/5 border-t border-[#fdf021]/10">
                             <p className="text-xs text-gray-500 text-center">
                                 💡 New institutes are opening soon. Stay tuned!
                             </p>
@@ -110,11 +110,11 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
                     {institutes.map((institute) => (
                         <div
                             key={institute.id}
-                            className="group relative bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)]"
+                            className="group relative bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)]"
                         >
                             <div className="mb-6">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <MapPin className="w-5 h-5 text-yellow-500" />
+                                    <MapPin className="w-5 h-5 text-[#fdf021]" />
                                     <span className="text-sm text-gray-400">{institute.location}</span>
                                 </div>
                                 <h3 className="text-2xl font-bold text-white mb-1">{institute.name}</h3>
@@ -129,10 +129,10 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
                                     >
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-2 h-2 bg-yellow-500 rounded-full" />
+                                                <div className="w-2 h-2 bg-[#fdf021] rounded-full" />
                                                 <span className="font-semibold text-white">{classItem.day}</span>
                                             </div>
-                                            <span className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded-full">
+                                            <span className="text-xs bg-[#fdf021]/10 text-[#fdf021] px-2 py-1 rounded-full">
                                                 {classItem.academicYear}
                                             </span>
                                         </div>

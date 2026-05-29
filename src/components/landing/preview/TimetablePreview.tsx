@@ -32,8 +32,8 @@ export function TimetablePreview({ data }: TimetablePreviewProps) {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center mb-16">
-                    <div className="inline-flex items-center justify-center p-3 bg-yellow-500/10 rounded-full mb-6">
-                        <Calendar className="h-8 w-8 text-yellow-500" />
+                    <div className="inline-flex items-center justify-center p-3 bg-[#fdf021]/10 rounded-full mb-6">
+                        <Calendar className="h-8 w-8 text-[#fdf021]" />
                     </div>
                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
                         Class Timetable
@@ -47,12 +47,12 @@ export function TimetablePreview({ data }: TimetablePreviewProps) {
                     {data.map((institute, idx) => (
                         <div
                             key={institute.id || idx}
-                            className="group relative bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)]"
+                            className="group relative bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)]"
                         >
                             {/* Institute Header */}
                             <div className="mb-6">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <MapPin className="w-5 h-5 text-yellow-500" />
+                                    <MapPin className="w-5 h-5 text-[#fdf021]" />
                                     <span className="text-sm text-gray-400">{institute.location}</span>
                                 </div>
                                 <h3 className="text-2xl font-bold text-white mb-1">{institute.name}</h3>
@@ -68,10 +68,10 @@ export function TimetablePreview({ data }: TimetablePreviewProps) {
                                     >
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-2 h-2 bg-yellow-500 rounded-full" />
+                                                <div className="w-2 h-2 bg-[#fdf021] rounded-full" />
                                                 <span className="font-semibold text-white">{classItem.day}</span>
                                             </div>
-                                            <span className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded-full">
+                                            <span className="text-xs bg-[#fdf021]/10 text-[#fdf021] px-2 py-1 rounded-full">
                                                 {classItem.academicYear}
                                             </span>
                                         </div>

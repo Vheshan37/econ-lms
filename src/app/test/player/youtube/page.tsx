@@ -5,7 +5,7 @@ import { CustomYouTubePlayer } from "@/components/ui/CustomYouTubePlayer";
 export default function TestYouTubePlayerPage() {
     return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-8">
-            <h1 className="text-3xl font-bold mb-8 text-yellow-500">Custom YouTube Player Test</h1>
+            <h1 className="text-3xl font-bold mb-8 text-[#fdf021]">Custom YouTube Player Test</h1>
 
             <div className="w-full max-w-4xl aspect-video border border-gray-800 rounded-xl overflow-hidden shadow-2xl">
                 {/* Sample Video: "Nature Beautiful Short Video 4k" */}

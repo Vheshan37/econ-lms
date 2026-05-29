@@ -16,18 +16,18 @@ export function ExamResultsTeaser() {
           transition={{ duration: 0.6 }}
           className="max-w-2xl mx-auto text-center"
         >
-          <div className="inline-flex items-center justify-center p-3 bg-yellow-500/10 rounded-full mb-6">
-            <Award className="h-8 w-8 text-yellow-500" />
+          <div className="inline-flex items-center justify-center p-3 bg-[#fdf021]/10 rounded-full mb-6">
+            <Award className="h-8 w-8 text-[#fdf021]" />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Check Your <span className="text-yellow-500">Exam Results</span>
+            Check Your <span className="text-[#fdf021]">Exam Results</span>
           </h2>
           <p className="text-gray-400 text-lg mb-8">
             Stay updated with your latest test scores and track your academic
             progress in real time.
           </p>
           <Link href="/exam-results">
-            <button className="group inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-full transition-all shadow-lg shadow-yellow-500/20">
+            <button className="group inline-flex items-center gap-2 bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold px-8 py-4 rounded-full transition-all shadow-lg shadow-yellow-500/20">
               View Results
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>

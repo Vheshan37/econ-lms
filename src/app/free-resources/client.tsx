@@ -110,7 +110,7 @@ function ResourceModal({ resource, onClose }: { resource: Resource; onClose: () 
             return (
                 <div className="w-full h-full bg-white relative group">
                     <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-0">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#fdf021]"></div>
                     </div>
                     <iframe
                         key={resource.id} // Force re-render on new resource
@@ -199,7 +199,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
     });
 
     return (
-        <div className="min-h-screen bg-black text-white font-sans selection:bg-yellow-500/30 selection:text-yellow-200">
+        <div className="min-h-screen bg-black text-white font-sans selection:bg-[#fdf021]/30 selection:text-yellow-200">
             <Navbar isHallOfFameEnabled={isHallOfFameEnabled} />
 
             <main className="pb-24">
@@ -212,7 +212,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
                         >
-                            <span className="inline-block px-4 py-1.5 bg-yellow-500/10 text-yellow-500 rounded-full text-sm font-bold tracking-wide mb-6 uppercase border border-yellow-500/20">
+                            <span className="inline-block px-4 py-1.5 bg-[#fdf021]/10 text-[#fdf021] rounded-full text-sm font-bold tracking-wide mb-6 uppercase border border-[#fdf021]/20">
                                 Knowledge Hub
                             </span>
                             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
@@ -230,7 +230,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                                 <input
                                     type="text"
                                     placeholder="Search for topics, papers, or lessons..."
-                                    className="w-full h-14 pl-12 pr-4 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-500/50 transition-all shadow-lg shadow-black/50"
+                                    className="w-full h-14 pl-12 pr-4 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 focus:border-[#fdf021]/50 transition-all shadow-lg shadow-black/50"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -248,7 +248,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${activeTab === tab.id
-                                        ? "bg-yellow-500 text-black border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.3)] scale-105"
+                                        ? "bg-[#fdf021] text-black border-[#fdf021] shadow-[0_0_20px_rgba(234,179,8,0.3)] scale-105"
                                         : "bg-white/5 text-gray-400 border-white/5 hover:bg-white/10 hover:text-white hover:border-white/10"
                                         }`}
                                 >
@@ -270,7 +270,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                             <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
                             <button
                                 onClick={() => { setSearchQuery(""); setActiveTab("all"); }}
-                                className="mt-6 text-yellow-500 font-semibold hover:underline"
+                                className="mt-6 text-[#fdf021] font-semibold hover:underline"
                             >
                                 Clear all filters
                             </button>
@@ -294,7 +294,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                                             exit={{ opacity: 0, scale: 0.9 }}
                                             transition={{ duration: 0.3 }}
                                             onClick={() => handleResourceClick(resource)}
-                                            className="group bg-[#111] rounded-2xl border border-white/5 overflow-hidden hover:border-yellow-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-900/10 cursor-pointer"
+                                            className="group bg-[#111] rounded-2xl border border-white/5 overflow-hidden hover:border-[#fdf021]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-900/10 cursor-pointer"
                                         >
                                             <div className="p-6">
                                                 <div className="flex justify-between items-start mb-6">
@@ -306,7 +306,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                                                     </span>
                                                 </div>
 
-                                                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-yellow-500 transition-colors line-clamp-2">
+                                                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#fdf021] transition-colors line-clamp-2">
                                                     {resource.title}
                                                 </h3>
                                                 <p className="text-gray-400 text-sm mb-6 line-clamp-2 leading-relaxed">
@@ -318,7 +318,7 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
                                                         <span>👁 {resource.views || 0} views</span>
                                                     </div>
 
-                                                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                                                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-[#fdf021] group-hover:text-black transition-colors">
                                                         {resource.type === 'PAST_PAPER' || resource.type === 'PDF' ? (
                                                             <Download className="w-4 h-4" />
                                                         ) : resource.type === 'VIDEO' ? (
@@ -339,14 +339,14 @@ export default function FreeResourcesClient({ isHallOfFameEnabled, initialResour
 
                 <section className="container mx-auto px-4 mt-12 mb-12">
                     <div className="bg-linear-to-br from-gray-900 to-black rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden border border-white/10">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#fdf021]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
                         <h2 className="text-2xl md:text-3xl font-bold mb-4 relative z-10">Ready to dive deeper?</h2>
                         <p className="text-gray-400 mb-8 max-w-xl mx-auto relative z-10">
                             Join our full course to access hundreds of premium lessons, live classes, and personalized support.
                         </p>
-                        <Link href="/#courses" className="inline-flex items-center justify-center px-8 py-3 bg-yellow-500 text-black font-bold rounded-xl hover:bg-yellow-400 transition-colors relative z-10">
+                        <Link href="/#courses" className="inline-flex items-center justify-center px-8 py-3 bg-[#fdf021] text-black font-bold rounded-xl hover:bg-[#f0e51f] transition-colors relative z-10">
                             View Premium Courses
                         </Link>
                     </div>

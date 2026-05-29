@@ -37,7 +37,7 @@ export function AlertDialog({
             case 'error':
                 return <XCircle className="w-6 h-6 text-red-500" />;
             case 'warning':
-                return <AlertCircle className="w-6 h-6 text-yellow-500" />;
+                return <AlertCircle className="w-6 h-6 text-[#fdf021]" />;
             default:
                 return <AlertCircle className="w-6 h-6 text-[#D4AF37]" />;
         }

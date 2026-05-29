@@ -107,7 +107,7 @@ export function AboutPageClient({
 
       <section className="relative pt-40 pb-24 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-          <div className="absolute -top-20 -right-20 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl" />
+          <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 -left-20 w-96 h-96 bg-blue-900/10 rounded-full blur-3xl" />
         </div>
 
@@ -117,16 +117,16 @@ export function AboutPageClient({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-500 text-sm font-medium uppercase tracking-wider mb-6">
-              <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-full text-[#fdf021] text-sm font-medium uppercase tracking-wider mb-6">
+              <span className="w-2 h-2 bg-[#fdf021] rounded-full animate-pulse" />
               Sri Lanka&apos;s Premier Economics Education Platform
             </span>
             <h1 className="text-5xl md:text-7xl leading-tight font-impact">
               <span>About Quality </span>
-              <span className="font-fm-gemunu text-yellow-500 font-black text-6xl md:text-8xl">
+              <span className="font-fm-gemunu text-[#fdf021] font-black text-6xl md:text-8xl">
                 ම{" "}
               </span>
-              <span className="text-yellow-500 font-black">Econ</span>
+              <span className="text-[#fdf021] font-black">Econ</span>
             </h1>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
               Empowering A/L students with comprehensive Economics education
@@ -148,7 +148,7 @@ export function AboutPageClient({
                 className="space-y-6"
               >
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                  Quality <span className="text-yellow-500">Economics</span>{" "}
+                  Quality <span className="text-[#fdf021]">Economics</span>{" "}
                   Education
                 </h2>
                 <p className="text-gray-400 text-lg leading-relaxed">
@@ -161,19 +161,19 @@ export function AboutPageClient({
                       key={idx}
                       className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5"
                     >
-                      <CheckCircle2 className="text-yellow-500 h-5 w-5 shrink-0" />
+                      <CheckCircle2 className="text-[#fdf021] h-5 w-5 shrink-0" />
                       <span className="text-gray-300 text-sm">{feature}</span>
                     </div>
                   ))}
                 </div>
 
                 {about.quote && (
-                  <div className="mt-8 p-6 bg-gradient-to-r from-gray-900 to-black rounded-xl border-l-4 border-yellow-500">
+                  <div className="mt-8 p-6 bg-gradient-to-r from-gray-900 to-black rounded-xl border-l-4 border-[#fdf021]">
                     <p className="italic text-gray-300 text-lg">
                       {about.quote}
                     </p>
                     {about.quoteAuthor && (
-                      <p className="mt-3 font-bold text-yellow-500">
+                      <p className="mt-3 font-bold text-[#fdf021]">
                         {about.quoteAuthor}
                       </p>
                     )}
@@ -198,7 +198,7 @@ export function AboutPageClient({
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                   <div className="absolute bottom-6 left-6 right-6">
                     <div className="bg-black/60 backdrop-blur-md rounded-xl p-4 border border-white/10">
-                      <p className="text-yellow-500 font-bold text-lg">
+                      <p className="text-[#fdf021] font-bold text-lg">
                         {teacherData.name}
                       </p>
                       <p className="text-gray-300 text-sm">
@@ -208,7 +208,7 @@ export function AboutPageClient({
                   </div>
                 </div>
 
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-yellow-500/10 rounded-full animate-[spin_60s_linear_infinite] pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-[#fdf021]/10 rounded-full animate-[spin_60s_linear_infinite] pointer-events-none" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-dashed border-gray-800 rounded-full animate-[spin_80s_linear_infinite_reverse] pointer-events-none" />
               </motion.div>
             </div>
@@ -219,7 +219,7 @@ export function AboutPageClient({
       <section className="py-16 overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="relative">
-            <div className="absolute inset-0 bg-yellow-500/5 blur-3xl rounded-full" />
+            <div className="absolute inset-0 bg-[#fdf021]/5 blur-3xl rounded-full" />
             <div className="relative bg-black/40 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/10 overflow-hidden">
               <div className="absolute inset-0 border border-white/5 rounded-3xl pointer-events-none" />
 
@@ -227,7 +227,7 @@ export function AboutPageClient({
                 <div>
                   <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">
                     Why Students{" "}
-                    <span className="text-yellow-500">Love Us</span>
+                    <span className="text-[#fdf021]">Love Us</span>
                   </h3>
                   <p className="text-gray-400 mb-8 text-lg leading-relaxed">
                     {studentLove.description}
@@ -237,11 +237,11 @@ export function AboutPageClient({
                       (benefit: string, idx: number) => (
                         <li
                           key={idx}
-                          className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5 hover:border-yellow-500/30 hover:bg-white/10 transition-all duration-300 group"
+                          className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5 hover:border-[#fdf021]/30 hover:bg-white/10 transition-all duration-300 group"
                         >
-                          <div className="w-8 h-8 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 group-hover:bg-yellow-500 group-hover:text-black transition-colors flex-shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-[#fdf021]/10 flex items-center justify-center border border-[#fdf021]/20 group-hover:bg-[#fdf021] group-hover:text-black transition-colors flex-shrink-0">
                             <svg
-                              className="w-4 h-4 text-yellow-500 group-hover:text-black transition-colors"
+                              className="w-4 h-4 text-[#fdf021] group-hover:text-black transition-colors"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -265,7 +265,7 @@ export function AboutPageClient({
 
                 <div className="relative overflow-hidden">
                   <div className="aspect-square max-w-md mx-auto relative">
-                    <div className="absolute inset-0 border border-yellow-500/10 rounded-full animate-[spin_20s_linear_infinite]" />
+                    <div className="absolute inset-0 border border-[#fdf021]/10 rounded-full animate-[spin_20s_linear_infinite]" />
                     <div className="absolute inset-4 border border-dashed border-white/10 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
 
                     <div className="absolute inset-8 rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/10 flex flex-col items-center justify-center p-8 text-center shadow-2xl shadow-yellow-900/20">
@@ -274,7 +274,7 @@ export function AboutPageClient({
                       </div>
                       <div className="text-7xl font-bold text-white mb-2 tracking-tighter">
                         {studentLove.successRate.value}
-                        <span className="text-yellow-500 text-4xl">
+                        <span className="text-[#fdf021] text-4xl">
                           {studentLove.successRate.suffix}
                         </span>
                       </div>
@@ -287,7 +287,7 @@ export function AboutPageClient({
                     </div>
 
                     <div className="absolute top-10 right-0 animate-bounce">
-                      <div className="bg-black/80 backdrop-blur-md border border-yellow-500/20 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+                      <div className="bg-black/80 backdrop-blur-md border border-[#fdf021]/20 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                         <span className="text-xs font-bold text-white">
                           Top Results
@@ -299,7 +299,7 @@ export function AboutPageClient({
                       style={{ animationDelay: "500ms" }}
                     >
                       <div className="bg-black/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-lg shadow-lg">
-                        <span className="text-xs font-bold text-yellow-500">
+                        <span className="text-xs font-bold text-[#fdf021]">
                           Best In Island
                         </span>
                       </div>
@@ -330,9 +330,9 @@ export function AboutPageClient({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-6 text-center hover:border-yellow-500/30 transition-all group"
+                className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-6 text-center hover:border-[#fdf021]/30 transition-all group"
               >
-                <p className="text-3xl md:text-4xl font-bold text-yellow-500 mb-2 group-hover:scale-110 transition-transform">
+                <p className="text-3xl md:text-4xl font-bold text-[#fdf021] mb-2 group-hover:scale-110 transition-transform">
                   {stat.value}
                 </p>
                 <p className="text-sm text-gray-400">{stat.label}</p>
@@ -350,10 +350,10 @@ export function AboutPageClient({
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all"
+              className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-8 hover:border-[#fdf021]/30 transition-all"
             >
-              <div className="h-12 w-12 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-5">
-                <Target className="w-6 h-6 text-yellow-500" />
+              <div className="h-12 w-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center mb-5">
+                <Target className="w-6 h-6 text-[#fdf021]" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Our Mission</h3>
               <p className="text-gray-400 leading-relaxed">
@@ -367,10 +367,10 @@ export function AboutPageClient({
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all"
+              className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-8 hover:border-[#fdf021]/30 transition-all"
             >
-              <div className="h-12 w-12 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-5">
-                <Star className="w-6 h-6 text-yellow-500" />
+              <div className="h-12 w-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center mb-5">
+                <Star className="w-6 h-6 text-[#fdf021]" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Our Vision</h3>
               <p className="text-gray-400 leading-relaxed">

@@ -33,8 +33,8 @@ export function HeroPreview({ data }: HeroPreviewProps) {
                     transition={{ duration: 0.8 }}
                     className="space-y-8"
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-500 text-sm font-medium tracking-wider uppercase">
-                        <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-full text-[#fdf021] text-sm font-medium tracking-wider uppercase">
+                        <span className="w-2 h-2 bg-[#fdf021] rounded-full animate-pulse" />
                         #1 Economics Class in Sri Lanka
                     </div>
 
@@ -51,12 +51,12 @@ export function HeroPreview({ data }: HeroPreviewProps) {
 
                     <div className="flex flex-col sm:flex-row gap-4">
                         <Link href="/login">
-                            <Button size="lg" className="h-14 px-8 text-lg bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-full w-full sm:w-auto">
+                            <Button size="lg" className="h-14 px-8 text-lg bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold rounded-full w-full sm:w-auto">
                                 Join Class Now
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         </Link>
-                        <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-gray-700/50 bg-gray-900/50 text-gray-300 hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-500 rounded-full w-full sm:w-auto transition-all duration-300">
+                        <Button variant="outline" size="lg" className="h-14 px-8 text-lg border-gray-700/50 bg-gray-900/50 text-gray-300 hover:border-[#fdf021] hover:bg-[#fdf021]/10 hover:text-[#fdf021] rounded-full w-full sm:w-auto transition-all duration-300">
                             <Play className="mr-2 h-5 w-5" />
                             Watch Intro
                         </Button>
@@ -94,7 +94,7 @@ export function HeroPreview({ data }: HeroPreviewProps) {
 
                             <div className="absolute bottom-8 left-8 right-8">
                                 <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10">
-                                    <p className="text-yellow-500 font-bold text-lg">{data.teacherName || "Krishan Kashthuriarachchi"}</p>
+                                    <p className="text-[#fdf021] font-bold text-lg">{data.teacherName || "Krishan Kashthuriarachchi"}</p>
                                     <p className="text-gray-300 text-sm">{data.teacherTitle || "B.Sc. Economics (Sp.) University of Colombo"}</p>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@ export function HeroPreview({ data }: HeroPreviewProps) {
                     </div>
 
                     {/* Decorative Elements */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-yellow-500/10 rounded-full animate-[spin_60s_linear_infinite]" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-[#fdf021]/10 rounded-full animate-[spin_60s_linear_infinite]" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-dashed border-gray-800 rounded-full animate-[spin_80s_linear_infinite_reverse]" />
                 </motion.div>
             </div>

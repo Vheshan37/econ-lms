@@ -54,13 +54,13 @@ export function FooterSection() {
                         </p>
                         <div className="flex gap-4">
                             {footerContent.socialLinks.facebook && (
-                                <Link href={footerContent.socialLinks.facebook} className="text-gray-400 hover:text-yellow-500 transition-colors"><Facebook className="h-5 w-5" /></Link>
+                                <Link href={footerContent.socialLinks.facebook} className="text-gray-400 hover:text-[#fdf021] transition-colors"><Facebook className="h-5 w-5" /></Link>
                             )}
                             {footerContent.socialLinks.telegram && (
-                                <Link href={footerContent.socialLinks.telegram} className="text-gray-400 hover:text-yellow-500 transition-colors"><Instagram className="h-5 w-5" /></Link>
+                                <Link href={footerContent.socialLinks.telegram} className="text-gray-400 hover:text-[#fdf021] transition-colors"><Instagram className="h-5 w-5" /></Link>
                             )}
                             {footerContent.socialLinks.youtube && (
-                                <Link href={footerContent.socialLinks.youtube} className="text-gray-400 hover:text-yellow-500 transition-colors"><Youtube className="h-5 w-5" /></Link>
+                                <Link href={footerContent.socialLinks.youtube} className="text-gray-400 hover:text-[#fdf021] transition-colors"><Youtube className="h-5 w-5" /></Link>
                             )}
                         </div>
                     </div>
@@ -69,7 +69,7 @@ export function FooterSection() {
                         <h4 className="font-bold text-lg mb-6">Quick Links</h4>
                         <ul className="space-y-4 text-sm text-gray-400">
                             {footerContent.quickLinks?.map((link, idx) => (
-                                <li key={idx}><Link href={link.url} className="hover:text-yellow-500 transition-colors">{link.title}</Link></li>
+                                <li key={idx}><Link href={link.url} className="hover:text-[#fdf021] transition-colors">{link.title}</Link></li>
                             ))}
                         </ul>
                     </div>
@@ -88,15 +88,15 @@ export function FooterSection() {
                         <h4 className="font-bold text-lg mb-6">Contact Us</h4>
                         <ul className="space-y-4 text-sm text-gray-400">
                             <li className="flex items-start gap-3">
-                                <MapPin className="h-5 w-5 text-yellow-500 shrink-0" />
+                                <MapPin className="h-5 w-5 text-[#fdf021] shrink-0" />
                                 <span>{footerContent.contactInfo.address}</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Phone className="h-5 w-5 text-yellow-500 shrink-0" />
+                                <Phone className="h-5 w-5 text-[#fdf021] shrink-0" />
                                 <span>{footerContent.contactInfo.phone}</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <Mail className="h-5 w-5 text-yellow-500 shrink-0" />
+                                <Mail className="h-5 w-5 text-[#fdf021] shrink-0" />
                                 <span>{footerContent.contactInfo.email}</span>
                             </li>
                         </ul>

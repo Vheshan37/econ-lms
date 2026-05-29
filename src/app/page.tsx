@@ -50,7 +50,7 @@ export default async function Home() {
   const isHallOfFameEnabled = hallOfFameContent.success && hallOfFameContent.data ? hallOfFameContent.data.isEnabled !== false : true;
 
   return (
-    <div className="min-h-screen bg-black font-sans selection:bg-yellow-500 selection:text-black">
+    <div className="min-h-screen bg-black font-sans selection:bg-[#fdf021] selection:text-black">
       <div className="absolute top-0 left-0 right-0 z-50">
         <Navbar isHallOfFameEnabled={isHallOfFameEnabled} />
       </div>
@@ -58,10 +58,10 @@ export default async function Home() {
       <main>
         <HeroSection content={heroData} timestamp={timestamp} />
         <AboutSection content={aboutData} />
-        <ExamResultsTeaser />
-        <CoursesSection years={years} whatsappNumber={process.env.WHATSAPP_NUMBER || ''} />
+        {/* <ExamResultsTeaser /> */}
+        {/* <CoursesSection years={years} whatsappNumber={process.env.WHATSAPP_NUMBER || ''} /> */}
         <TimetableSection institutes={institutes} />
-        <ModernFeaturesSection />
+        {/* <ModernFeaturesSection /> */}
         {/* <FreeLessonsSection /> */}
         <BannerSection content={bannerData} />
         <TestimonialsSection />

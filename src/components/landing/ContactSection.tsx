@@ -70,7 +70,7 @@ export function ContactSection() {
             </div>
 
             {/* Gradient Blobs */}
-            <div className="absolute top-1/4 left-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-[120px]" />
+            <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-[120px]" />
             <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
 
             <div className="container mx-auto px-4 relative z-10">
@@ -104,7 +104,7 @@ export function ContactSection() {
                                     required
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                                    className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-[#fdf021] focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                                     placeholder="Enter your full name"
                                 />
                             </div>
@@ -122,7 +122,7 @@ export function ContactSection() {
                                         required
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-[#fdf021] focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                                         placeholder="your@email.com"
                                     />
                                 </div>
@@ -137,7 +137,7 @@ export function ContactSection() {
                                         required
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-[#fdf021] focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                                         placeholder="+94 XX XXX XXXX"
                                     />
                                 </div>
@@ -154,7 +154,7 @@ export function ContactSection() {
                                         name="institute"
                                         value={formData.institute}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white focus:border-[#fdf021] focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                                     >
                                         <option value="">Select Institute</option>
                                         {contactContent.locations?.map((loc: any, idx: number) => (
@@ -178,7 +178,7 @@ export function ContactSection() {
                                         name="year"
                                         value={formData.year}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                                        className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white focus:border-[#fdf021] focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                                     >
                                         <option value="">Select Year</option>
                                         <option value="year12">Year 12</option>
@@ -198,7 +198,7 @@ export function ContactSection() {
                                     rows={4}
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all resize-none"
+                                    className="w-full px-4 py-3 bg-black/40 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-[#fdf021] focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all resize-none"
                                     placeholder="Tell us about your goals or any questions you have..."
                                 />
                             </div>
@@ -232,14 +232,14 @@ export function ContactSection() {
                         {/* Contact Information Cards */}
                         <div className="space-y-4">
                             {contactContent.phone && (
-                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 group">
                                     <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <Phone className="w-6 h-6 text-yellow-500" />
+                                        <div className="w-12 h-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Phone className="w-6 h-6 text-[#fdf021]" />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-white mb-1">Phone</h4>
-                                            <a href={`tel:${contactContent.phone}`} className="text-gray-400 hover:text-yellow-500 transition-colors">
+                                            <a href={`tel:${contactContent.phone}`} className="text-gray-400 hover:text-[#fdf021] transition-colors">
                                                 {contactContent.phone}
                                             </a>
                                         </div>
@@ -248,14 +248,14 @@ export function ContactSection() {
                             )}
 
                             {contactContent.email && (
-                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 group">
                                     <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <Mail className="w-6 h-6 text-yellow-500" />
+                                        <div className="w-12 h-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <Mail className="w-6 h-6 text-[#fdf021]" />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-white mb-1">Email</h4>
-                                            <a href={`mailto:${contactContent.email}`} className="text-gray-400 hover:text-yellow-500 transition-colors">
+                                            <a href={`mailto:${contactContent.email}`} className="text-gray-400 hover:text-[#fdf021] transition-colors">
                                                 {contactContent.email}
                                             </a>
                                         </div>
@@ -264,10 +264,10 @@ export function ContactSection() {
                             )}
 
                             {contactContent.address && (
-                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                                <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 group">
                                     <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <MapPin className="w-6 h-6 text-yellow-500" />
+                                        <div className="w-12 h-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <MapPin className="w-6 h-6 text-[#fdf021]" />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-white mb-1">Main Office</h4>
@@ -291,7 +291,7 @@ export function ContactSection() {
                 </div>
 
                 {/* Office Hours */}
-                <div className="mt-16 max-w-3xl mx-auto bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-2xl p-8 border border-yellow-500/20">
+                <div className="mt-16 max-w-3xl mx-auto bg-gradient-to-r from-yellow-500/10 via-yellow-600/5 to-transparent rounded-2xl p-8 border border-[#fdf021]/20">
                     <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Office Hours</h3>
                     <div className="grid md:grid-cols-2 gap-4 text-center">
                         <div>

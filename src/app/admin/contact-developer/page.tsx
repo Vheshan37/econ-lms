@@ -59,7 +59,7 @@ export default function ContactDeveloperPage() {
     };
 
     const requestTypes = [
-        { id: 'improvement', label: 'Feature Improvement', icon: Sparkles, color: 'text-yellow-500' },
+        { id: 'improvement', label: 'Feature Improvement', icon: Sparkles, color: 'text-[#fdf021]' },
         { id: 'issue', label: 'Technical Issue', icon: Bug, color: 'text-red-500' },
         { id: 'request', label: 'New Request', icon: MessageSquare, color: 'text-blue-500' },
         { id: 'update', label: 'Content Update', icon: Wrench, color: 'text-green-500' },

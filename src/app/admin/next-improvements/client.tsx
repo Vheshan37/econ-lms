@@ -273,7 +273,7 @@ const upcomingFeatures = [
         category: "Advanced Features",
         icon: Sparkles,
         color: "from-yellow-500 via-yellow-600 to-orange-600",
-        bgGlow: "bg-yellow-500/20",
+        bgGlow: "bg-[#fdf021]/20",
         features: [
             {
                 title: "AI Teaching Assistant",
@@ -299,7 +299,7 @@ const upcomingFeatures = [
 
 const impactColors = {
     High: "bg-gradient-to-r from-red-500/20 to-red-600/20 text-red-400 border-red-500/40",
-    Medium: "bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 text-yellow-400 border-yellow-500/40",
+    Medium: "bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 text-yellow-400 border-[#fdf021]/40",
     Low: "bg-gradient-to-r from-green-500/20 to-green-600/20 text-green-400 border-green-500/40"
 };
 

@@ -651,7 +651,7 @@ export default function ContentManagementPage() {
                                             </p>
                                         )}
                                         <p className="text-[10px] text-gray-500 flex items-center gap-1">
-                                            <span className="w-1 h-1 rounded-full bg-yellow-500"></span>
+                                            <span className="w-1 h-1 rounded-full bg-[#fdf021]"></span>
                                             Max size: 50MB. Supports MP4, WebM.
                                         </p>
                                     </div>
@@ -1127,7 +1127,7 @@ export default function ContentManagementPage() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="mb-2 flex text-yellow-500 text-xs">
+                                <div className="mb-2 flex text-[#fdf021] text-xs">
                                     {'★'.repeat(testimonial.rating || 5)}
                                 </div>
                                 <p className="text-gray-600 text-sm italic mb-2">&quot;{testimonial.content}&quot;</p>

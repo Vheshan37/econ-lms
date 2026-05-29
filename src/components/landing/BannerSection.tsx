@@ -177,13 +177,13 @@ export function BannerSection({ content }: { content?: any[] }) {
                     {/* Navigation Buttons */}
                     <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between items-center px-4 md:px-8 z-20 pointer-events-none">
                         <button
-                            className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-yellow-500 hover:text-black transition-all pointer-events-auto opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-0 duration-300"
+                            className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-[#fdf021] hover:text-black transition-all pointer-events-auto opacity-0 group-hover:opacity-100 transform -translate-x-full group-hover:translate-x-0 duration-300"
                             onClick={prevSlide}
                         >
                             <ChevronLeft className="w-6 h-6" />
                         </button>
                         <button
-                            className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-yellow-500 hover:text-black transition-all pointer-events-auto opacity-0 group-hover:opacity-100 transform translate-x-full group-hover:translate-x-0 duration-300"
+                            className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-[#fdf021] hover:text-black transition-all pointer-events-auto opacity-0 group-hover:opacity-100 transform translate-x-full group-hover:translate-x-0 duration-300"
                             onClick={nextSlide}
                         >
                             <ChevronRight className="w-6 h-6" />
@@ -200,7 +200,7 @@ export function BannerSection({ content }: { content?: any[] }) {
                                     setCurrentIndex(index);
                                 }}
                                 className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex
-                                    ? "bg-yellow-500 w-8"
+                                    ? "bg-[#fdf021] w-8"
                                     : "bg-white/30 hover:bg-white/50"
                                     }`}
                             />

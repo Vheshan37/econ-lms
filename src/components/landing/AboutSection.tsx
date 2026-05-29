@@ -36,18 +36,18 @@ export function AboutSection({ content }: { content?: any }) {
     <section className="py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-yellow-500 font-medium tracking-widest uppercase text-sm mb-4">
+          <h2 className="text-[#fdf021] font-medium tracking-widest uppercase text-sm mb-4">
             {data.sectionSubtitle}
           </h2>
           <span className="text-4xl md:text-5xl text-white mb-6 font-impact">
             Why Choose Quality
-            <span className="font-fm-gemunu text-yellow-500 font-black text-6xl">
+            <span className="font-fm-gemunu text-[#fdf021] font-black text-6xl">
               {" "}
               ම{" "}
             </span>
             Econ?
           </span>
-          <div className="w-24 h-1 bg-yellow-500 mx-auto rounded-full" />
+          <div className="w-24 h-1 bg-[#fdf021] mx-auto rounded-full" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -85,7 +85,7 @@ export function AboutSection({ content }: { content?: any }) {
                 <>
                   {/* Video Placeholder */}
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-colors z-10">
-                    <div className="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center pl-1 shadow-[0_0_30px_rgba(234,179,8,0.4)] group-hover:scale-110 transition-transform">
+                    <div className="w-20 h-20 bg-[#fdf021] rounded-full flex items-center justify-center pl-1 shadow-[0_0_30px_rgba(234,179,8,0.4)] group-hover:scale-110 transition-transform">
                       <div className="w-0 h-0 border-t-10 border-t-transparent border-l-18 border-l-black border-b-10 border-b-transparent" />
                     </div>
                   </div>
@@ -118,7 +118,7 @@ export function AboutSection({ content }: { content?: any }) {
               {[...Array(24)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-1.5 h-1.5 bg-yellow-500 rounded-full"
+                  className="w-1.5 h-1.5 bg-[#fdf021] rounded-full"
                 />
               ))}
             </div>
@@ -136,7 +136,7 @@ export function AboutSection({ content }: { content?: any }) {
                 data.secondarySubtitle
               ) : (
                 <>
-                  සංකීර්ණතාවය <span className="text-yellow-500">සරල බවට</span>{" "}
+                  සංකීර්ණතාවය <span className="text-[#fdf021]">සරල බවට</span>{" "}
                   පරිවර්තනය කිරීම
                 </>
               )}
@@ -148,19 +148,19 @@ export function AboutSection({ content }: { content?: any }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {features.map((feature: string, index: number) => (
                 <div key={index} className="flex items-center gap-3">
-                  <CheckCircle2 className="text-yellow-500 h-5 w-5 shrink-0" />
+                  <CheckCircle2 className="text-[#fdf021] h-5 w-5 shrink-0" />
                   <span className="text-gray-300">{feature}</span>
                 </div>
               ))}
             </div>
 
             <div className="pt-6">
-              <div className="p-6 bg-gray-900 rounded-xl border-l-4 border-yellow-500">
+              <div className="p-6 bg-gray-900 rounded-xl border-l-4 border-[#fdf021]">
                 <p className="italic text-gray-300">
                   <span>&quot;</span>ආර්ථික විද්‍යාව සෑම තැනකම පවතී, එය තේරුම්
                   ගැනීම ලෝකය තේරුම් ගැනීමයි<span>&quot;</span>
                 </p>
-                <p className="mt-4 font-bold text-yellow-500">
+                <p className="mt-4 font-bold text-[#fdf021]">
                   - Krishan Kasthuriarachchi
                 </p>
               </div>

@@ -195,7 +195,7 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
                     onClick={handleStart}
                 >
                     <div className="absolute inset-0 bg-black/30 group-hover/mask:bg-black/40 transition-colors" />
-                    <button className="relative z-50 p-6 rounded-full bg-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.5)] group-hover/mask:scale-110 transition-transform duration-300">
+                    <button className="relative z-50 p-6 rounded-full bg-[#fdf021] shadow-[0_0_30px_rgba(234,179,8,0.5)] group-hover/mask:scale-110 transition-transform duration-300">
                         <Play className="w-12 h-12 text-black fill-current ml-2" />
                     </button>
                 </div>
@@ -243,7 +243,7 @@ export function CustomYouTubePlayer({ videoId, className }: CustomYouTubePlayerP
                     {/* Play/Pause */}
                     <button
                         onClick={togglePlay}
-                        className="p-4 rounded-full bg-yellow-500 hover:bg-yellow-400 text-black shadow-[0_0_20px_rgba(234,179,8,0.5)] transition-transform hover:scale-110 active:scale-95"
+                        className="p-4 rounded-full bg-[#fdf021] hover:bg-[#f0e51f] text-black shadow-[0_0_20px_rgba(234,179,8,0.5)] transition-transform hover:scale-110 active:scale-95"
                         disabled={!isReady}
                     >
                         {isPlaying ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current ml-1" />}

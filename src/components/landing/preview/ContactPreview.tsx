@@ -31,7 +31,7 @@ export function ContactPreview({ data }: ContactPreviewProps) {
             </div>
 
             {/* Gradient Blobs */}
-            <div className="absolute top-1/4 left-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-[120px]" />
+            <div className="absolute top-1/4 left-0 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-[120px]" />
             <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
 
             <div className="container mx-auto px-4 relative z-10">
@@ -55,7 +55,7 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                                     <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
                                     <Input
                                         placeholder="Your name"
-                                        className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-yellow-500"
+                                        className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-[#fdf021]"
                                     />
                                 </div>
                                 <div>
@@ -63,7 +63,7 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                                     <Input
                                         type="email"
                                         placeholder="your@email.com"
-                                        className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-yellow-500"
+                                        className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-[#fdf021]"
                                     />
                                 </div>
                             </div>
@@ -71,7 +71,7 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                                 <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
                                 <Input
                                     placeholder="+94 XX XXX XXXX"
-                                    className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-yellow-500"
+                                    className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-[#fdf021]"
                                 />
                             </div>
                             <div>
@@ -79,7 +79,7 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                                 <Textarea
                                     placeholder="Tell us about your goals..."
                                     rows={5}
-                                    className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-yellow-500"
+                                    className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-[#fdf021]"
                                 />
                             </div>
                             <Button
@@ -98,10 +98,10 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                     {/* Contact Info */}
                     <div className="space-y-6">
                         {/* Contact Cards */}
-                        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 group">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:bg-yellow-500/20 transition-colors">
-                                    <Mail className="w-6 h-6 text-yellow-500" />
+                                <div className="w-12 h-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center group-hover:bg-[#fdf021]/20 transition-colors">
+                                    <Mail className="w-6 h-6 text-[#fdf021]" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-white mb-1">Email</h4>
@@ -110,10 +110,10 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 group">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:bg-yellow-500/20 transition-colors">
-                                    <Phone className="w-6 h-6 text-yellow-500" />
+                                <div className="w-12 h-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center group-hover:bg-[#fdf021]/20 transition-colors">
+                                    <Phone className="w-6 h-6 text-[#fdf021]" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-white mb-1">Phone</h4>
@@ -122,10 +122,10 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-yellow-500/50 transition-all duration-300 group">
+                        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 group">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center group-hover:bg-yellow-500/20 transition-colors">
-                                    <MapPin className="w-6 h-6 text-yellow-500" />
+                                <div className="w-12 h-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center group-hover:bg-[#fdf021]/20 transition-colors">
+                                    <MapPin className="w-6 h-6 text-[#fdf021]" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-white mb-1">Address</h4>
@@ -138,8 +138,8 @@ export function ContactPreview({ data }: ContactPreviewProps) {
                         {data.officeHours.title && (
                             <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center">
-                                        <Clock className="w-6 h-6 text-yellow-500" />
+                                    <div className="w-12 h-12 rounded-xl bg-[#fdf021]/10 flex items-center justify-center">
+                                        <Clock className="w-6 h-6 text-[#fdf021]" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-white mb-3">{data.officeHours.title}</h4>

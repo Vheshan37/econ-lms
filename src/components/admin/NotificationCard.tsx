@@ -39,7 +39,7 @@ export function NotificationCard({ notification, onUpdate }: NotificationCardPro
             case "system": return <AlertTriangle className="w-5 h-5 text-red-500" />;
             case "student": return <UserPlus className="w-5 h-5 text-purple-500" />;
             case "update": return <RefreshCcw className="w-5 h-5 text-orange-500" />;
-            case "improvement": return <Sparkles className="w-5 h-5 text-yellow-500" />;
+            case "improvement": return <Sparkles className="w-5 h-5 text-[#fdf021]" />;
             default: return <Bell className="w-5 h-5 text-gray-500" />;
         }
     };

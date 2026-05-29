@@ -26,7 +26,7 @@ export function PreviewModal({ isOpen, onClose, title, children }: PreviewModalP
                         <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-md border-b border-gray-800">
                             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                                    <div className="w-2 h-2 bg-[#fdf021] rounded-full animate-pulse" />
                                     <h2 className="text-xl font-bold text-white">Preview: {title}</h2>
                                 </div>
                                 <Button

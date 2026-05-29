@@ -54,7 +54,6 @@ export async function sendLoginOTP(email: string, userType: 'student' | 'teacher
 
         // Check if user exists
         let user;
-        let userName;
 
         if (userType === 'student') {
             user = await prisma.student.findUnique({
@@ -76,7 +75,7 @@ export async function sendLoginOTP(email: string, userType: 'student' | 'teacher
             return { success: false, error: 'Account is inactive. Please contact administrator.' };
         }
 
-        userName = user.name;
+        const userName = user.name;
 
         // Check rate limiting (max 3 OTPs per 15 minutes)
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);

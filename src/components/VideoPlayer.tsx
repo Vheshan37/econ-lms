@@ -166,7 +166,7 @@ export function VideoPlayer({ videoUrl, isOpen, onClose, title, showWarning = tr
 
                         {/* Warning Message */}
                         {showWarning && (
-                            <div className="mt-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
+                            <div className="mt-4 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-xl p-4">
                                 <p className="text-yellow-200 text-sm text-center">
                                     ⚠️ This video is for enrolled students only. Sharing is prohibited.
                                 </p>

@@ -91,7 +91,7 @@ export function ExamResultsClient() {
       <Navbar />
       <section className="relative pt-32 pb-12 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-          <div className="absolute -top-20 -right-20 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl" />
+          <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 -left-20 w-96 h-96 bg-blue-900/10 rounded-full blur-3xl" />
         </div>
 
@@ -101,11 +101,11 @@ export function ExamResultsClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center justify-center p-4 bg-yellow-500/10 rounded-full mb-6">
-              <Shield className="h-8 w-8 text-yellow-500" />
+            <div className="inline-flex items-center justify-center p-4 bg-[#fdf021]/10 rounded-full mb-6">
+              <Shield className="h-8 w-8 text-[#fdf021]" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Exam <span className="text-yellow-500">Results</span>
+              Exam <span className="text-[#fdf021]">Results</span>
             </h1>
             <p className="text-gray-400 max-w-xl mx-auto text-base">
               Enter your index number to view your exam results securely.
@@ -125,7 +125,7 @@ export function ExamResultsClient() {
             >
               <div className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-8 shadow-2xl">
                 <div className="text-center mb-6">
-                  <FormInput className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+                  <FormInput className="w-12 h-12 text-[#fdf021] mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-white">
                     Check Your Results
                   </h3>
@@ -145,14 +145,14 @@ export function ExamResultsClient() {
                         setError("");
                       }}
                       onKeyDown={handleKeyDown}
-                      className="pl-12 h-14 rounded-xl bg-black border-white/10 text-white text-lg placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500/20"
+                      className="pl-12 h-14 rounded-xl bg-black border-white/10 text-white text-lg placeholder:text-gray-500 focus:border-[#fdf021] focus:ring-yellow-500/20"
                     />
                   </div>
 
                   <Button
                     onClick={handleSearch}
                     disabled={isSearching}
-                    className="w-full h-14 bg-yellow-500 hover:bg-yellow-400 text-black font-bold text-lg rounded-xl shadow-lg shadow-yellow-500/20 transition-all"
+                    className="w-full h-14 bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold text-lg rounded-xl shadow-lg shadow-yellow-500/20 transition-all"
                   >
                     {isSearching ? (
                       <>
@@ -201,8 +201,8 @@ export function ExamResultsClient() {
                 <div className="sticky top-24 space-y-5">
                   <div className="bg-gradient-to-br from-gray-900 to-black border border-white/10 rounded-2xl p-6">
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="h-10 w-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
-                        <Search className="w-5 h-5 text-yellow-500" />
+                      <div className="h-10 w-10 rounded-xl bg-[#fdf021]/10 flex items-center justify-center">
+                        <Search className="w-5 h-5 text-[#fdf021]" />
                       </div>
                       <div>
                         <h3 className="font-bold text-white">Search Result</h3>
@@ -223,7 +223,7 @@ export function ExamResultsClient() {
                             setError("");
                           }}
                           onKeyDown={handleKeyDown}
-                          className="pl-10 h-11 rounded-xl bg-black border-white/10 text-white text-sm placeholder:text-gray-500 focus:border-yellow-500 focus:ring-yellow-500/20"
+                          className="pl-10 h-11 rounded-xl bg-black border-white/10 text-white text-sm placeholder:text-gray-500 focus:border-[#fdf021] focus:ring-yellow-500/20"
                         />
                       </div>
 
@@ -231,7 +231,7 @@ export function ExamResultsClient() {
                         <Button
                           onClick={handleSearch}
                           disabled={isSearching}
-                          className="flex-1 h-11 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-xl text-sm"
+                          className="flex-1 h-11 bg-[#fdf021] hover:bg-[#f0e51f] text-black font-semibold rounded-xl text-sm"
                         >
                           {isSearching ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -250,10 +250,10 @@ export function ExamResultsClient() {
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-yellow-500/5 to-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6">
+                  <div className="bg-gradient-to-br from-yellow-500/5 to-yellow-500/10 border border-[#fdf021]/20 rounded-2xl p-6">
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="h-10 w-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
-                        <Award className="w-5 h-5 text-yellow-500" />
+                      <div className="h-10 w-10 rounded-xl bg-[#fdf021]/20 flex items-center justify-center">
+                        <Award className="w-5 h-5 text-[#fdf021]" />
                       </div>
                       <div>
                         <h3 className="font-bold text-white">Student Info</h3>
@@ -265,7 +265,7 @@ export function ExamResultsClient() {
 
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5">
-                        <Hash className="w-4 h-4 text-yellow-500" />
+                        <Hash className="w-4 h-4 text-[#fdf021]" />
                         <div>
                           <p className="text-xs text-gray-500">Index Number</p>
                           <p className="text-white font-bold">
@@ -275,7 +275,7 @@ export function ExamResultsClient() {
                       </div>
 
                       <div className="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5">
-                        <FileSearch className="w-4 h-4 text-yellow-500" />
+                        <FileSearch className="w-4 h-4 text-[#fdf021]" />
                         <div>
                           <p className="text-xs text-gray-500">Exams Found</p>
                           <p className="text-white font-bold">
@@ -286,7 +286,7 @@ export function ExamResultsClient() {
 
                       {studentResult.marks.length > 0 && (
                         <div className="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5">
-                          <Award className="w-4 h-4 text-yellow-500" />
+                          <Award className="w-4 h-4 text-[#fdf021]" />
                           <div>
                             <p className="text-xs text-gray-500">
                               Best Grade (
@@ -304,7 +304,7 @@ export function ExamResultsClient() {
                                 : ""}
                               )
                             </p>
-                            <p className="text-yellow-500 font-bold">
+                            <p className="text-[#fdf021] font-bold">
                               {(() => {
                                 const best = parseFloat(
                                   studentResult.marks.sort(
@@ -348,7 +348,7 @@ export function ExamResultsClient() {
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="text-xl font-bold text-white">
                     Exam Results{" "}
-                    <span className="text-yellow-500 text-base font-normal">
+                    <span className="text-[#fdf021] text-base font-normal">
                       ({studentResult.marks.length})
                     </span>
                   </h2>
@@ -383,7 +383,7 @@ export function ExamResultsClient() {
                             key={mark.id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="border border-white/10 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900 to-black hover:border-yellow-500/30 transition-all"
+                            className="border border-white/10 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900 to-black hover:border-[#fdf021]/30 transition-all"
                           >
                             <button
                               onClick={() =>
@@ -400,7 +400,7 @@ export function ExamResultsClient() {
                                       ? "bg-green-500/10"
                                       : grade === "F"
                                         ? "bg-amber-500/10"
-                                        : "bg-yellow-500/10"
+                                        : "bg-[#fdf021]/10"
                                   }`}
                                 >
                                   <Award
@@ -432,7 +432,7 @@ export function ExamResultsClient() {
                                 </div>
                               </div>
                               <div className="flex items-center gap-4">
-                                <span className="text-2xl font-bold text-yellow-500">
+                                <span className="text-2xl font-bold text-[#fdf021]">
                                   {marksValue}%
                                 </span>
                                 <span
@@ -478,7 +478,7 @@ export function ExamResultsClient() {
                                         <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
                                           Grade Achieved
                                         </p>
-                                        <p className="text-xl font-bold text-yellow-500">
+                                        <p className="text-xl font-bold text-[#fdf021]">
                                           {grade}
                                         </p>
                                       </div>
@@ -530,7 +530,7 @@ export function ExamResultsClient() {
                                           65-74
                                         </div>
                                         <div
-                                          className={`p-1.5 rounded-md ${grade === "C" ? "bg-yellow-500 text-black font-bold" : "bg-gray-800 text-gray-400"}`}
+                                          className={`p-1.5 rounded-md ${grade === "C" ? "bg-[#fdf021] text-black font-bold" : "bg-gray-800 text-gray-400"}`}
                                         >
                                           C<br />
                                           55-64

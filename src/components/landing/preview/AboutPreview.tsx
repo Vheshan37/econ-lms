@@ -21,13 +21,13 @@ export function AboutPreview({ data }: AboutPreviewProps) {
         <section className="py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-yellow-500 font-medium tracking-widest uppercase text-sm mb-4">
+                    <h2 className="text-[#fdf021] font-medium tracking-widest uppercase text-sm mb-4">
                         {data.sectionSubtitle || "About The Mentor"}
                     </h2>
                     <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
                         {data.sectionTitle || "Why Choose Quality Econ?"}
                     </h3>
-                    <div className="w-24 h-1 bg-yellow-500 mx-auto rounded-full" />
+                    <div className="w-24 h-1 bg-[#fdf021] mx-auto rounded-full" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -44,7 +44,7 @@ export function AboutPreview({ data }: AboutPreviewProps) {
                             ) : (
                                 <>
                                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-colors">
-                                        <div className="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center pl-1 shadow-[0_0_30px_rgba(234,179,8,0.4)] group-hover:scale-110 transition-transform">
+                                        <div className="w-20 h-20 bg-[#fdf021] rounded-full flex items-center justify-center pl-1 shadow-[0_0_30px_rgba(234,179,8,0.4)] group-hover:scale-110 transition-transform">
                                             <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-black border-b-[10px] border-b-transparent" />
                                         </div>
                                     </div>
@@ -59,7 +59,7 @@ export function AboutPreview({ data }: AboutPreviewProps) {
                         {/* Decorative dots */}
                         <div className="absolute -bottom-8 -left-8 grid grid-cols-6 gap-2 opacity-20">
                             {[...Array(24)].map((_, i) => (
-                                <div key={i} className="w-1.5 h-1.5 bg-yellow-500 rounded-full" />
+                                <div key={i} className="w-1.5 h-1.5 bg-[#fdf021] rounded-full" />
                             ))}
                         </div>
                     </motion.div>
@@ -81,7 +81,7 @@ export function AboutPreview({ data }: AboutPreviewProps) {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {(data.features.length > 0 ? data.features : ["Comprehensive Theory Coverage", "Past Paper Analysis", "Real-world Economic Examples", "Personalized Attention"]).map((feature, index) => (
                                 <div key={index} className="flex items-center gap-3">
-                                    <CheckCircle2 className="text-yellow-500 h-5 w-5 flex-shrink-0" />
+                                    <CheckCircle2 className="text-[#fdf021] h-5 w-5 flex-shrink-0" />
                                     <span className="text-gray-300">{feature}</span>
                                 </div>
                             ))}
@@ -89,11 +89,11 @@ export function AboutPreview({ data }: AboutPreviewProps) {
 
                         {(data.quote || data.quoteAuthor) && (
                             <div className="pt-6">
-                                <div className="p-6 bg-gray-900 rounded-xl border-l-4 border-yellow-500">
+                                <div className="p-6 bg-gray-900 rounded-xl border-l-4 border-[#fdf021]">
                                     <p className="italic text-gray-300">
                                         {data.quote || "\"ආර්ථික විද්‍යාව සෑම තැනකම පවතී, එය තේරුම් ගැනීම ලෝකය තේරුම් ගැනීමයි.\""}
                                     </p>
-                                    <p className="mt-4 font-bold text-yellow-500">
+                                    <p className="mt-4 font-bold text-[#fdf021]">
                                         - {data.quoteAuthor || "Krishan Kasthuriarachchi"}
                                     </p>
                                 </div>

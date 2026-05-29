@@ -27,8 +27,8 @@ export function TestimonialsPreview({ data, stats }: TestimonialsPreviewProps) {
             <div className="container mx-auto px-4 relative z-10">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <div className="inline-flex items-center justify-center p-3 bg-yellow-500/10 rounded-full mb-6">
-                        <Quote className="h-8 w-8 text-yellow-500" />
+                    <div className="inline-flex items-center justify-center p-3 bg-[#fdf021]/10 rounded-full mb-6">
+                        <Quote className="h-8 w-8 text-[#fdf021]" />
                     </div>
                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
                         What Our Students Say
@@ -43,17 +43,17 @@ export function TestimonialsPreview({ data, stats }: TestimonialsPreviewProps) {
                     {data.map((testimonial, idx) => (
                         <div
                             key={testimonial.id || idx}
-                            className="group relative bg-gradient-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-yellow-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)] hover:-translate-y-2"
+                            className="group relative bg-gradient-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)] hover:-translate-y-2"
                         >
                             {/* Quote Icon */}
                             <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Quote className="w-16 h-16 text-yellow-500" />
+                                <Quote className="w-16 h-16 text-[#fdf021]" />
                             </div>
 
                             {/* Rating Stars */}
                             <div className="flex gap-1 mb-4">
                                 {[...Array(testimonial.rating)].map((_, i) => (
-                                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                                    <Star key={i} className="w-4 h-4 text-[#fdf021] fill-yellow-500" />
                                 ))}
                             </div>
 
@@ -64,7 +64,7 @@ export function TestimonialsPreview({ data, stats }: TestimonialsPreviewProps) {
 
                             {/* Student Info */}
                             <div className="flex items-center gap-4 pt-6 border-t border-gray-800">
-                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-yellow-500 transition-colors">
+                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-700 group-hover:border-[#fdf021] transition-colors">
                                     {testimonial.imageUrl ? (
                                         <img src={testimonial.imageUrl} alt={testimonial.name} className="w-full h-full object-cover" />
                                     ) : (
@@ -75,7 +75,7 @@ export function TestimonialsPreview({ data, stats }: TestimonialsPreviewProps) {
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="font-bold text-white text-sm">{testimonial.name}</h4>
-                                    <p className="text-xs text-yellow-500 font-semibold">{testimonial.role}</p>
+                                    <p className="text-xs text-[#fdf021] font-semibold">{testimonial.role}</p>
                                     <p className="text-xs text-gray-500 mt-0.5">{testimonial.institute}</p>
                                 </div>
                             </div>

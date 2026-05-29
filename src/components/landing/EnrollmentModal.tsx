@@ -73,7 +73,7 @@ export function EnrollmentModal({ isOpen, onClose, batch, whatsappNumber }: Enro
                                         </p>
                                         <Button
                                             onClick={onClose}
-                                            className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-12 rounded-xl"
+                                            className="w-full bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold h-12 rounded-xl"
                                         >
                                             Close
                                         </Button>
@@ -83,7 +83,7 @@ export function EnrollmentModal({ isOpen, onClose, batch, whatsappNumber }: Enro
                                         <div className="text-center mb-8">
                                             <h2 className="text-2xl font-bold text-white mb-2">Start Your Journey</h2>
                                             <p className="text-gray-400 text-sm">
-                                                Enrollment for <span className="text-yellow-500 font-semibold">{batch || "A/L Economics"}</span>
+                                                Enrollment for <span className="text-[#fdf021] font-semibold">{batch || "A/L Economics"}</span>
                                             </p>
                                         </div>
 
@@ -117,7 +117,7 @@ export function EnrollmentModal({ isOpen, onClose, batch, whatsappNumber }: Enro
                                                     name="name"
                                                     type="text"
                                                     placeholder="Enter your name"
-                                                    className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors"
+                                                    className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-[#fdf021]/50 transition-colors"
                                                 />
                                             </div>
 
@@ -128,7 +128,7 @@ export function EnrollmentModal({ isOpen, onClose, batch, whatsappNumber }: Enro
                                                     name="phone"
                                                     type="tel"
                                                     placeholder="07X XXXXXXX"
-                                                    className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors"
+                                                    className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-[#fdf021]/50 transition-colors"
                                                 />
                                             </div>
 
@@ -139,7 +139,7 @@ export function EnrollmentModal({ isOpen, onClose, batch, whatsappNumber }: Enro
                                                     name="email"
                                                     type="email"
                                                     placeholder="hello@example.com"
-                                                    className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors"
+                                                    className="w-full h-12 rounded-xl bg-black/50 border border-gray-800 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-[#fdf021]/50 transition-colors"
                                                 />
                                             </div>
 
@@ -149,14 +149,14 @@ export function EnrollmentModal({ isOpen, onClose, batch, whatsappNumber }: Enro
                                                     name="message"
                                                     rows={3}
                                                     placeholder="Any specific questions or notes?"
-                                                    className="w-full rounded-xl bg-black/50 border border-gray-800 p-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 transition-colors resize-none"
+                                                    className="w-full rounded-xl bg-black/50 border border-gray-800 p-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-[#fdf021]/50 transition-colors resize-none"
                                                 />
                                             </div>
 
                                             <div className="pt-4">
                                                 <Button
                                                     type="submit"
-                                                    className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold h-12 rounded-xl text-lg shadow-lg shadow-yellow-500/20"
+                                                    className="w-full bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold h-12 rounded-xl text-lg shadow-lg shadow-yellow-500/20"
                                                 >
                                                     Send via WhatsApp
                                                 </Button>
