@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, BookOpen,Sheet, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers, Sparkles, TestTube, MessageSquare } from "lucide-react";
+import { LayoutDashboard,HandCoins, Users, BookOpen,Sheet, LogOut, Trophy, Clock, ChevronLeft, ChevronRight, Layers, Sparkles, TestTube, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { logout } from "@/lib/actions/auth";
@@ -39,9 +39,9 @@ export default function AdminLayout({
         { name: 'Free Resources', href: '/admin/resources', icon: BookOpen },
         { name: 'O/L Resources', href: '/admin/ol-resources', icon: BookOpen },
         {name:'Exam Results', href:'/admin/exam-results',icon:Sheet},
+        { name: 'Class Payments', href: '/admin/class-fees', icon:HandCoins },
         { name: 'Timetable', href: '/admin/timetable', icon: Clock },
-        { name: 'Hall of Fame', href: '/admin/hall-of-fame', icon: Trophy },
-        { name: 'Site Content', href: '/admin/content', icon: Layers },
+        // { name: 'Site Content', href: '/admin/content', icon: Layers },
     ];
 
     const bottomNavigation = [
