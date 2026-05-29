@@ -403,13 +403,13 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
                     rel="noopener noreferrer"
                     className="p-2 rounded-full bg-white/5 border border-white/10 text-[#fdf021] transition-all duration-300 hover:scale-110 hover:bg-white/10"
                     style={{
-                      color: '#eab308',
+                      color: '#fdf021',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color = social.brandColor;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#eab308';
+                      e.currentTarget.style.color = '#fdf021';
                     }}
                     aria-label={social.name}
                   >

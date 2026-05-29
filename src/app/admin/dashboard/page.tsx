@@ -216,7 +216,7 @@ export default function AdminDashboard() {
                                     <BookOpen className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-900">Upload Resource</h3>
+                                    <h3 className="font-bold text-gray-900">Free Resource</h3>
                                     <p className="text-xs text-gray-500">Share materials</p>
                                 </div>
                             </div>

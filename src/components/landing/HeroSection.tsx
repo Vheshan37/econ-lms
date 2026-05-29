@@ -72,7 +72,7 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
             <Link href="/login">
               <Button
                 size="lg"
-                className="h-14 px-8 text-lg bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold rounded-full w-full sm:w-auto"
+                className="cursor-pointer h-14 px-8 text-lg bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold rounded-full w-full sm:w-auto"
               >
                 Login
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -82,19 +82,18 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
               <Button
                 variant="outline"
                 size="lg"
-                className="h-14 px-8 text-lg border-[#fdf021] bg-gray-900/50 text-[#fdf021] hover:border-[#fdf021] hover:bg-[#fdf021]/10 hover:text-[#fdf021] rounded-full w-full sm:w-auto transition-all duration-300"
+                className="cursor-pointer h-14 px-8 text-lg border-[#fdf021] bg-transparent text-[#fdf021] hover:border-[#fdf021] hover:bg-[#fdf021]/10 hover:text-[#fdf021] rounded-full w-full sm:w-auto transition-all duration-300"
               >
-                {/* <Play className="mr-2 h-5 w-5" /> */}
                 Register
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
-          <div className="p-0 m-0">
-            <span className="text-white">Contact Us: 077 11 22 334</span>
+          <div className="pb-5 m-0">
+            <span className="text-gray-400">Contact Us: 077 11 22 334</span>
           </div>
 
-          <div className="flex items-center gap-8 pt-8 border-t border-gray-800">
+          <div className="items-center gap-8 pt-8 border-t border-gray-800 hidden lg:flex">
             <div>
               <p className="text-3xl font-bold text-white">
                 {data.studentCount}
@@ -122,20 +121,20 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative hidden lg:block"
+          className="relative"
         >
           <div className="relative z-10 w-full max-w-md mx-auto">
             {/* Teacher Image */}
-            <div className="aspect-3/4 rounded-3xl overflow-hidden bg-linear-to-b from-gray-800 to-black border border-gray-800 relative group">
+            <div className="aspect-3/4 rounded-3xl overflow-hidden bg-transparent relative group">
               {teacherImageUrl ? (
                 <div
                   className={`absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700`}
                   style={{ backgroundImage: `url('${teacherImageUrl}')` }}
                 />
               ) : (
-                <div className="absolute inset-0 bg-[url('https://placehold.co/600x800/1a1a1a/FFF?text=Teacher+Image')] bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-[url('https://static.vecteezy.com/system/resources/thumbnails/026/136/046/small/business-man-illustration-ai-generative-png.png')] bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-700" />
               )}
-              <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-90" />
+              <div className="absolute inset-0 via-transparent to-transparent opacity-90" />
 
               <div className="absolute bottom-8 left-8 right-8">
                 <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10">
@@ -145,6 +144,7 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
                   <p className="text-gray-300 text-sm">{data.teacherTitle}</p>
                 </div>
               </div>
+              
             </div>
           </div>
 
@@ -152,6 +152,27 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-[#fdf021]/10 rounded-full animate-[spin_60s_linear_infinite]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-dashed border-gray-800 rounded-full animate-[spin_80s_linear_infinite_reverse]" />
         </motion.div>
+
+        <div className="flex items-center justify-center gap-8 pt-8 border-t border-gray-800 lg:hidden">
+          <div>
+            <p className="text-3xl font-bold text-white">{data.studentCount}</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">
+              Students
+            </p>
+          </div>
+          <div>
+            <p className="text-3xl font-bold text-white">{data.rankCount}</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">
+              Island Ranks
+            </p>
+          </div>
+          <div>
+            <p className="text-3xl font-bold text-white">{data.expCount}</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">
+              Years Exp.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

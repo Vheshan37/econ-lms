@@ -108,8 +108,8 @@ export function FooterSection() {
                         {footerContent.copyright}
                     </p>
                     <div className="text-xs text-gray-700 max-w-lg mx-auto">
-                        <p>Developed by Vihanga Heshan</p>
-                        <p className="mt-1">Contact: 0788056838 | Website: <Link href="https://vihangaheshan.dev" target="_blank" className="text-blue-500 hover:text-blue-600 transition-colors">vihangaheshan.dev</Link></p>
+                        <p>Developed by Quantum Blaze</p>
+                        <p className="mt-1"><Link href={"mailto:contact@quantumblaze.lk"}>contact@quantumblaze.lk</Link> | Website: <Link href="https://quantumblaze.lk" target="_blank" className="text-blue-500 hover:text-blue-600 transition-colors">Quantum Blaze</Link></p>
                     </div>
                 </div>
             </div>
