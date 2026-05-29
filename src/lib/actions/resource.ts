@@ -10,6 +10,8 @@ export async function createResource(data: {
     type: ResourceType;
     url: string;
     description?: string;
+    year?: Date | null;
+    month?: number | null;
 }) {
     try {
         const resource = await (prisma as any).resource.create({
@@ -19,12 +21,12 @@ export async function createResource(data: {
                 url: data.url,
                 description: data.description,
                 topicId: data.topicId || null,
+                year: data.year || null,
+                month: data.month || null,
             },
         });
 
-        // Revalidate paths
         if (data.topicId) {
-            // Get hierarchy for topic-based resources
             const topic = await (prisma as any).topic.findUnique({
                 where: { id: data.topicId },
                 include: {
@@ -38,7 +40,6 @@ export async function createResource(data: {
                 revalidatePath(`/admin/classes/${topic.classType.yearId}/${topic.classType.id}/${data.topicId}`);
             }
         } else {
-            // Free resource
             revalidatePath('/admin/resources');
         }
 
@@ -54,6 +55,8 @@ export async function updateResource(id: string, data: {
     type: ResourceType;
     url: string;
     description?: string;
+    year?: Date | null;
+    month?: number | null;
 }) {
     try {
         const resource = await (prisma as any).resource.update({
@@ -63,10 +66,11 @@ export async function updateResource(id: string, data: {
                 type: data.type,
                 url: data.url,
                 description: data.description,
+                year: data.year || null,
+                month: data.month || null,
             },
         });
 
-        // Get hierarchy for revalidation
         const topic = await (prisma as any).topic.findUnique({
             where: { id: resource.topicId },
             include: {
@@ -94,7 +98,6 @@ export async function deleteResource(id: string) {
             include: {
                 topic: {
                     include: {
-                        // @ts-ignore
                         classType: {
                             select: { yearId: true, id: true }
                         }
@@ -111,7 +114,6 @@ export async function deleteResource(id: string) {
             where: { id },
         });
 
-        // Revalidate appropriate path
         if (resource.topicId && resource.topic) {
             revalidatePath(`/admin/classes/${resource.topic.classType.yearId}/${resource.topic.classType.id}/${resource.topicId}`);
         } else {
@@ -142,4 +144,3 @@ export async function getFreeResources() {
         return { success: false, error: 'Failed to fetch free resources' };
     }
 }
-

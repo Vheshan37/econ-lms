@@ -10,9 +10,10 @@ import { Label } from '@/components/ui/label';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { getTopicById } from '@/lib/actions/topic';
-import { createResource, updateResource, deleteResource } from '@/lib/actions/resource';
+import {  updateResource, deleteResource } from '@/lib/actions/resource';
 import { uploadFile } from '@/lib/actions/upload';
 import { ResourceType } from '@prisma/client';
+import { AddResourceModal } from '@/components/admin/classes/resources/AddResourceModal';
 
 interface Resource {
     id: string;
@@ -21,6 +22,8 @@ interface Resource {
     url: string;
     description: string | null;
     createdAt: Date;
+    year?: Date | null;
+    month?: number | null;
 }
 
 interface TopicData {
@@ -64,7 +67,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
     const [isAddingResource, setIsAddingResource] = useState(false);
     const [editingResource, setEditingResource] = useState<Resource | null>(null);
 
-    // Form state
+    // Form state for the old modal (still used for editing)
     const [resourceType, setResourceType] = useState<ResourceType>('VIDEO');
     const [title, setTitle] = useState('');
     const [url, setUrl] = useState('');
@@ -95,17 +98,10 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
         const result = await getTopicById(topicId);
         if (result.success && result.data) {
             setTopicData(result.data);
-
-            // Set active tab to the first available type if not already set or if current active tab has no resources
             const availableTypes = new Set(result.data.resources.map(r => r.type));
             if (availableTypes.size > 0) {
-                if (!activeTab || !availableTypes.has(activeTab)) {
-                    // Find the first tab defined in TABS that has resources
-                    const firstAvailableTab = TABS.find(t => availableTypes.has(t.id as ResourceType));
-                    if (firstAvailableTab) {
-                        setActiveTab(firstAvailableTab.id as ResourceType);
-                    }
-                }
+                const firstAvailableTab = TABS.find(t => availableTypes.has(t.id as ResourceType));
+                if (firstAvailableTab) setActiveTab(firstAvailableTab.id as ResourceType);
             } else {
                 setActiveTab(null);
             }
@@ -116,63 +112,8 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            const result = await getTopicById(topicId);
-            if (result.success && result.data) {
-                setTopicData(result.data);
-
-                const availableTypes = new Set(result.data.resources.map(r => r.type));
-                if (availableTypes.size > 0) {
-                    const firstAvailableTab = TABS.find(t => availableTypes.has(t.id as ResourceType));
-                    if (firstAvailableTab) setActiveTab(firstAvailableTab.id as ResourceType);
-                } else {
-                    setActiveTab(null);
-                }
-            } else {
-                setErrorAlert({ isOpen: true, message: result.error || 'Failed to fetch topic data' });
-            }
-            setIsLoading(false);
-        };
-
-        fetchData();
-    }, [topicId]);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            let finalUrl = url;
-
-            if (resourceFile && (resourceType === 'PDF' || resourceType === 'PAST_PAPER')) {
-                const formData = new FormData();
-                formData.append('file', resourceFile);
-                const uploadResult = await uploadFile(formData);
-                if (uploadResult.success && uploadResult.url) {
-                    finalUrl = uploadResult.url;
-                } else {
-                    throw new Error(uploadResult.error || 'Failed to upload file');
-                }
-            }
-
-            const result = editingResource
-                ? await updateResource(editingResource.id, { title, type: resourceType, url: finalUrl, description })
-                : await createResource({ topicId, title, type: resourceType, url: finalUrl, description });
-
-            if (result.success) {
-                await fetchTopicData();
-                closeModal();
-            } else {
-                setErrorAlert({ isOpen: true, message: result.error || 'Failed to save resource' });
-            }
-        } catch (error) {
-            setErrorAlert({ isOpen: true, message: 'An unexpected error occurred' });
-            console.error(error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+        fetchTopicData();
+    }, [topicId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleEdit = (resource: Resource) => {
         setEditingResource(resource);
@@ -189,10 +130,10 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
 
     const handleDeleteConfirm = async () => {
         if (!deleteAlert.resourceId) return;
-
         const result = await deleteResource(deleteAlert.resourceId);
         if (result.success) {
             await fetchTopicData();
+            setDeleteAlert({ isOpen: false, resourceId: null, resourceTitle: '' });
         } else {
             setErrorAlert({ isOpen: true, message: 'Failed to delete resource' });
         }
@@ -206,13 +147,53 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
         }
     };
 
-    const closeModal = () => {
+    // Handle edit form submission (old modal)
+    const handleEditSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            let finalUrl = url;
+            if (resourceFile && (resourceType === 'PDF' || resourceType === 'PAST_PAPER')) {
+                const formData = new FormData();
+                formData.append('file', resourceFile);
+                const uploadResult = await uploadFile(formData);
+                if (uploadResult.success && uploadResult.url) {
+                    finalUrl = uploadResult.url;
+                } else {
+                    throw new Error(uploadResult.error || 'Failed to upload file');
+                }
+            }
+
+            if (!editingResource) return;
+
+            const result = await updateResource(editingResource.id, {
+                title,
+                type: resourceType,
+                url: finalUrl,
+                description,
+            });
+
+            if (result.success) {
+                await fetchTopicData();
+                closeEditModal();
+            } else {
+                setErrorAlert({ isOpen: true, message: result.error || 'Failed to update resource' });
+            }
+        } catch (error) {
+            setErrorAlert({ isOpen: true, message: 'An unexpected error occurred' });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const closeEditModal = () => {
         setIsAddingResource(false);
         setEditingResource(null);
         setTitle('');
         setUrl('');
         setDescription('');
-        setResourceType('VIDEO'); // Reset to default
+        setResourceType('VIDEO');
+        setResourceFile(null);
     };
 
     if (isLoading) {
@@ -235,9 +216,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
         topicData.resources.some(r => r.type === tab.id)
     );
 
-    const currentTab = activeTab ? TABS.find(t => t.id === activeTab) : null;
     const currentTabResources = activeTab ? topicData.resources.filter(r => r.type === activeTab) : [];
-    const TabIcon = currentTab ? currentTab.icon : Plus;
 
     return (
         <div className="space-y-8">
@@ -246,7 +225,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
+                    className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl"
                 >
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
@@ -268,9 +247,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                     <ChevronRight className="w-3 h-3" />
                                     <span className="text-[#D4AF37] font-medium">{topicData.title}</span>
                                 </div>
-                                <h1 className="text-4xl font-bold text-white">
-                                    Resources
-                                </h1>
+                                <h1 className="text-4xl font-bold text-white">Resources</h1>
                                 <p className="text-gray-400 mt-2 max-w-xl">
                                     Manage learning materials, videos, and quizzes for this topic.
                                 </p>
@@ -278,11 +255,8 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                         </div>
 
                         <Button
-                            onClick={() => {
-                                setResourceType('VIDEO');
-                                setIsAddingResource(true);
-                            }}
-                            className="bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
+                            onClick={() => setIsAddingResource(true)}
+                            className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center gap-2"
                         >
                             <Plus className="w-5 h-5" />
                             Add Resource
@@ -290,7 +264,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                     </div>
                 </motion.div>
 
-                {/* Tabs - Only show if there are resources */}
+                {/* Tabs */}
                 {availableTabs.length > 0 && (
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                         <div className="flex border-b border-gray-200">
@@ -303,16 +277,16 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id as ResourceType)}
-                                        className={`flex-1 relative px-6 py-4 font-medium transition-colors ${isActive
-                                            ? 'text-gray-900'
-                                            : 'text-gray-500 hover:text-gray-700'
-                                            }`}
+                                        className={`flex-1 relative px-6 py-4 font-medium transition-colors ${
+                                            isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                                        }`}
                                     >
                                         <div className="flex items-center justify-center gap-2">
                                             <Icon className={`w-5 h-5 ${isActive ? tab.color : ''}`} />
                                             <span>{tab.label}</span>
-                                            <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? `${tab.bgColor} text-white` : 'bg-gray-100 text-gray-600'
-                                                }`}>
+                                            <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                                isActive ? `${tab.bgColor} text-white` : 'bg-gray-100 text-gray-600'
+                                            }`}>
                                                 {count}
                                             </span>
                                         </div>
@@ -338,11 +312,11 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.2 }}
                                 >
-                                    {currentTabResources.length === 0 && activeTab ? (
+                                    {currentTabResources.length === 0 ? (
                                         <div className="text-center py-16">
-                                            <TabIcon className={`w-16 h-16 mx-auto mb-4 ${currentTab?.color} opacity-20`} />
-                                            <p className="text-gray-500 text-lg">No {currentTab?.label.toLowerCase()} added yet</p>
-                                            <p className="text-gray-400 text-sm mt-2">Click &quot;Add {currentTab?.label.slice(0, -1)}&quot; to get started</p>
+                                            <Plus className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                                            <p className="text-gray-500 text-lg">No resources added yet</p>
+                                            <p className="text-gray-400 text-sm mt-2">Click Add Resource to get started</p>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -370,6 +344,14 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                                             {resource.type !== 'VIDEO' && (
                                                                 <div className="text-xs text-[#D4AF37] hover:underline inline-flex items-center gap-1">
                                                                     Open Link <ExternalLink className="w-3 h-3" />
+                                                                </div>
+                                                            )}
+                                                            {/* Month badges */}
+                                                            {resource.month !== null && resource.month !== undefined && (
+                                                                <div className="mt-2 flex flex-wrap gap-1">
+                                                                    <span className="text-xs bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-0.5 rounded-full">
+                                                                        Month {resource.month + 1}
+                                                                    </span>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -404,7 +386,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                     </div>
                 )}
 
-                {/* Empty State when no resources exist */}
+                {/* Empty State */}
                 {availableTabs.length === 0 && (
                     <div className="text-center py-20 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -424,15 +406,23 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                     </div>
                 )}
 
-                {/* Add/Edit Resource Modal */}
+                {/* NEW: Multi-step Add Resource Modal */}
+                <AddResourceModal
+                    isOpen={isAddingResource && !editingResource}
+                    onClose={() => setIsAddingResource(false)}
+                    topicId={topicId}
+                    onSuccess={fetchTopicData}
+                />
+
+                {/* Edit Resource Modal (kept for editing) */}
                 <AnimatePresence>
-                    {isAddingResource && (
+                    {isAddingResource && editingResource && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-                            onClick={closeModal}
+                            onClick={closeEditModal}
                         >
                             <motion.div
                                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -447,20 +437,16 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
 
                                 <div className="relative z-10">
                                     <div className="flex items-center gap-4 mb-8">
-                                        <div className={`h-12 w-12 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg`}>
-                                            {editingResource ? <Edit2 className="w-6 h-6 text-[#1a1a1a]" /> : <Plus className="w-6 h-6 text-[#1a1a1a]" />}
+                                        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg">
+                                            <Edit2 className="w-6 h-6 text-[#1a1a1a]" />
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-bold text-white">
-                                                {editingResource ? 'Edit Resource' : 'Add Resource'}
-                                            </h2>
-                                            <p className="text-gray-400 text-sm">
-                                                {editingResource ? 'Update resource details' : 'Select type and add details'}
-                                            </p>
+                                            <h2 className="text-2xl font-bold text-white">Edit Resource</h2>
+                                            <p className="text-gray-400 text-sm">Update resource details</p>
                                         </div>
                                     </div>
 
-                                    <form onSubmit={handleSubmit} className="space-y-5">
+                                    <form onSubmit={handleEditSubmit} className="space-y-5">
                                         <div className="space-y-2">
                                             <Label className="text-gray-300 ml-1">Resource Type</Label>
                                             <div className="grid grid-cols-2 gap-2">
@@ -472,10 +458,11 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                                             key={tab.id}
                                                             type="button"
                                                             onClick={() => setResourceType(tab.id as ResourceType)}
-                                                            className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${isSelected
-                                                                ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
-                                                                : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
-                                                                }`}
+                                                            className={`flex items-center gap-2 p-3 rounded-xl border transition-all ${
+                                                                isSelected
+                                                                    ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
+                                                                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                                                            }`}
                                                         >
                                                             <Icon className="w-4 h-4" />
                                                             <span className="text-sm font-medium">{tab.label}</span>
@@ -484,6 +471,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                                 })}
                                             </div>
                                         </div>
+
                                         <div className="space-y-2">
                                             <Label className="text-gray-300 ml-1">Title</Label>
                                             <Input
@@ -499,7 +487,6 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                             <Label className="text-gray-300 ml-1">
                                                 {(resourceType === 'PDF' || resourceType === 'PAST_PAPER') ? 'Upload Document' : 'URL'}
                                             </Label>
-
                                             {(resourceType === 'PDF' || resourceType === 'PAST_PAPER') ? (
                                                 <div className="space-y-2">
                                                     <Input
@@ -513,9 +500,7 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                                         }}
                                                     />
                                                     {url && (
-                                                        <p className="text-xs text-green-500 truncate pl-1">
-                                                            Current: {url}
-                                                        </p>
+                                                        <p className="text-xs text-green-500 truncate pl-1">Current: {url}</p>
                                                     )}
                                                 </div>
                                             ) : (
@@ -545,16 +530,16 @@ function ResourceManagementPageClient({ yearId, typeId, topicId }: { yearId: str
                                                 type="button"
                                                 variant="ghost"
                                                 className="flex-1 text-gray-400 hover:text-white hover:bg-white/5 h-12 rounded-xl"
-                                                onClick={closeModal}
+                                                onClick={closeEditModal}
                                             >
                                                 Cancel
                                             </Button>
                                             <Button
                                                 type="submit"
-                                                className="flex-1 bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
+                                                className="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-12 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all"
                                                 disabled={isSubmitting}
                                             >
-                                                {isSubmitting ? (editingResource ? 'Updating...' : 'Adding...') : (editingResource ? 'Update' : 'Add Resource')}
+                                                {isSubmitting ? 'Updating...' : 'Update'}
                                             </Button>
                                         </div>
                                     </form>

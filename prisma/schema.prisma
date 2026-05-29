@@ -61,6 +61,8 @@ model Resource {
   url         String
   description String?
   topicId     String?
+  year        DateTime?
+  month       Int?
   topic       Topic?       @relation(fields: [topicId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -110,6 +112,7 @@ model Student {
 
   // Relations
   classAssignments StudentClassType[]
+  studentPayments  StudentPayments[]
 }
 
 model StudentClassType {
@@ -279,4 +282,33 @@ model marks {
   exam  exam  @relation(fields: [exam_id], references: [id], onDelete: Cascade)
 
   @@index([createdAt])
+}
+
+// added new models for lms (new changes)
+
+model StudentPayments {
+  id        Int      @id @default(autoincrement())
+  year      Int
+  month     Int
+  fee       Decimal  @db.Decimal(19, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  studentId String   @map("student_id")
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("student_payments")
+}
+
+model OnlineClasses {
+  id           Int       @id @default(autoincrement())
+  youtubeLink  String?
+  youtubeTime  DateTime?
+  zoomLink     String?
+  zoomTime     DateTime?
+  zoomId       String?
+  zoomPasscode String?
+  classTypes   Json
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

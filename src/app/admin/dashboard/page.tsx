@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, BookOpen, Building2, GraduationCap, ArrowRight, Sparkles, Trophy } from 'lucide-react';
+import { Users, BookOpen,FormInput, Building2, GraduationCap, ArrowRight, Sparkles, Trophy } from 'lucide-react';
 import { getDashboardStats } from '@/lib/actions/dashboard';
 import Link from 'next/link';
 
@@ -229,6 +229,17 @@ export default function AdminDashboard() {
                                 <div>
                                     <h3 className="font-bold text-gray-900">Add Achiever</h3>
                                     <p className="text-xs text-gray-500">Hall of fame</p>
+                                </div>
+                            </div>
+                        </Link>
+                        <Link href="/admin/content">
+                            <div className="p-4 rounded-xl border border-gray-100 hover:border-[#D4AF37]/30 hover:bg-[#D4AF37]/5 transition-all group flex items-center gap-4">
+                                <div className="h-10 w-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-[#D4AF37] group-hover:text-[#1a1a1a] transition-colors">
+                                    <FormInput className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-gray-900">Site Content</h3>
+                                    <p className="text-xs text-gray-500">Update Contents</p>
                                 </div>
                             </div>
                         </Link>
