@@ -2,9 +2,15 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Youtube, FileText, File, ClipboardList, Play, ExternalLink, BookOpen, Filter } from 'lucide-react';
+import { Search, Youtube, FileText, File, ClipboardList, Play, ExternalLink, BookOpen, Filter, Lock, Calendar } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { VideoPlayer } from '@/components/VideoPlayer';
+import { AlertDialog } from '@/components/ui/alert-dialog';
+
+const MONTHS = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
 
 interface Resource {
     id: string;
@@ -12,12 +18,16 @@ interface Resource {
     type: 'VIDEO' | 'PDF' | 'PAST_PAPER' | 'QUIZ';
     url: string;
     description: string | null;
+    month: number | null;
+    year: number | null;
     topicTitle: string;
     classTypeName: string;
     yearName: string;
     yearId: string;
     classTypeId: string;
     topicId: string;
+    isPaid: boolean;
+    isFree: boolean;
 }
 
 const TABS = [
@@ -37,6 +47,10 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
         url: '',
         title: ''
     });
+    const [paymentAlert, setPaymentAlert] = useState<{ isOpen: boolean; monthName: string }>({
+        isOpen: false,
+        monthName: '',
+    });
 
     const uniqueYears = Array.from(new Set(resources.map(r => r.yearId))).map(id => {
         const resource = resources.find(r => r.yearId === id);
@@ -52,7 +66,20 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
         return matchesSearch && matchesType && matchesYear;
     });
 
+    /**
+     * Handle resource click with payment check
+     * - Free/Paid → open normally
+     * - Locked → show payment alert
+     */
     const handleResourceClick = (resource: Resource) => {
+        if (!resource.isPaid && !resource.isFree) {
+            const monthName = resource.month !== null && resource.month !== undefined
+                ? MONTHS[Number(resource.month)]
+                : 'this month';
+            setPaymentAlert({ isOpen: true, monthName });
+            return;
+        }
+
         if (resource.type === 'VIDEO') {
             setVideoPlayer({
                 isOpen: true,
@@ -60,12 +87,9 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                 title: resource.title
             });
         } else {
-            window.location.href = resource.url;
+            window.open(resource.url, '_blank');
         }
     };
-
-    const currentTab = TABS.find(t => t.id === activeTab)!;
-    // const TabIcon = currentTab.icon;
 
     return (
         <div className="space-y-8">
@@ -132,16 +156,16 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex-1 min-w-[120px] relative px-6 py-4 font-medium transition-colors ${isActive
-                                    ? 'text-gray-900'
-                                    : 'text-gray-500 hover:text-gray-700'
-                                    }`}
+                                className={`flex-1 min-w-[120px] relative px-6 py-4 font-medium transition-colors ${
+                                    isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                                }`}
                             >
                                 <div className="flex items-center justify-center gap-2">
                                     <Icon className={`w-5 h-5 ${isActive ? tab.color : ''}`} />
                                     <span className="whitespace-nowrap">{tab.label}</span>
-                                    <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? `${tab.bgColor} text-white` : 'bg-gray-100 text-gray-600'
-                                        }`}>
+                                    <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                        isActive ? `${tab.bgColor} text-white` : 'bg-gray-100 text-gray-600'
+                                    }`}>
                                         {count}
                                     </span>
                                 </div>
@@ -175,57 +199,106 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {filteredResources.map((resource) => (
-                                        <div
-                                            key={resource.id}
-                                            onClick={() => handleResourceClick(resource)}
-                                            className="group bg-gray-50 p-4 rounded-xl hover:shadow-md transition-all border border-gray-100 cursor-pointer"
-                                        >
-                                            <div className="flex items-start justify-between gap-3">
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <h3 className="font-semibold text-gray-900 truncate group-hover:text-[#D4AF37] transition-colors">
-                                                            {resource.title}
-                                                        </h3>
-                                                        {resource.type === 'VIDEO' && (
-                                                            <div className="shrink-0 w-6 h-6 rounded-full bg-red-500/10 flex items-center justify-center">
-                                                                <Play className="w-3 h-3 text-red-500" />
-                                                            </div>
-                                                        )}
-                                                    </div>
+                                    {filteredResources.map((resource) => {
+                                        const isLocked = !resource.isPaid && !resource.isFree;
+                                        const monthName = resource.month !== null && resource.month !== undefined
+                                            ? MONTHS[Number(resource.month)]
+                                            : null;
 
-                                                    {resource.description && (
-                                                        <p className="text-sm text-gray-500 line-clamp-2 mb-3">
-                                                            {resource.description}
-                                                        </p>
+                                        return (
+                                            <div
+                                                key={resource.id}
+                                                onClick={() => handleResourceClick(resource)}
+                                                className={`group bg-gray-50 p-4 rounded-xl hover:shadow-md transition-all border cursor-pointer ${
+                                                    isLocked 
+                                                        ? 'border-amber-200 hover:border-amber-400' 
+                                                        : 'border-gray-100'
+                                                }`}
+                                            >
+                                                {/* Status Badge */}
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                                                        resource.isFree 
+                                                            ? 'bg-green-100 text-green-700' 
+                                                            : resource.isPaid
+                                                            ? 'bg-[#D4AF37]/10 text-[#D4AF37]'
+                                                            : 'bg-amber-100 text-amber-700'
+                                                    }`}>
+                                                        {resource.isFree ? 'Free' : resource.isPaid ? 'Premium' : 'Locked'}
+                                                    </span>
+                                                    {isLocked && (
+                                                        <Lock className="w-3.5 h-3.5 text-amber-500" />
                                                     )}
+                                                </div>
 
-                                                    <div className="flex flex-wrap gap-2 mb-3">
-                                                        <span className="text-xs px-2 py-1 bg-white border border-gray-200 rounded-md text-gray-600">
-                                                            {resource.yearName}
-                                                        </span>
-                                                        <span className="text-xs px-2 py-1 bg-white border border-gray-200 rounded-md text-gray-600">
-                                                            {resource.classTypeName}
-                                                        </span>
-                                                    </div>
-
-                                                    <div className="flex items-center gap-2 text-xs font-medium pt-2 border-t border-gray-200">
-                                                        <span className="text-gray-400 truncate flex-1">
-                                                            {resource.topicTitle}
-                                                        </span>
-                                                        <span className="text-[#D4AF37] flex items-center gap-1 shrink-0">
-                                                            {resource.type === 'VIDEO' ? 'Watch' : 'Open'}
-                                                            {resource.type === 'VIDEO' ? (
-                                                                <Play className="w-3 h-3" />
-                                                            ) : (
-                                                                <ExternalLink className="w-3 h-3" />
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <h3 className="font-semibold text-gray-900 truncate group-hover:text-[#D4AF37] transition-colors">
+                                                                {resource.title}
+                                                            </h3>
+                                                            {resource.type === 'VIDEO' && (
+                                                                <div className="shrink-0 w-6 h-6 rounded-full bg-red-500/10 flex items-center justify-center">
+                                                                    <Play className="w-3 h-3 text-red-500" />
+                                                                </div>
                                                             )}
-                                                        </span>
+                                                        </div>
+
+                                                        {resource.description && (
+                                                            <p className="text-sm text-gray-500 line-clamp-2 mb-2">
+                                                                {resource.description}
+                                                            </p>
+                                                        )}
+
+                                                        <div className="flex flex-wrap gap-1.5 mb-2">
+                                                            <span className="text-xs px-2 py-0.5 bg-white border border-gray-200 rounded-md text-gray-600">
+                                                                {resource.yearName}
+                                                            </span>
+                                                            <span className="text-xs px-2 py-0.5 bg-white border border-gray-200 rounded-md text-gray-600">
+                                                                {resource.classTypeName}
+                                                            </span>
+                                                            {monthName && (
+                                                                <span className={`text-xs px-2 py-0.5 rounded-md flex items-center gap-1 ${
+                                                                    isLocked 
+                                                                        ? 'bg-amber-50 border border-amber-200 text-amber-700'
+                                                                        : 'bg-white border border-gray-200 text-gray-600'
+                                                                }`}>
+                                                                    <Calendar className="w-3 h-3" />
+                                                                    {monthName}
+                                                                </span>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="flex items-center gap-2 text-xs font-medium pt-2 border-t border-gray-200">
+                                                            <span className="text-gray-400 truncate flex-1">
+                                                                {resource.topicTitle}
+                                                            </span>
+                                                            <span className={`flex items-center gap-1 shrink-0 ${
+                                                                isLocked ? 'text-amber-600' : 'text-[#D4AF37]'
+                                                            }`}>
+                                                                {isLocked ? (
+                                                                    <>
+                                                                        <Lock className="w-3 h-3" />
+                                                                        Payment Required
+                                                                    </>
+                                                                ) : resource.type === 'VIDEO' ? (
+                                                                    <>
+                                                                        Watch
+                                                                        <Play className="w-3 h-3" />
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        Open
+                                                                        <ExternalLink className="w-3 h-3" />
+                                                                    </>
+                                                                )}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </motion.div>
@@ -239,6 +312,16 @@ export default function ResourcesClient({ resources }: { resources: Resource[] }
                 isOpen={videoPlayer.isOpen}
                 onClose={() => setVideoPlayer({ isOpen: false, url: '', title: '' })}
                 title={videoPlayer.title}
+            />
+
+            <AlertDialog
+                isOpen={paymentAlert.isOpen}
+                onClose={() => setPaymentAlert({ isOpen: false, monthName: '' })}
+                title="Payment Required"
+                description={`Please complete your monthly payment for ${paymentAlert.monthName} to access this resource. Contact your institute administrator to make the payment.`}
+                type="warning"
+                confirmText="OK"
+                cancelText="Cancel"
             />
         </div>
     );

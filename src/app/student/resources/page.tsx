@@ -10,7 +10,9 @@ export default async function StudentResourcesPage() {
         redirect('/login');
     }
 
-    const result = await getAllStudentResources(session.userId);
+    const studentId = String(session.userId || session.id || '');
+    
+    const result = await getAllStudentResources(studentId);
     const resources = (result.success && result.data) ? result.data : [];
 
     return <ResourcesClient resources={resources} />;

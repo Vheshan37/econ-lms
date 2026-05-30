@@ -61,7 +61,7 @@ model Resource {
   url         String
   description String?
   topicId     String?
-  year        DateTime?
+  year        Int?
   month       Int?
   topic       Topic?       @relation(fields: [topicId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now())
