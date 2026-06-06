@@ -40,7 +40,7 @@ export default function AdminLayout({
         { name: 'O/L Resources', href: '/admin/ol-resources', icon: BookOpen },
         {name:'Exam Results', href:'/admin/exam-results',icon:Sheet},
         { name: 'Class Payments', href: '/admin/class-fees', icon:HandCoins },
-        { name: 'Timetable', href: '/admin/timetable', icon: Clock },
+        // { name: 'Timetable', href: '/admin/timetable', icon: Clock },
         // { name: 'Site Content', href: '/admin/content', icon: Layers },
     ];
 

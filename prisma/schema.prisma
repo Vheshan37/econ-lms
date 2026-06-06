@@ -302,13 +302,15 @@ model StudentPayments {
 
 model OnlineClasses {
   id           Int       @id @default(autoincrement())
-  youtubeLink  String?
-  youtubeTime  DateTime?
-  zoomLink     String?
-  zoomTime     DateTime?
-  zoomId       String?
-  zoomPasscode String?
-  classTypes   Json
+  youtubeLink  String?  @map("youtube_link")
+  youtubeTime  DateTime? @map("youtube_time")
+  zoomLink     String?  @map("zoom_link")
+  zoomTime     DateTime?  @map("zoom_time")
+  zoomId       String?  @map("zoom_id")
+  zoomPasscode String?  @map("zoom_passcode")
+  classTypes   Json  @map("class_types")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+
+  @@map("online_classes")
 }
