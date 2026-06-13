@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { EnrollmentModal } from "./EnrollmentModal";
 
 interface HeroSectionProps {
   content?: any;
@@ -11,6 +13,8 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Default values if content is missing
   const defaults = {
     description:
@@ -78,16 +82,15 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/free-resources">
-              <Button
-                variant="outline"
-                size="lg"
-                className="cursor-pointer h-14 px-8 text-lg border-[#fdf021] bg-transparent text-[#fdf021] hover:border-[#fdf021] hover:bg-[#fdf021]/10 hover:text-[#fdf021] rounded-full w-full sm:w-auto transition-all duration-300"
-              >
-                Register
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              size="lg"
+              className="cursor-pointer h-14 px-8 text-lg border-[#fdf021] bg-transparent text-[#fdf021] hover:border-[#fdf021] hover:bg-[#fdf021]/10 hover:text-[#fdf021] rounded-full w-full sm:w-auto transition-all duration-300"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Register
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
           <div className="pb-5 m-0">
             <span className="text-gray-400">Contact Us: 077 11 22 334</span>
@@ -144,7 +147,6 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
                   <p className="text-gray-300 text-sm">{data.teacherTitle}</p>
                 </div>
               </div>
-              
             </div>
           </div>
 
@@ -174,6 +176,13 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
           </div>
         </div>
       </div>
+
+      <EnrollmentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        batch={"selectedBatch"}
+        whatsappNumber={"whatsappNumber"}
+      />
     </section>
   );
 }
