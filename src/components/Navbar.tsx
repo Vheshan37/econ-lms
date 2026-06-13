@@ -232,14 +232,20 @@
 //   );
 // }
 
-
 "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useStore } from "@/lib/store";
-import { LogOut, User as UserIcon, Menu, X, Facebook, Youtube } from "lucide-react";
+import {
+  LogOut,
+  User as UserIcon,
+  Menu,
+  X,
+  Facebook,
+  Youtube,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -278,24 +284,24 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
 
   // Social media links with yellow-500 default and brand colors on hover
   const socialLinks = [
-    {
-      name: "Facebook",
-      icon: Facebook,
-      href: "#",
-      brandColor: "#1877f2",
-    },
+    // {
+    //   name: "Facebook",
+    //   icon: Facebook,
+    //   href: "#",
+    //   brandColor: "#1877f2",
+    // },
     {
       name: "WhatsApp",
       icon: () => (
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="20" 
-          height="20" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
           strokeLinejoin="round"
           className="lucide lucide-whatsapp"
         >
@@ -303,13 +309,13 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
           <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1" />
         </svg>
       ),
-      href: "#",
+      href: "https://wa.me/+94773304548",
       brandColor: "#25D366",
     },
     {
       name: "YouTube",
       icon: Youtube,
-      href: "#",
+      href: "https://youtube.com/@egggsfs?si=-M09ryBLnemkZ1Oe",
       brandColor: "#FF0000",
     },
   ];
@@ -319,7 +325,7 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
       <nav
         className={cn(
           "transition-all duration-300 border-b border-white/10 sticky top-0 z-100",
-          !isMobileMenuOpen && "backdrop-blur-md", 
+          !isMobileMenuOpen && "backdrop-blur-md",
           isMobileMenuOpen && "bg-transparent border-b-0",
         )}
       >
@@ -403,13 +409,13 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
                     rel="noopener noreferrer"
                     className="p-2 rounded-full bg-white/5 border border-white/10 text-[#fdf021] transition-all duration-300 hover:scale-110 hover:bg-white/10"
                     style={{
-                      color: '#fdf021',
+                      color: "#fdf021",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.color = social.brandColor;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color = '#fdf021';
+                      e.currentTarget.style.color = "#fdf021";
                     }}
                     aria-label={social.name}
                   >
@@ -491,17 +497,18 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
                       rel="noopener noreferrer"
                       className="p-3 rounded-full bg-white/10 border border-white/20 transition-all duration-300 hover:scale-110"
                       style={{
-                        color: '#eab308', // yellow-500
+                        color: "#eab308", // yellow-500
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.color = social.brandColor;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#eab308';
+                        e.currentTarget.style.color = "#eab308";
                       }}
                       aria-label={social.name}
                     >
-                      {typeof Icon === "function" && Icon.name === "WhatsApp" ? (
+                      {typeof Icon === "function" &&
+                      Icon.name === "WhatsApp" ? (
                         <Icon />
                       ) : (
                         <Icon className="w-6 h-6" />
@@ -521,9 +528,7 @@ export function Navbar({ isHallOfFameEnabled = true }: NavbarProps) {
                   <>
                     <div className="text-center text-gray-400 mb-2">
                       Signed in as{" "}
-                      <span className="text-[#fdf021]">
-                        {currentUser.name}
-                      </span>
+                      <span className="text-[#fdf021]">{currentUser.name}</span>
                     </div>
                     <Link
                       href={
