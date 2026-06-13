@@ -1,31 +1,31 @@
-'use server';
+"use server";
 
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 // Create reusable transporter
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false, // true for 465, false for other ports
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-    },
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
 });
 
 interface SendOTPEmailParams {
-    to: string;
-    otp: string;
-    userName?: string;
+  to: string;
+  otp: string;
+  userName?: string;
 }
 
 export async function sendOTPEmail({ to, otp, userName }: SendOTPEmailParams) {
-    try {
-        const mailOptions = {
-            from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
-            to,
-            subject: 'Your Login OTP - Quality ම Econ',
-            html: `
+  try {
+    const mailOptions = {
+      from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
+      to,
+      subject: "Your Login OTP - Quality ම Econ",
+      html: `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -103,7 +103,7 @@ export async function sendOTPEmail({ to, otp, userName }: SendOTPEmailParams) {
                         </div>
                         <div class="content">
                             <div class="greeting">
-                                ${userName ? `Hello ${userName},` : 'Hello,'}
+                                ${userName ? `Hello ${userName},` : "Hello,"}
                             </div>
                             <p>You requested to log in to your Quality ම Econ account. Use the OTP code below to complete your login:</p>
                             
@@ -128,34 +128,39 @@ export async function sendOTPEmail({ to, otp, userName }: SendOTPEmailParams) {
                 </body>
                 </html>
             `,
-            text: `Your Econ LMS login OTP is: ${otp}\n\nThis code is valid for 10 minutes.\n\nIf you didn't request this code, please ignore this email.`,
-        };
+      text: `Your Econ LMS login OTP is: ${otp}\n\nThis code is valid for 10 minutes.\n\nIf you didn't request this code, please ignore this email.`,
+    };
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log('OTP email sent:', info.messageId);
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('Failed to send OTP email:', error);
-        return { success: false, error: 'Failed to send email' };
-    }
+    const info = await transporter.sendMail(mailOptions);
+    console.log("OTP email sent:", info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error("Failed to send OTP email:", error);
+    return { success: false, error: "Failed to send email" };
+  }
 }
 
 interface SendInvitationEmailParams {
-    to: string;
-    userName: string;
-    role: 'student' | 'teacher';
+  to: string;
+  userName: string;
+  role: "student" | "teacher";
 }
 
-export async function sendInvitationEmail({ to, userName, role }: SendInvitationEmailParams) {
-    try {
-        const loginUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://krishankasthuriarachchi.lk';
-        const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
+export async function sendInvitationEmail({
+  to,
+  userName,
+  role,
+}: SendInvitationEmailParams) {
+  try {
+    const loginUrl =
+      process.env.NEXT_PUBLIC_APP_URL || "https://krishankasthuriarachchi.lk";
+    const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
 
-        const mailOptions = {
-            from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
-            to,
-            subject: `Welcome to Quality ම Econ - Your ${roleLabel} Account is Ready`,
-            html: `
+    const mailOptions = {
+      from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
+      to,
+      subject: `Welcome to Quality ම Econ - Your ${roleLabel} Account is Ready`,
+      html: `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -265,49 +270,60 @@ export async function sendInvitationEmail({ to, userName, role }: SendInvitation
                 </body>
                 </html>
             `,
-            text: `Welcome to Quality ම Econ, ${userName}!\n\nYour ${role} account has been created. You can login at ${loginUrl}/login using your email: ${to}\n\nWe use a secure OTP-based login system, so no password is required.`,
-        };
+      text: `Welcome to Quality ම Econ, ${userName}!\n\nYour ${role} account has been created. You can login at ${loginUrl}/login using your email: ${to}\n\nWe use a secure OTP-based login system, so no password is required.`,
+    };
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`[EMAIL_DEBUG] Invitation email sent successfully!`);
-        console.log(`[EMAIL_DEBUG] To: ${to}`);
-        console.log(`[EMAIL_DEBUG] Role: ${role}`);
-        console.log(`[EMAIL_DEBUG] Message-ID: ${info.messageId}`);
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('Failed to send invitation email:', error);
-        return { success: false, error: 'Failed to send email' };
-    }
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[EMAIL_DEBUG] Invitation email sent successfully!`);
+    console.log(`[EMAIL_DEBUG] To: ${to}`);
+    console.log(`[EMAIL_DEBUG] Role: ${role}`);
+    console.log(`[EMAIL_DEBUG] Message-ID: ${info.messageId}`);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error("Failed to send invitation email:", error);
+    return { success: false, error: "Failed to send email" };
+  }
 }
 
 export async function sendNotificationEmail({
-    to,
-    userName,
-    notification
+  to,
+  userName,
+  notification,
 }: {
-    to: string;
-    userName: string;
-    notification: { title: string; message: string; type: string; priority: string; }
+  to: string;
+  userName: string;
+  notification: {
+    title: string;
+    message: string;
+    type: string;
+    priority: string;
+  };
 }) {
-    try {
-        const loginUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://krishankasthuriarachchi.lk';
+  try {
+    const loginUrl =
+      process.env.NEXT_PUBLIC_APP_URL || "https://krishankasthuriarachchi.lk";
 
-        // Map types to colors/icons for the email
-        const getBrandColor = (type: string) => {
-            switch (type) {
-                case 'announcement': return '#D4AF37'; // Gold
-                case 'update': return '#FF8C00'; // Dark Orange
-                case 'improvement': return '#32CD32'; // Lime Green
-                case 'urgent': return '#FF0000'; // Red
-                default: return '#1a1a1a'; // Dark
-            }
-        };
+    // Map types to colors/icons for the email
+    const getBrandColor = (type: string) => {
+      switch (type) {
+        case "announcement":
+          return "#D4AF37"; // Gold
+        case "update":
+          return "#FF8C00"; // Dark Orange
+        case "improvement":
+          return "#32CD32"; // Lime Green
+        case "urgent":
+          return "#FF0000"; // Red
+        default:
+          return "#1a1a1a"; // Dark
+      }
+    };
 
-        const mailOptions = {
-            from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
-            to,
-            subject: `📢 ${notification.title} - Quality ම Econ Alert`,
-            html: `
+    const mailOptions = {
+      from: `"Quality ම Econ" <${process.env.SMTP_FROM}>`,
+      to,
+      subject: `📢 ${notification.title} - Quality ම Econ Alert`,
+      html: `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -346,41 +362,41 @@ export async function sendNotificationEmail({
                 </body>
                 </html>
             `,
-            text: `[${notification.type.toUpperCase()}] ${notification.title}\n\n${notification.message}\n\nView details at: ${loginUrl}/admin/notifications`,
-        };
+      text: `[${notification.type.toUpperCase()}] ${notification.title}\n\n${notification.message}\n\nView details at: ${loginUrl}/admin/notifications`,
+    };
 
-        await transporter.sendMail(mailOptions);
-        return { success: true };
-    } catch (error) {
-        console.error('Failed to send notification email:', error);
-        return { success: false, error: 'Failed to send notification email' };
-    }
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send notification email:", error);
+    return { success: false, error: "Failed to send notification email" };
+  }
 }
 
 export async function sendDeveloperTicket({
-    fromName,
-    fromEmail,
-    requestType,
-    subject,
-    message,
-    ticketId
+  fromName,
+  fromEmail,
+  requestType,
+  subject,
+  message,
+  ticketId,
 }: {
-    fromName: string;
-    fromEmail: string;
-    requestType: string;
-    subject: string;
-    message: string;
-    ticketId: string;
+  fromName: string;
+  fromEmail: string;
+  requestType: string;
+  subject: string;
+  message: string;
+  ticketId: string;
 }) {
-    try {
-        const developerEmail = 'vihangaheshan37@gmail.com';
+  try {
+    const developerEmail = "vihangaheshan37@gmail.com";
 
-        const mailOptions = {
-            from: `"LMS Support Ticket" <${process.env.SMTP_FROM}>`,
-            to: developerEmail,
-            replyTo: fromEmail,
-            subject: `[${ticketId}] [${requestType.toUpperCase()}] ${subject}`,
-            html: `
+    const mailOptions = {
+      from: `"LMS Support Ticket" <${process.env.SMTP_FROM}>`,
+      to: developerEmail,
+      replyTo: fromEmail,
+      subject: `[${ticketId}] [${requestType.toUpperCase()}] ${subject}`,
+      html: `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -440,38 +456,38 @@ export async function sendDeveloperTicket({
                 </body>
                 </html>
             `,
-            text: `NEW DEVELOPER REQUEST [${ticketId}]\n\nFrom: ${fromName} (${fromEmail})\nType: ${requestType}\nSubject: ${subject}\n\nMessage:\n${message}`,
-        };
+      text: `NEW DEVELOPER REQUEST [${ticketId}]\n\nFrom: ${fromName} (${fromEmail})\nType: ${requestType}\nSubject: ${subject}\n\nMessage:\n${message}`,
+    };
 
-        await transporter.sendMail(mailOptions);
-        return { success: true };
-    } catch (error) {
-        console.error('Failed to send developer ticket:', error);
-        return { success: false, error: 'Failed to deliver message to developer.' };
-    }
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send developer ticket:", error);
+    return { success: false, error: "Failed to deliver message to developer." };
+  }
 }
 
 export async function sendTicketConfirmation({
-    toName,
-    toEmail,
-    ticketId,
-    subject,
-    requestType,
-    message
+  toName,
+  toEmail,
+  ticketId,
+  subject,
+  requestType,
+  message,
 }: {
-    toName: string;
-    toEmail: string;
-    ticketId: string;
-    subject: string;
-    requestType: string;
-    message: string;
+  toName: string;
+  toEmail: string;
+  ticketId: string;
+  subject: string;
+  requestType: string;
+  message: string;
 }) {
-    try {
-        const mailOptions = {
-            from: `"Quality ම Econ Support" <${process.env.SMTP_FROM}>`,
-            to: toEmail,
-            subject: `Ticket Received: ${subject} [${ticketId}]`,
-            html: `
+  try {
+    const mailOptions = {
+      from: `"Quality ම Econ Support" <${process.env.SMTP_FROM}>`,
+      to: toEmail,
+      subject: `Ticket Received: ${subject} [${ticketId}]`,
+      html: `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -521,7 +537,7 @@ export async function sendTicketConfirmation({
                                     <div class="detail-value">${subject}</div>
                                 </div>
                                 <div class="message-quote">
-                                    "${message.length > 200 ? message.substring(0, 200) + '...' : message}"
+                                    "${message.length > 200 ? message.substring(0, 200) + "..." : message}"
                                 </div>
                             </div>
 
@@ -538,24 +554,24 @@ export async function sendTicketConfirmation({
                 </body>
                 </html>
             `,
-            text: `Hello ${toName},\n\nWe have received your ticket #${ticketId} regarding "${subject}". Our team will review it and get back to you shortly.\n\nTicket Summary:\nID: ${ticketId}\nType: ${requestType}\nSubject: ${subject}\n\nThank you for using Quality ම Econ.`,
-        };
+      text: `Hello ${toName},\n\nWe have received your ticket #${ticketId} regarding "${subject}". Our team will review it and get back to you shortly.\n\nTicket Summary:\nID: ${ticketId}\nType: ${requestType}\nSubject: ${subject}\n\nThank you for using Quality ම Econ.`,
+    };
 
-        await transporter.sendMail(mailOptions);
-        return { success: true };
-    } catch (error) {
-        console.error('Failed to send teacher confirmation email:', error);
-        return { success: false, error: 'Failed to send confirmation email.' };
-    }
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send teacher confirmation email:", error);
+    return { success: false, error: "Failed to send confirmation email." };
+  }
 }
 
 export async function verifyEmailConfig() {
-    try {
-        await transporter.verify();
-        console.log('Email server is ready');
-        return { success: true };
-    } catch (error) {
-        console.error('Email configuration error:', error);
-        return { success: false, error: 'Invalid email configuration' };
-    }
+  try {
+    await transporter.verify();
+    console.log("Email server is ready");
+    return { success: true };
+  } catch (error) {
+    console.error("Email configuration error:", error);
+    return { success: false, error: "Invalid email configuration" };
+  }
 }

@@ -1,9 +1,18 @@
-'use client';
+"use client";
 
-import { Hash, User, Plus, CheckCircle, Ban, X, Loader2, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+  Hash,
+  User,
+  Plus,
+  CheckCircle,
+  Ban,
+  X,
+  Loader2,
+  AlertTriangle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface MarksInputRowProps {
   indexNumber: string;
@@ -50,10 +59,10 @@ export function MarksInputRow({
               disabled={isBlocked}
               className={`h-12 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 ${
                 isBlocked
-                  ? 'border-red-400 focus:border-red-500 focus:ring-red-500 bg-red-50'
+                  ? "border-red-400 focus:border-red-500 focus:ring-red-500 bg-red-50"
                   : indexWarning && !isBlocked
-                  ? 'border-amber-400 focus:border-amber-500 focus:ring-amber-500'
-                  : 'border-gray-300 focus:border-[#D4AF37] focus:ring-[#D4AF37]'
+                    ? "border-amber-400 focus:border-amber-500 focus:ring-amber-500"
+                    : "border-gray-300 focus:border-[#D4AF37] focus:ring-[#D4AF37]"
               }`}
             />
             {isCheckingIndex && (
@@ -75,7 +84,7 @@ export function MarksInputRow({
             onChange={(e) => onStudentNameChange(e.target.value)}
             disabled={isBlocked}
             className={`h-12 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 ${
-              isBlocked ? 'bg-red-50 border-red-300' : 'border-gray-300'
+              isBlocked ? "bg-red-50 border-red-300" : "border-gray-300"
             } focus:border-[#D4AF37] focus:ring-[#D4AF37]`}
           />
         </div>
@@ -91,7 +100,7 @@ export function MarksInputRow({
             onChange={(e) => onMarksChange(e.target.value)}
             disabled={isBlocked}
             className={`h-12 rounded-xl bg-white text-gray-900 focus:border-[#D4AF37] focus:ring-[#D4AF37] placeholder:text-gray-400 ${
-              isBlocked ? 'bg-red-50 border-red-300' : 'border-gray-300'
+              isBlocked ? "bg-red-50 border-red-300" : "border-gray-300"
             }`}
           />
         </div>
@@ -102,20 +111,33 @@ export function MarksInputRow({
             disabled={isBlocked}
             className={`h-12 px-6 font-bold rounded-xl shadow-lg transition-all gap-2 whitespace-nowrap ${
               isBlocked
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] shadow-[#D4AF37]/20'
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] shadow-[#D4AF37]/20"
             }`}
           >
             {isBlocked ? (
-              <><Ban className="w-4 h-4" />Cannot Add</>
+              <>
+                <Ban className="w-4 h-4" />
+                Cannot Add
+              </>
             ) : isEditing ? (
-              <><CheckCircle className="w-4 h-4" />Update Mark</>
+              <>
+                <CheckCircle className="w-4 h-4" />
+                Update Mark
+              </>
             ) : (
-              <><Plus className="w-4 h-4" />Add Marks</>
+              <>
+                <Plus className="w-4 h-4" />
+                Add Marks
+              </>
             )}
           </Button>
           {isEditing && (
-            <Button onClick={onClear} variant="outline" className="h-12 px-4 rounded-xl border-gray-300">
+            <Button
+              onClick={onClear}
+              variant="outline"
+              className="h-12 px-4 rounded-xl border-gray-300"
+            >
               <X className="w-4 h-4" />
             </Button>
           )}
@@ -125,15 +147,22 @@ export function MarksInputRow({
       {indexWarning && (
         <div className="flex gap-4">
           <div className="flex-1">
-            <p className={`text-xs flex items-start gap-1 px-3 py-1.5 rounded-lg border ${
-              isBlocked ? 'text-red-600 bg-red-50 border-red-200' : 'text-amber-600 bg-amber-50 border-amber-200'
-            }`}>
+            <p
+              className={`text-xs flex items-start gap-1 px-3 py-1.5 rounded-lg border ${
+                isBlocked
+                  ? "text-red-600 bg-red-50 border-red-200"
+                  : "text-amber-600 bg-amber-50 border-amber-200"
+              }`}
+            >
               <AlertTriangle className="w-3 h-3 flex-shrink-0 mt-0.5" />
               <span>{indexWarning}</span>
             </p>
           </div>
           <div className="flex-1" />
-          <div className="flex gap-2" style={{ width: isEditing ? '176px' : '136px' }} />
+          <div
+            className="flex gap-2"
+            style={{ width: isEditing ? "176px" : "136px" }}
+          />
         </div>
       )}
     </div>

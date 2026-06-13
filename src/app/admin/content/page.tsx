@@ -1,1703 +1,2664 @@
-'use client';
+"use client";
 
-import { useState, useEffect, ChangeEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, ChangeEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-    Save, Plus, Trash2, Edit2, Eye, X, Upload,
-    Layers, Image as ImageIcon, Zap, MessageSquare, Mail,
-    Play, FileText, ClipboardCheck, CheckCircle
-} from 'lucide-react';
-import { FEATURE_ICONS } from '@/lib/constants';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertDialog } from '@/components/ui/alert-dialog';
+  Save,
+  Plus,
+  Trash2,
+  Edit2,
+  Eye,
+  X,
+  Upload,
+  Layers,
+  Image as ImageIcon,
+  Zap,
+  MessageSquare,
+  Mail,
+  Play,
+  FileText,
+  ClipboardCheck,
+  CheckCircle,
+} from "lucide-react";
+import { FEATURE_ICONS } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import {
-    getLandingPageContent,
-    updateLandingPageContent,
-    updateAllLandingPageContent,
-    getTestimonials,
-    createTestimonial,
-    updateTestimonial,
-    deleteTestimonial,
-    getModernFeatures,
-    createModernFeature,
-    updateModernFeature,
-    deleteModernFeature
-} from '@/lib/actions/content';
-import { uploadImage, uploadFile } from '@/lib/actions/upload';
-import { PreviewModal } from '@/components/landing/preview/PreviewModal';
-import { HeroPreview } from '@/components/landing/preview/HeroPreview';
-import { AboutPreview } from '@/components/landing/preview/AboutPreview';
-import { ModernFeaturesPreview } from '@/components/landing/preview/ModernFeaturesPreview';
-import { TestimonialsPreview } from '@/components/landing/preview/TestimonialsPreview';
+  getLandingPageContent,
+  updateLandingPageContent,
+  updateAllLandingPageContent,
+  getTestimonials,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  getModernFeatures,
+  createModernFeature,
+  updateModernFeature,
+  deleteModernFeature,
+} from "@/lib/actions/content";
+import { uploadImage, uploadFile } from "@/lib/actions/upload";
+import { PreviewModal } from "@/components/landing/preview/PreviewModal";
+import { HeroPreview } from "@/components/landing/preview/HeroPreview";
+import { AboutPreview } from "@/components/landing/preview/AboutPreview";
+import { ModernFeaturesPreview } from "@/components/landing/preview/ModernFeaturesPreview";
+import { TestimonialsPreview } from "@/components/landing/preview/TestimonialsPreview";
 
-import { ContactPreview } from '@/components/landing/preview/ContactPreview';
-import { Testimonial } from '@prisma/client';
+import { ContactPreview } from "@/components/landing/preview/ContactPreview";
+import { Testimonial } from "@prisma/client";
 
 export default function ContentManagementPage() {
-    const [activeTab, setActiveTab] = useState('general');
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
-    // Icon and Color options for Features
+  // Icon and Color options for Features
 
+  const GRADIENT_COLORS = [
+    {
+      name: "Blue",
+      value: "from-blue-500 to-blue-600",
+      preview: "bg-linear-to-r from-blue-500 to-blue-600",
+    },
+    {
+      name: "Purple",
+      value: "from-purple-500 to-purple-600",
+      preview: "bg-linear-to-r from-purple-500 to-purple-600",
+    },
+    {
+      name: "Green",
+      value: "from-green-500 to-green-600",
+      preview: "bg-linear-to-r from-green-500 to-green-600",
+    },
+    {
+      name: "Red",
+      value: "from-red-500 to-red-600",
+      preview: "bg-linear-to-r from-red-500 to-red-600",
+    },
+    {
+      name: "Yellow",
+      value: "from-yellow-500 to-yellow-600",
+      preview: "bg-linear-to-r from-yellow-500 to-yellow-600",
+    },
+    {
+      name: "Pink",
+      value: "from-pink-500 to-pink-600",
+      preview: "bg-linear-to-r from-pink-500 to-pink-600",
+    },
+  ];
 
-    const GRADIENT_COLORS = [
-        { name: 'Blue', value: 'from-blue-500 to-blue-600', preview: 'bg-linear-to-r from-blue-500 to-blue-600' },
-        { name: 'Purple', value: 'from-purple-500 to-purple-600', preview: 'bg-linear-to-r from-purple-500 to-purple-600' },
-        { name: 'Green', value: 'from-green-500 to-green-600', preview: 'bg-linear-to-r from-green-500 to-green-600' },
-        { name: 'Red', value: 'from-red-500 to-red-600', preview: 'bg-linear-to-r from-red-500 to-red-600' },
-        { name: 'Yellow', value: 'from-yellow-500 to-yellow-600', preview: 'bg-linear-to-r from-yellow-500 to-yellow-600' },
-        { name: 'Pink', value: 'from-pink-500 to-pink-600', preview: 'bg-linear-to-r from-pink-500 to-pink-600' }
-    ];
+  // General Content State
+  const [heroContent, setHeroContent] = useState({
+    description: "", // Sinhala description
+    studentCount: "",
+    rankCount: "",
+    expCount: "",
+    teacherName: "",
+    teacherTitle: "",
+    teacherImage: "",
+  });
+  const [teacherImageFile, setTeacherImageFile] = useState<File | null>(null);
 
-    // General Content State
-    const [heroContent, setHeroContent] = useState({
-        description: '', // Sinhala description
-        studentCount: '', rankCount: '', expCount: '',
-        teacherName: '', teacherTitle: '', teacherImage: ''
-    });
-    const [teacherImageFile, setTeacherImageFile] = useState<File | null>(null);
+  const [aboutContent, setAboutContent] = useState({
+    sectionSubtitle: "", // "ABOUT THE MENTOR"
+    sectionTitle: "", // "Why Choose Quality Econ"
+    secondarySubtitle: "", // "සංකීර්ණතාවය සරල බවට පරිවර්තනය කිරීම"
+    description: "", // Sinhala description
+    features: [] as string[], // Array of feature strings
+    quote: "",
+    quoteAuthor: "",
+    videoUrl: "",
+    videoPreviewImage: "",
+  });
+  const [contactContent, setContactContent] = useState({
+    subtitle: "",
+    title: "",
+    description: "",
+    email: "",
+    phone: "",
+    address: "",
+    formTitle: "",
+    locations: [
+      { name: "", address: "", latitude: "", longitude: "" },
+      { name: "", address: "", latitude: "", longitude: "" },
+    ] as {
+      name: string;
+      address: string;
+      latitude: string;
+      longitude: string;
+    }[],
+    officeHours: { title: "", weekdays: "", weekends: "" },
+  });
 
-    const [aboutContent, setAboutContent] = useState({
-        sectionSubtitle: '', // "ABOUT THE MENTOR"
-        sectionTitle: '', // "Why Choose Quality Econ"
-        secondarySubtitle: '', // "සංකීර්ණතාවය සරල බවට පරිවර්තනය කිරීම"
-        description: '', // Sinhala description
-        features: [] as string[], // Array of feature strings
-        quote: '', quoteAuthor: '',
-        videoUrl: '',
-        videoPreviewImage: ''
-    });
-    const [contactContent, setContactContent] = useState({
-        subtitle: '',
-        title: '',
-        description: '',
-        email: '', phone: '', address: '',
-        formTitle: '',
-        locations: [
-            { name: '', address: '', latitude: '', longitude: '' },
-            { name: '', address: '', latitude: '', longitude: '' }
-        ] as { name: string; address: string; latitude: string; longitude: string }[],
-        officeHours: { title: '', weekdays: '', weekends: '' }
-    });
+  const [footerContent, setFooterContent] = useState({
+    logoText: "",
+    description: "",
+    socialLinks: { facebook: "", youtube: "", telegram: "" },
+    quickLinks: [] as { title: string; url: string }[],
+    contactInfo: { address: "", phone: "", email: "" },
+    copyright: "",
+  });
 
-    const [footerContent, setFooterContent] = useState({
-        logoText: '', description: '',
-        socialLinks: { facebook: '', youtube: '', telegram: '' },
-        quickLinks: [] as { title: string; url: string }[],
-        contactInfo: { address: '', phone: '', email: '' },
-        copyright: ''
-    });
+  // Banner State
+  const [bannerContent, setBannerContent] = useState([
+    {
+      id: 1,
+      title: "",
+      subtitle: "",
+      description: "",
+      image: "",
+      color: "from-yellow-600 to-amber-800",
+    },
+    {
+      id: 2,
+      title: "",
+      subtitle: "",
+      description: "",
+      image: "",
+      color: "from-blue-900 to-slate-900",
+    },
+    {
+      id: 3,
+      title: "",
+      subtitle: "",
+      description: "",
+      image: "",
+      color: "from-emerald-900 to-green-950",
+    },
+    {
+      id: 4,
+      title: "",
+      subtitle: "",
+      description: "",
+      image: "",
+      color: "from-purple-900 to-indigo-950",
+    },
+  ]);
+  const [bannerImageFiles, setBannerImageFiles] = useState<{
+    [key: number]: File;
+  }>({});
 
-    // Banner State
-    const [bannerContent, setBannerContent] = useState([
-        { id: 1, title: '', subtitle: '', description: '', image: '', color: 'from-yellow-600 to-amber-800' },
-        { id: 2, title: '', subtitle: '', description: '', image: '', color: 'from-blue-900 to-slate-900' },
-        { id: 3, title: '', subtitle: '', description: '', image: '', color: 'from-emerald-900 to-green-950' },
-        { id: 4, title: '', subtitle: '', description: '', image: '', color: 'from-purple-900 to-indigo-950' }
-    ]);
-    const [bannerImageFiles, setBannerImageFiles] = useState<{ [key: number]: File }>({});
+  // Testimonials State
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonialStats, setTestimonialStats] = useState({
+    totalStudents: "5000+",
+    averageRating: "4.9/5",
+    recommendationRate: "98%",
+    experienceYears: "10+",
+  });
+  const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
+  const [editingTestimonial, setEditingTestimonial] =
+    useState<Testimonial | null>(null);
+  const [testimonialForm, setTestimonialForm] = useState({
+    name: "",
+    role: "",
+    content: "",
+    imageUrl: "",
+    rating: 5,
+    institute: "",
+  });
 
-    // Testimonials State
-    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-    const [testimonialStats, setTestimonialStats] = useState({
-        totalStudents: '5000+',
-        averageRating: '4.9/5',
-        recommendationRate: '98%',
-        experienceYears: '10+'
-    });
-    const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
-    const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
-    const [testimonialForm, setTestimonialForm] = useState({ name: '', role: '', content: '', imageUrl: '', rating: 5, institute: '' });
+  // Features State
+  const [features, setFeatures] = useState<any[]>([]);
+  const [isFeatureModalOpen, setIsFeatureModalOpen] = useState(false);
+  const [editingFeature, setEditingFeature] = useState<any | null>(null);
+  const [featureForm, setFeatureForm] = useState({
+    title: "",
+    description: "",
+    icon: "",
+    color: "",
+    order: 0,
+  });
 
-    // Features State
-    const [features, setFeatures] = useState<any[]>([]);
-    const [isFeatureModalOpen, setIsFeatureModalOpen] = useState(false);
-    const [editingFeature, setEditingFeature] = useState<any | null>(null);
-    const [featureForm, setFeatureForm] = useState({ title: '', description: '', icon: '', color: '', order: 0 });
+  // Courses and Timetable are managed in dedicated pages, not here
 
-    // Courses and Timetable are managed in dedicated pages, not here
+  // Preview Modal State
+  const [previewModal, setPreviewModal] = useState<{
+    isOpen: boolean;
+    type: "hero" | "about" | "features" | "testimonials" | "contact" | null;
+  }>({
+    isOpen: false,
+    type: null,
+  });
 
+  // Alert State
+  const [alert, setAlert] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    type: "success" | "error" | "confirm";
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+    type: "success",
+  });
 
+  // Features Meta State
+  const [featuresMeta, setFeaturesMeta] = useState({
+    description: "", // Main description
+    studentLove: {
+      title: "Why Students Love Us",
+      description: "",
+      benefits: [] as string[],
+      successRate: {
+        value: "92",
+        suffix: "%",
+        label: "Success Rate",
+        description: "of our students achieve A or B grades",
+      },
+    },
+  });
 
-    // Preview Modal State
-    const [previewModal, setPreviewModal] = useState<{ isOpen: boolean; type: 'hero' | 'about' | 'features' | 'testimonials' | 'contact' | null }>({
-        isOpen: false,
-        type: null
-    });
+  useEffect(() => {
+    fetchContent();
+  }, []);
 
-    // Alert State
-    const [alert, setAlert] = useState<{ isOpen: boolean; title: string; description: string; type: 'success' | 'error' | 'confirm'; onConfirm?: () => void }>({
-        isOpen: false,
-        title: '',
-        description: '',
-        type: 'success'
-    });
+  const fetchContent = async () => {
+    setIsLoading(true);
+    try {
+      const [landingData, testimonialData, featureData] = await Promise.all([
+        getLandingPageContent(),
+        getTestimonials(),
+        getModernFeatures(),
+      ]);
 
-    // Features Meta State
-    const [featuresMeta, setFeaturesMeta] = useState({
-        description: '', // Main description
-        studentLove: {
-            title: 'Why Students Love Us',
-            description: '',
-            benefits: [] as string[],
-            successRate: {
-                value: '92',
-                suffix: '%',
-                label: 'Success Rate',
-                description: 'of our students achieve A or B grades'
-            }
+      if (landingData.success && landingData.data) {
+        const data = landingData.data as any;
+        if (data.hero) setHeroContent(data.hero);
+        if (data.about) setAboutContent((prev) => ({ ...prev, ...data.about }));
+
+        if (data.contact) setContactContent(data.contact);
+        if (data.contact) {
+          // Ensure backward compatibility - add locations array if it doesn't exist
+          const contactData = {
+            ...data.contact,
+            locations: data.contact.locations || [
+              { name: "", address: "", latitude: "", longitude: "" },
+              { name: "", address: "", latitude: "", longitude: "" },
+            ],
+          };
+          setContactContent(contactData);
         }
-    });
+        if (data.footer) setFooterContent(data.footer);
+        if (data.testimonials)
+          setTestimonialStats((prev) => ({ ...prev, ...data.testimonials }));
+        if (data.banners && Array.isArray(data.banners))
+          setBannerContent(data.banners);
+        if (data.features) setFeaturesMeta(data.features);
+      }
 
-
-    useEffect(() => {
-        fetchContent();
-    }, []);
-
-    const fetchContent = async () => {
-        setIsLoading(true);
-        try {
-            const [landingData, testimonialData, featureData] = await Promise.all([
-                getLandingPageContent(),
-                getTestimonials(),
-                getModernFeatures()
-            ]);
-
-            if (landingData.success && landingData.data) {
-                const data = landingData.data as any;
-                if (data.hero) setHeroContent(data.hero);
-                if (data.about) setAboutContent(prev => ({ ...prev, ...data.about }));
-
-                if (data.contact) setContactContent(data.contact);
-                if (data.contact) {
-                    // Ensure backward compatibility - add locations array if it doesn't exist
-                    const contactData = {
-                        ...data.contact,
-                        locations: data.contact.locations || [
-                            { name: '', address: '', latitude: '', longitude: '' },
-                            { name: '', address: '', latitude: '', longitude: '' }
-                        ]
-                    };
-                    setContactContent(contactData);
-                }
-                if (data.footer) setFooterContent(data.footer);
-                if (data.testimonials) setTestimonialStats(prev => ({ ...prev, ...data.testimonials }));
-                if (data.banners && Array.isArray(data.banners)) setBannerContent(data.banners);
-                if (data.features) setFeaturesMeta(data.features);
-            }
-
-            if (testimonialData.success) setTestimonials(testimonialData.data || []);
-            if (featureData.success) setFeatures(featureData.data || []);
-
-        } catch (error) {
-            console.error('Error fetching content:', error);
-            setAlert({ isOpen: true, title: 'Error', description: 'Failed to fetch content', type: 'error' });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleSaveGeneral = async () => {
-        setIsSaving(true);
-        try {
-            let teacherImageUrl = heroContent.teacherImage;
-
-            if (teacherImageFile) {
-                const formData = new FormData();
-                formData.append('file', teacherImageFile);
-                formData.append('customName', 'teacher-hero-image'); // Fixed filename to overwrite
-                const uploadResult = await uploadImage(formData);
-                if (uploadResult.success && uploadResult.url) {
-                    // Append timestamp to bust browser cache while keeping same file on disk
-                    teacherImageUrl = `${uploadResult.url}?t=${new Date().getTime()}`;
-                } else {
-                    throw new Error(uploadResult.error || 'Failed to upload image');
-                }
-            }
-
-            let videoUrl = aboutContent.videoUrl;
-
-            // Handle Video Upload
-            if (videoFile) {
-                const formData = new FormData();
-                formData.append('file', videoFile);
-                formData.append('customName', 'about-trailer-video'); // Fixed filename to overwrite
-
-                const vidResult = await uploadImage(formData);
-                if (vidResult.success && vidResult.url) {
-                    // Append timestamp to bust cache
-                    videoUrl = `${vidResult.url}?t=${new Date().getTime()}`;
-                }
-            }
-
-            const result = await updateAllLandingPageContent({
-                hero: { ...heroContent, teacherImage: teacherImageUrl },
-                about: { ...aboutContent, videoUrl },
-                contact: contactContent,
-                footer: footerContent
-            });
-
-            if (result.success) {
-                setAlert({ isOpen: true, title: 'Success', description: 'General content updated successfully', type: 'success' });
-                // Clear the file selection after successful save
-                setTeacherImageFile(null);
-                setVideoFile(null);
-                // Update local state with the new URL AND timestamp to force refresh preview
-                setHeroContent(prev => ({ ...prev, teacherImage: `${teacherImageUrl}?t=${new Date().getTime()}` }));
-                setAboutContent(prev => ({ ...prev, videoUrl }));
-            } else {
-                throw new Error(result.error);
-            }
-        } catch (error) {
-            console.error(error);
-            setAlert({ isOpen: true, title: 'Error', description: 'Failed to update content', type: 'error' });
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            // Store file for upload on save
-            setTeacherImageFile(file);
-
-            // Show preview
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setHeroContent(prev => ({ ...prev, teacherImage: reader.result as string }));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const [videoFile, setVideoFile] = useState<File | null>(null);
-
-    const handleVideoUpload = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            // Check file size (50MB = 50 * 1024 * 1024 bytes)
-            const MAX_SIZE = 50 * 1024 * 1024;
-            if (file.size > MAX_SIZE) {
-                setAlert({
-                    isOpen: true,
-                    title: 'File Too Large',
-                    description: 'Video file size must be less than 50MB.',
-                    type: 'error'
-                });
-                // Clear the input
-                e.target.value = '';
-                return;
-            }
-
-            setVideoFile(file);
-            // Create object URL for preview
-            const previewUrl = URL.createObjectURL(file);
-            setAboutContent(prev => ({ ...prev, videoUrl: previewUrl }));
-        }
-    };
-
-    // --- Testimonial Handlers ---
-
-    // ... (rest of the file) ...
-
-    // In the UI Render part (needs separate chunk or manual merge logic, better to do separate replace call for UI)
-    // Actually, I can use multi_replace for this. Let's start with just the handler update in this tool call?
-    // No, I should do multi_replace if I want to touch multiple parts.
-    // The user asked to remove 'Section Subtitle', 'Section Title'.
-    // And add video upload input.
-    // I will cancel this and use multi_replace.
-
-    const handleVideoPreviewImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('customName', 'about-video-preview'); // Fixed name to overwrite
-
-            setIsSaving(true);
-            const result = await uploadImage(formData);
-            if (result.success && result.url) {
-                // Append timestamp to bust browser cache
-                const urlWithCacheBust = `${result.url}?t=${new Date().getTime()}`;
-                setAboutContent(prev => ({ ...prev, videoPreviewImage: urlWithCacheBust }));
-            }
-            setIsSaving(false);
-        }
-    };
-
-    const handleSaveBanners = async () => {
-        setIsSaving(true);
-        try {
-            const updatedBanners = [...bannerContent];
-
-            // Process image uploads for each banner
-            for (let i = 0; i < updatedBanners.length; i++) {
-                const file = bannerImageFiles[i];
-                if (file) {
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    // Fixed name for banner images to overwrite
-                    formData.append('customName', `banner-slide-${i + 1}`);
-
-                    const uploadResult = await uploadImage(formData);
-                    if (uploadResult.success && uploadResult.url) {
-                        // Append timestamp to bust browser cache
-                        updatedBanners[i].image = `${uploadResult.url}?t=${new Date().getTime()}`;
-                    }
-                }
-            }
-
-            const result = await updateLandingPageContent('banners', updatedBanners);
-
-            if (result.success) {
-                setAlert({ isOpen: true, title: 'Success', description: 'Banners updated successfully', type: 'success' });
-                // Clear the file selections
-                setBannerImageFiles({});
-                // Force refresh local state with timestamp to bust cache if needed
-                setBannerContent(updatedBanners.map(b => ({ ...b, image: b.image.includes('?') ? b.image : `${b.image}?t=${new Date().getTime()}` })));
-            } else {
-                throw new Error(result.error);
-            }
-        } catch (error) {
-            console.error(error);
-            setAlert({ isOpen: true, title: 'Error', description: 'Failed to update banners', type: 'error' });
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleBannerImageUpload = (e: ChangeEvent<HTMLInputElement>, index: number) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            // Store file for upload
-            setBannerImageFiles(prev => ({ ...prev, [index]: file }));
-
-            // Show preview
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const newBanners = [...bannerContent];
-                newBanners[index] = { ...newBanners[index], image: reader.result as string };
-                setBannerContent(newBanners);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-
-    const handleSaveTestimonialStats = async () => {
-        setIsSaving(true);
-        try {
-            const result = await updateLandingPageContent('testimonials', testimonialStats);
-            if (result.success) {
-                setAlert({ isOpen: true, title: 'Success', description: 'Testimonial stats updated successfully', type: 'success' });
-            } else {
-                throw new Error(result.error);
-            }
-        } catch (error) {
-            console.error(error);
-            setAlert({ isOpen: true, title: 'Error', description: 'Failed to update stats', type: 'error' });
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleTestimonialSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true);
-
-        const result = editingTestimonial
-            ? await updateTestimonial(editingTestimonial.id, testimonialForm)
-            : await createTestimonial(testimonialForm);
-
-        if (result.success) {
-            await fetchContent();
-            setIsTestimonialModalOpen(false);
-            setEditingTestimonial(null);
-            setTestimonialForm({ name: '', role: '', content: '', imageUrl: '', rating: 5, institute: '' });
-            showAlert('Success', 'Testimonial saved successfully', 'success');
-        } else {
-            showAlert('Error', 'Failed to save testimonial', 'error');
-        }
-        setIsSaving(false);
-    };
-
-    const handleDeleteTestimonial = (id: string) => {
-        setAlert({
-            isOpen: true,
-            title: 'Delete Testimonial',
-            description: 'Are you sure you want to delete this testimonial?',
-            type: 'confirm',
-            onConfirm: async () => {
-                const result = await deleteTestimonial(id);
-                if (result.success) {
-                    await fetchContent();
-                    showAlert('Success', 'Testimonial deleted successfully', 'success');
-                } else {
-                    showAlert('Error', 'Failed to delete testimonial', 'error');
-                }
-            }
-        });
-    };
-
-    // --- Feature Handlers ---
-
-    const handleFeatureSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true);
-
-        const result = editingFeature
-            ? await updateModernFeature(editingFeature.id, featureForm)
-            : await createModernFeature(featureForm);
-
-        if (result.success) {
-            await fetchContent();
-            setIsFeatureModalOpen(false);
-            setEditingFeature(null);
-            setFeatureForm({ title: '', description: '', icon: '', color: '', order: 0 });
-            showAlert('Success', 'Feature saved successfully', 'success');
-        } else {
-            showAlert('Error', 'Failed to save feature', 'error');
-        }
-        setIsSaving(false);
-    };
-
-    const handleDeleteFeature = (id: string) => {
-        setAlert({
-            isOpen: true,
-            title: 'Delete Feature',
-            description: 'Are you sure you want to delete this feature?',
-            type: 'confirm',
-            onConfirm: async () => {
-                const result = await deleteModernFeature(id);
-                if (result.success) {
-                    await fetchContent();
-                    showAlert('Success', 'Feature deleted successfully', 'success');
-                } else {
-                    showAlert('Error', 'Failed to delete feature', 'error');
-                }
-            }
-        });
-    };
-
-    // Course and Timetable handlers removed - managed in dedicated pages
-
-    const showAlert = (title: string, description: string, type: 'success' | 'error' | 'confirm') => {
-        setAlert(prev => ({ ...prev, isOpen: true, title, description, type }));
-    };
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-gray-500">Loading content...</div>
-            </div>
-        );
+      if (testimonialData.success) setTestimonials(testimonialData.data || []);
+      if (featureData.success) setFeatures(featureData.data || []);
+    } catch (error) {
+      console.error("Error fetching content:", error);
+      setAlert({
+        isOpen: true,
+        title: "Error",
+        description: "Failed to fetch content",
+        type: "error",
+      });
+    } finally {
+      setIsLoading(false);
     }
+  };
 
+  const handleSaveGeneral = async () => {
+    setIsSaving(true);
+    try {
+      let teacherImageUrl = heroContent.teacherImage;
+
+      if (teacherImageFile) {
+        const formData = new FormData();
+        formData.append("file", teacherImageFile);
+        formData.append("customName", "teacher-hero-image"); // Fixed filename to overwrite
+        const uploadResult = await uploadImage(formData);
+        if (uploadResult.success && uploadResult.url) {
+          // Append timestamp to bust browser cache while keeping same file on disk
+          teacherImageUrl = `${uploadResult.url}?t=${new Date().getTime()}`;
+        } else {
+          throw new Error(uploadResult.error || "Failed to upload image");
+        }
+      }
+
+      let videoUrl = aboutContent.videoUrl;
+
+      // Handle Video Upload
+      if (videoFile) {
+        const formData = new FormData();
+        formData.append("file", videoFile);
+        formData.append("customName", "about-trailer-video"); // Fixed filename to overwrite
+
+        const vidResult = await uploadImage(formData);
+        if (vidResult.success && vidResult.url) {
+          // Append timestamp to bust cache
+          videoUrl = `${vidResult.url}?t=${new Date().getTime()}`;
+        }
+      }
+
+      const result = await updateAllLandingPageContent({
+        hero: { ...heroContent, teacherImage: teacherImageUrl },
+        about: { ...aboutContent, videoUrl },
+        contact: contactContent,
+        footer: footerContent,
+      });
+
+      if (result.success) {
+        setAlert({
+          isOpen: true,
+          title: "Success",
+          description: "General content updated successfully",
+          type: "success",
+        });
+        // Clear the file selection after successful save
+        setTeacherImageFile(null);
+        setVideoFile(null);
+        // Update local state with the new URL AND timestamp to force refresh preview
+        setHeroContent((prev) => ({
+          ...prev,
+          teacherImage: `${teacherImageUrl}?t=${new Date().getTime()}`,
+        }));
+        setAboutContent((prev) => ({ ...prev, videoUrl }));
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error(error);
+      setAlert({
+        isOpen: true,
+        title: "Error",
+        description: "Failed to update content",
+        type: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Store file for upload on save
+      setTeacherImageFile(file);
+
+      // Show preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setHeroContent((prev) => ({
+          ...prev,
+          teacherImage: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+
+  const handleVideoUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (50MB = 50 * 1024 * 1024 bytes)
+      const MAX_SIZE = 50 * 1024 * 1024;
+      if (file.size > MAX_SIZE) {
+        setAlert({
+          isOpen: true,
+          title: "File Too Large",
+          description: "Video file size must be less than 50MB.",
+          type: "error",
+        });
+        // Clear the input
+        e.target.value = "";
+        return;
+      }
+
+      setVideoFile(file);
+      // Create object URL for preview
+      const previewUrl = URL.createObjectURL(file);
+      setAboutContent((prev) => ({ ...prev, videoUrl: previewUrl }));
+    }
+  };
+
+  // --- Testimonial Handlers ---
+
+  // ... (rest of the file) ...
+
+  // In the UI Render part (needs separate chunk or manual merge logic, better to do separate replace call for UI)
+  // Actually, I can use multi_replace for this. Let's start with just the handler update in this tool call?
+  // No, I should do multi_replace if I want to touch multiple parts.
+  // The user asked to remove 'Section Subtitle', 'Section Title'.
+  // And add video upload input.
+  // I will cancel this and use multi_replace.
+
+  const handleVideoPreviewImageUpload = async (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("customName", "about-video-preview"); // Fixed name to overwrite
+
+      setIsSaving(true);
+      const result = await uploadImage(formData);
+      if (result.success && result.url) {
+        // Append timestamp to bust browser cache
+        const urlWithCacheBust = `${result.url}?t=${new Date().getTime()}`;
+        setAboutContent((prev) => ({
+          ...prev,
+          videoPreviewImage: urlWithCacheBust,
+        }));
+      }
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveBanners = async () => {
+    setIsSaving(true);
+    try {
+      const updatedBanners = [...bannerContent];
+
+      // Process image uploads for each banner
+      for (let i = 0; i < updatedBanners.length; i++) {
+        const file = bannerImageFiles[i];
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+          // Fixed name for banner images to overwrite
+          formData.append("customName", `banner-slide-${i + 1}`);
+
+          const uploadResult = await uploadImage(formData);
+          if (uploadResult.success && uploadResult.url) {
+            // Append timestamp to bust browser cache
+            updatedBanners[i].image =
+              `${uploadResult.url}?t=${new Date().getTime()}`;
+          }
+        }
+      }
+
+      const result = await updateLandingPageContent("banners", updatedBanners);
+
+      if (result.success) {
+        setAlert({
+          isOpen: true,
+          title: "Success",
+          description: "Banners updated successfully",
+          type: "success",
+        });
+        // Clear the file selections
+        setBannerImageFiles({});
+        // Force refresh local state with timestamp to bust cache if needed
+        setBannerContent(
+          updatedBanners.map((b) => ({
+            ...b,
+            image: b.image.includes("?")
+              ? b.image
+              : `${b.image}?t=${new Date().getTime()}`,
+          })),
+        );
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error(error);
+      setAlert({
+        isOpen: true,
+        title: "Error",
+        description: "Failed to update banners",
+        type: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleBannerImageUpload = (
+    e: ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Store file for upload
+      setBannerImageFiles((prev) => ({ ...prev, [index]: file }));
+
+      // Show preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newBanners = [...bannerContent];
+        newBanners[index] = {
+          ...newBanners[index],
+          image: reader.result as string,
+        };
+        setBannerContent(newBanners);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveTestimonialStats = async () => {
+    setIsSaving(true);
+    try {
+      const result = await updateLandingPageContent(
+        "testimonials",
+        testimonialStats,
+      );
+      if (result.success) {
+        setAlert({
+          isOpen: true,
+          title: "Success",
+          description: "Testimonial stats updated successfully",
+          type: "success",
+        });
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error(error);
+      setAlert({
+        isOpen: true,
+        title: "Error",
+        description: "Failed to update stats",
+        type: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleTestimonialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    const result = editingTestimonial
+      ? await updateTestimonial(editingTestimonial.id, testimonialForm)
+      : await createTestimonial(testimonialForm);
+
+    if (result.success) {
+      await fetchContent();
+      setIsTestimonialModalOpen(false);
+      setEditingTestimonial(null);
+      setTestimonialForm({
+        name: "",
+        role: "",
+        content: "",
+        imageUrl: "",
+        rating: 5,
+        institute: "",
+      });
+      showAlert("Success", "Testimonial saved successfully", "success");
+    } else {
+      showAlert("Error", "Failed to save testimonial", "error");
+    }
+    setIsSaving(false);
+  };
+
+  const handleDeleteTestimonial = (id: string) => {
+    setAlert({
+      isOpen: true,
+      title: "Delete Testimonial",
+      description: "Are you sure you want to delete this testimonial?",
+      type: "confirm",
+      onConfirm: async () => {
+        const result = await deleteTestimonial(id);
+        if (result.success) {
+          await fetchContent();
+          showAlert("Success", "Testimonial deleted successfully", "success");
+        } else {
+          showAlert("Error", "Failed to delete testimonial", "error");
+        }
+      },
+    });
+  };
+
+  // --- Feature Handlers ---
+
+  const handleFeatureSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    const result = editingFeature
+      ? await updateModernFeature(editingFeature.id, featureForm)
+      : await createModernFeature(featureForm);
+
+    if (result.success) {
+      await fetchContent();
+      setIsFeatureModalOpen(false);
+      setEditingFeature(null);
+      setFeatureForm({
+        title: "",
+        description: "",
+        icon: "",
+        color: "",
+        order: 0,
+      });
+      showAlert("Success", "Feature saved successfully", "success");
+    } else {
+      showAlert("Error", "Failed to save feature", "error");
+    }
+    setIsSaving(false);
+  };
+
+  const handleDeleteFeature = (id: string) => {
+    setAlert({
+      isOpen: true,
+      title: "Delete Feature",
+      description: "Are you sure you want to delete this feature?",
+      type: "confirm",
+      onConfirm: async () => {
+        const result = await deleteModernFeature(id);
+        if (result.success) {
+          await fetchContent();
+          showAlert("Success", "Feature deleted successfully", "success");
+        } else {
+          showAlert("Error", "Failed to delete feature", "error");
+        }
+      },
+    });
+  };
+
+  // Course and Timetable handlers removed - managed in dedicated pages
+
+  const showAlert = (
+    title: string,
+    description: string,
+    type: "success" | "error" | "confirm",
+  ) => {
+    setAlert((prev) => ({ ...prev, isOpen: true, title, description, type }));
+  };
+
+  if (isLoading) {
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-gray-500">Loading content...</div>
+      </div>
+    );
+  }
 
-                <div className="relative z-10 flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                        <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-                            <Layers className="w-10 h-10 text-[#1a1a1a]" />
-                        </div>
-                        <div>
-                            <h1 className="text-4xl font-bold text-white mb-2">Site Content</h1>
-                            <p className="text-gray-400 text-lg">Manage landing page content</p>
-                        </div>
-                    </div>
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
+
+        <div className="relative z-10 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
+              <Layers className="w-10 h-10 text-[#1a1a1a]" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                Site Content
+              </h1>
+              <p className="text-gray-400 text-lg">
+                Manage landing page content
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
+        <TabsList className="bg-white p-1 rounded-xl border border-gray-200 shadow-sm h-14">
+          <TabsTrigger
+            value="general"
+            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+          >
+            <Layers className="w-4 h-4" /> General
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="banners"
+            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+          >
+            <ImageIcon className="w-4 h-4" /> Banners
+          </TabsTrigger>
+          <TabsTrigger
+            value="features"
+            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+          >
+            <Zap className="w-4 h-4" /> Features
+          </TabsTrigger>
+          <TabsTrigger
+            value="testimonials"
+            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+          >
+            <MessageSquare className="w-4 h-4" /> Testimonials
+          </TabsTrigger>
+          <TabsTrigger
+            value="contact"
+            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+          >
+            <Mail className="w-4 h-4" /> Contact
+          </TabsTrigger>
+          <TabsTrigger
+            value="footer"
+            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+          >
+            <FileText className="w-4 h-4" /> Footer
+          </TabsTrigger>
+        </TabsList>
+
+        {/* General Tab */}
+        <TabsContent value="general" className="space-y-6">
+          {/* Hero Section */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Hero Section</h2>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() =>
+                    setPreviewModal({ isOpen: true, type: "hero" })
+                  }
+                  variant="outline"
+                  className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                >
+                  <Eye className="w-4 h-4 mr-2" /> Preview
+                </Button>
+                <Button
+                  onClick={() => handleSaveGeneral()}
+                  disabled={isSaving}
+                  className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+                >
+                  <Save className="w-4 h-4 mr-2" /> Save Changes
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {/* Titles removed as per request */}
+              <div className="space-y-2">
+                <Label className="text-gray-800">Description</Label>
+                <Textarea
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={heroContent.description}
+                  onChange={(e) =>
+                    setHeroContent({
+                      ...heroContent,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={3}
+                  placeholder="දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන්..."
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Student Count</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={heroContent.studentCount}
+                    onChange={(e) =>
+                      setHeroContent({
+                        ...heroContent,
+                        studentCount: e.target.value,
+                      })
+                    }
+                    placeholder="500+"
+                  />
                 </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Rank Count</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={heroContent.rankCount}
+                    onChange={(e) =>
+                      setHeroContent({
+                        ...heroContent,
+                        rankCount: e.target.value,
+                      })
+                    }
+                    placeholder="50+"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Experience Count</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={heroContent.expCount}
+                    onChange={(e) =>
+                      setHeroContent({
+                        ...heroContent,
+                        expCount: e.target.value,
+                      })
+                    }
+                    placeholder="10+"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Teacher Name</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={heroContent.teacherName}
+                    onChange={(e) =>
+                      setHeroContent({
+                        ...heroContent,
+                        teacherName: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Teacher Title</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={heroContent.teacherTitle}
+                    onChange={(e) =>
+                      setHeroContent({
+                        ...heroContent,
+                        teacherTitle: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Teacher Image</Label>
+                  <div className="flex items-center gap-4">
+                    {heroContent.teacherImage && (
+                      <div className="relative h-16 w-16 rounded-full overflow-hidden border border-gray-200">
+                        <img
+                          src={heroContent.teacherImage}
+                          alt="Teacher"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <Input
+                        id="teacher-image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Select an image to upload
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">About Section</h2>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() =>
+                    setPreviewModal({ isOpen: true, type: "about" })
+                  }
+                  variant="outline"
+                  className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                >
+                  <Eye className="w-4 h-4 mr-2" /> Preview
+                </Button>
+                <Button
+                  onClick={() => handleSaveGeneral()}
+                  disabled={isSaving}
+                  className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+                >
+                  <Save className="w-4 h-4 mr-2" /> Save Changes
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Secondary Subtitle</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={aboutContent.secondarySubtitle}
+                    onChange={(e) =>
+                      setAboutContent({
+                        ...aboutContent,
+                        secondarySubtitle: e.target.value,
+                      })
+                    }
+                    placeholder="සංකීර්ණතාවය සරල බවට..."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Trailer Video</Label>
+                  <div className="flex flex-col gap-2">
+                    <Input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoUpload}
+                      className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                    />
+                    {aboutContent.videoUrl && (
+                      <p className="text-xs text-green-600 truncate">
+                        Current: {aboutContent.videoUrl.split("/").pop()}
+                      </p>
+                    )}
+                    <p className="text-[10px] text-gray-500 flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-[#fdf021]"></span>
+                      Max size: 50MB. Supports MP4, WebM.
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Video Preview Image</Label>
+                  <div className="flex items-center gap-4">
+                    {aboutContent.videoPreviewImage && (
+                      <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-gray-200">
+                        <img
+                          src={aboutContent.videoPreviewImage}
+                          alt="Video Preview"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleVideoPreviewImageUpload}
+                        className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Select an image to show before video plays
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-800">Description</Label>
+                <Textarea
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={aboutContent.description}
+                  onChange={(e) =>
+                    setAboutContent({
+                      ...aboutContent,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={4}
+                  placeholder="දශකයකට වැඩි ගුරු අත්දැකීම්..."
+                />
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-gray-800">Features List</Label>
+                  <Button
+                    type="button"
+                    onClick={() =>
+                      setAboutContent({
+                        ...aboutContent,
+                        features: [...aboutContent.features, ""],
+                      })
+                    }
+                    className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] h-8 px-3 text-sm"
+                  >
+                    <Plus className="w-4 h-4 mr-1" /> Add Feature
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {aboutContent.features.map((feature, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] flex-1"
+                        value={feature}
+                        onChange={(e) => {
+                          const newFeatures = [...aboutContent.features];
+                          newFeatures[index] = e.target.value;
+                          setAboutContent({
+                            ...aboutContent,
+                            features: newFeatures,
+                          });
+                        }}
+                        placeholder={`Feature ${index + 1}`}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          const newFeatures = aboutContent.features.filter(
+                            (_, i) => i !== index,
+                          );
+                          setAboutContent({
+                            ...aboutContent,
+                            features: newFeatures,
+                          });
+                        }}
+                        className="h-10 px-3 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  {aboutContent.features.length === 0 && (
+                    <p className="text-sm text-gray-500 italic">
+                      Click &quot;Add Feature&quot; to add features
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Quote</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={aboutContent.quote}
+                    onChange={(e) =>
+                      setAboutContent({
+                        ...aboutContent,
+                        quote: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Quote Author</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={aboutContent.quoteAuthor}
+                    onChange={(e) =>
+                      setAboutContent({
+                        ...aboutContent,
+                        quoteAuthor: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="space-y-2"></div>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Banners Tab */}
+        <TabsContent value="banners" className="space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Banner Management
+              </h2>
+              <Button
+                onClick={() => handleSaveBanners()}
+                disabled={isSaving}
+                className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+              >
+                <Save className="w-4 h-4 mr-2" /> Save Changes
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {bannerContent.map((banner, index) => (
+                <div
+                  key={banner.id}
+                  className="p-4 border border-gray-200 rounded-xl space-y-4 bg-gray-50"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-gray-700">
+                      Slide {index + 1}
+                    </h3>
+                    <div
+                      className={`h-6 w-6 rounded-full bg-linear-to-br ${banner.color}`}
+                      title="Background Gradient Preview"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Title</Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={banner.title}
+                      onChange={(e) => {
+                        const newBanners = [...bannerContent];
+                        newBanners[index].title = e.target.value;
+                        setBannerContent(newBanners);
+                      }}
+                      placeholder="Slide Title"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Subtitle</Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={banner.subtitle}
+                      onChange={(e) => {
+                        const newBanners = [...bannerContent];
+                        newBanners[index].subtitle = e.target.value;
+                        setBannerContent(newBanners);
+                      }}
+                      placeholder="Slide Subtitle"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Description</Label>
+                    <Textarea
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={banner.description}
+                      onChange={(e) => {
+                        const newBanners = [...bannerContent];
+                        newBanners[index].description = e.target.value;
+                        setBannerContent(newBanners);
+                      }}
+                      rows={2}
+                      placeholder="Slide Description"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Background Image</Label>
+                    <div className="space-y-3">
+                      {banner.image && (
+                        <div className="relative h-32 w-full rounded-lg overflow-hidden border border-gray-200">
+                          <img
+                            src={banner.image}
+                            alt={`Slide ${index + 1}`}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleBannerImageUpload(e, index)}
+                        className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Free Lessons Tab */}
+
+        {/* Features Tab */}
+        <TabsContent value="features" className="space-y-6">
+          {/* General Settings */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Features General Settings
+              </h2>
+              <Button
+                onClick={async () => {
+                  setIsSaving(true);
+                  try {
+                    const result = await updateLandingPageContent(
+                      "features",
+                      featuresMeta,
+                    );
+                    if (result.success) {
+                      setAlert({
+                        isOpen: true,
+                        title: "Success",
+                        description: "Features settings updated",
+                        type: "success",
+                      });
+                    } else {
+                      throw new Error(result.error);
+                    }
+                  } catch (error) {
+                    setAlert({
+                      isOpen: true,
+                      title: "Error",
+                      description: "Failed to update settings",
+                      type: "error",
+                    });
+                  } finally {
+                    setIsSaving(false);
+                  }
+                }}
+                disabled={isSaving}
+                className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+              >
+                <Save className="w-4 h-4 mr-2" /> Save Settings
+              </Button>
             </div>
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="bg-white p-1 rounded-xl border border-gray-200 shadow-sm h-14">
-                    <TabsTrigger value="general" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <Layers className="w-4 h-4" /> General
-                    </TabsTrigger>
+            <div className="space-y-8">
+              {/* Main Description */}
+              <div className="space-y-2">
+                <Label className="text-gray-800">
+                  Main Section Description (Sinhala)
+                </Label>
+                <Textarea
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={featuresMeta.description}
+                  onChange={(e) =>
+                    setFeaturesMeta({
+                      ...featuresMeta,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={3}
+                  placeholder="අති නවීන තාක්ෂණය..."
+                />
+              </div>
 
-                    <TabsTrigger value="banners" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <ImageIcon className="w-4 h-4" /> Banners
-                    </TabsTrigger>
-                    <TabsTrigger value="features" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <Zap className="w-4 h-4" /> Features
-                    </TabsTrigger>
-                    <TabsTrigger value="testimonials" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <MessageSquare className="w-4 h-4" /> Testimonials
-                    </TabsTrigger>
-                    <TabsTrigger value="contact" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <Mail className="w-4 h-4" /> Contact
-                    </TabsTrigger>
-                    <TabsTrigger value="footer" className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2">
-                        <FileText className="w-4 h-4" /> Footer
-                    </TabsTrigger>
-                </TabsList>
+              <div className="h-px bg-gray-200" />
 
-                {/* General Tab */}
-                <TabsContent value="general" className="space-y-6">
-                    {/* Hero Section */}
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Hero Section</h2>
-                            <div className="flex gap-2">
-                                <Button
-                                    onClick={() => setPreviewModal({ isOpen: true, type: 'hero' })}
-                                    variant="outline"
-                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                                >
-                                    <Eye className="w-4 h-4 mr-2" /> Preview
-                                </Button>
-                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                    <Save className="w-4 h-4 mr-2" /> Save Changes
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            {/* Titles removed as per request */}
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Description</Label>
-                                <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.description} onChange={e => setHeroContent({ ...heroContent, description: e.target.value })} rows={3} placeholder="දිවයිනේ ප්‍රථම ශ්‍රේණිගත කරුවන්..." />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Student Count</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.studentCount} onChange={e => setHeroContent({ ...heroContent, studentCount: e.target.value })} placeholder="500+" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Rank Count</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.rankCount} onChange={e => setHeroContent({ ...heroContent, rankCount: e.target.value })} placeholder="50+" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Experience Count</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.expCount} onChange={e => setHeroContent({ ...heroContent, expCount: e.target.value })} placeholder="10+" />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Teacher Name</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.teacherName} onChange={e => setHeroContent({ ...heroContent, teacherName: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Teacher Title</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={heroContent.teacherTitle} onChange={e => setHeroContent({ ...heroContent, teacherTitle: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Teacher Image</Label>
-                                    <div className="flex items-center gap-4">
-                                        {heroContent.teacherImage && (
-                                            <div className="relative h-16 w-16 rounded-full overflow-hidden border border-gray-200">
-                                                <img src={heroContent.teacherImage} alt="Teacher" className="h-full w-full object-cover" />
-                                            </div>
-                                        )}
-                                        <div className="flex-1">
-                                            <Input
-                                                id="teacher-image-upload"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleImageUpload}
-                                                className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">Select an image to upload</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+              {/* Why Students Love Us Section */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  "Why Students Love Us" Section
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-gray-800">Description</Label>
+                      <Textarea
+                        className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                        value={featuresMeta.studentLove.description}
+                        onChange={(e) =>
+                          setFeaturesMeta({
+                            ...featuresMeta,
+                            studentLove: {
+                              ...featuresMeta.studentLove,
+                              description: e.target.value,
+                            },
+                          })
+                        }
+                        rows={4}
+                        placeholder="Our comprehensive learning platform..."
+                      />
                     </div>
 
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">About Section</h2>
-                            <div className="flex gap-2">
-                                <Button
-                                    onClick={() => setPreviewModal({ isOpen: true, type: 'about' })}
-                                    variant="outline"
-                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                                >
-                                    <Eye className="w-4 h-4 mr-2" /> Preview
-                                </Button>
-                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                    <Save className="w-4 h-4 mr-2" /> Save Changes
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Secondary Subtitle</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.secondarySubtitle} onChange={e => setAboutContent({ ...aboutContent, secondarySubtitle: e.target.value })} placeholder="සංකීර්ණතාවය සරල බවට..." />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Trailer Video</Label>
-                                    <div className="flex flex-col gap-2">
-                                        <Input
-                                            type="file"
-                                            accept="video/*"
-                                            onChange={handleVideoUpload}
-                                            className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
-                                        />
-                                        {aboutContent.videoUrl && (
-                                            <p className="text-xs text-green-600 truncate">
-                                                Current: {aboutContent.videoUrl.split('/').pop()}
-                                            </p>
-                                        )}
-                                        <p className="text-[10px] text-gray-500 flex items-center gap-1">
-                                            <span className="w-1 h-1 rounded-full bg-[#fdf021]"></span>
-                                            Max size: 50MB. Supports MP4, WebM.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Video Preview Image</Label>
-                                    <div className="flex items-center gap-4">
-                                        {aboutContent.videoPreviewImage && (
-                                            <div className="relative h-16 w-16 rounded-lg overflow-hidden border border-gray-200">
-                                                <img src={aboutContent.videoPreviewImage} alt="Video Preview" className="h-full w-full object-cover" />
-                                            </div>
-                                        )}
-                                        <div className="flex-1">
-                                            <Input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleVideoPreviewImageUpload}
-                                                className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">Select an image to show before video plays</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Description</Label>
-                                <Textarea className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.description} onChange={e => setAboutContent({ ...aboutContent, description: e.target.value })} rows={4} placeholder="දශකයකට වැඩි ගුරු අත්දැකීම්..." />
-                            </div>
-                            <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <Label className="text-gray-800">Features List</Label>
-                                    <Button
-                                        type="button"
-                                        onClick={() => setAboutContent({ ...aboutContent, features: [...aboutContent.features, ''] })}
-                                        className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] h-8 px-3 text-sm"
-                                    >
-                                        <Plus className="w-4 h-4 mr-1" /> Add Feature
-                                    </Button>
-                                </div>
-                                <div className="space-y-2">
-                                    {aboutContent.features.map((feature, index) => (
-                                        <div key={index} className="flex gap-2">
-                                            <Input
-                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] flex-1"
-                                                value={feature}
-                                                onChange={e => {
-                                                    const newFeatures = [...aboutContent.features];
-                                                    newFeatures[index] = e.target.value;
-                                                    setAboutContent({ ...aboutContent, features: newFeatures });
-                                                }}
-                                                placeholder={`Feature ${index + 1}`}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                onClick={() => {
-                                                    const newFeatures = aboutContent.features.filter((_, i) => i !== index);
-                                                    setAboutContent({ ...aboutContent, features: newFeatures });
-                                                }}
-                                                className="h-10 px-3 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    ))}
-                                    {aboutContent.features.length === 0 && (
-                                        <p className="text-sm text-gray-500 italic">Click &quot;Add Feature&quot; to add features</p>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Quote</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.quote} onChange={e => setAboutContent({ ...aboutContent, quote: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Quote Author</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={aboutContent.quoteAuthor} onChange={e => setAboutContent({ ...aboutContent, quoteAuthor: e.target.value })} />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-
-                            </div>
-                        </div>
-                    </div>
-                </TabsContent>
-
-                {/* Banners Tab */}
-                <TabsContent value="banners" className="space-y-6">
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Banner Management</h2>
-                            <Button onClick={() => handleSaveBanners()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Changes
-                            </Button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {bannerContent.map((banner, index) => (
-                                <div key={banner.id} className="p-4 border border-gray-200 rounded-xl space-y-4 bg-gray-50">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="font-semibold text-gray-700">Slide {index + 1}</h3>
-                                        <div className={`h-6 w-6 rounded-full bg-linear-to-br ${banner.color}`} title="Background Gradient Preview" />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Title</Label>
-                                        <Input
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={banner.title}
-                                            onChange={e => {
-                                                const newBanners = [...bannerContent];
-                                                newBanners[index].title = e.target.value;
-                                                setBannerContent(newBanners);
-                                            }}
-                                            placeholder="Slide Title"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Subtitle</Label>
-                                        <Input
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={banner.subtitle}
-                                            onChange={e => {
-                                                const newBanners = [...bannerContent];
-                                                newBanners[index].subtitle = e.target.value;
-                                                setBannerContent(newBanners);
-                                            }}
-                                            placeholder="Slide Subtitle"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Description</Label>
-                                        <Textarea
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={banner.description}
-                                            onChange={e => {
-                                                const newBanners = [...bannerContent];
-                                                newBanners[index].description = e.target.value;
-                                                setBannerContent(newBanners);
-                                            }}
-                                            rows={2}
-                                            placeholder="Slide Description"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Background Image</Label>
-                                        <div className="space-y-3">
-                                            {banner.image && (
-                                                <div className="relative h-32 w-full rounded-lg overflow-hidden border border-gray-200">
-                                                    <img src={banner.image} alt={`Slide ${index + 1}`} className="h-full w-full object-cover" />
-                                                </div>
-                                            )}
-                                            <Input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleBannerImageUpload(e, index)}
-                                                className="bg-white border-gray-300 text-gray-900 file:bg-gray-100 file:text-gray-700 file:border-0 file:rounded-md file:px-2 file:text-sm hover:file:bg-gray-200 cursor-pointer"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </TabsContent>
-
-                {/* Free Lessons Tab */}
-
-
-
-                {/* Features Tab */}
-                < TabsContent value="features" className="space-y-6" >
-                    {/* General Settings */}
-                    < div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm" >
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Features General Settings</h2>
-                            <Button onClick={async () => {
-                                setIsSaving(true);
-                                try {
-                                    const result = await updateLandingPageContent('features', featuresMeta);
-                                    if (result.success) {
-                                        setAlert({ isOpen: true, title: 'Success', description: 'Features settings updated', type: 'success' });
-                                    } else {
-                                        throw new Error(result.error);
-                                    }
-                                } catch (error) {
-                                    setAlert({ isOpen: true, title: 'Error', description: 'Failed to update settings', type: 'error' });
-                                } finally {
-                                    setIsSaving(false);
-                                }
-                            }} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Settings
-                            </Button>
-                        </div>
-
-                        <div className="space-y-8">
-                            {/* Main Description */}
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Main Section Description (Sinhala)</Label>
-                                <Textarea
-                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                    value={featuresMeta.description}
-                                    onChange={e => setFeaturesMeta({ ...featuresMeta, description: e.target.value })}
-                                    rows={3}
-                                    placeholder="අති නවීන තාක්ෂණය..."
-                                />
-                            </div>
-
-                            <div className="h-px bg-gray-200" />
-
-                            {/* Why Students Love Us Section */}
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">"Why Students Love Us" Section</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Description</Label>
-                                            <Textarea
-                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                value={featuresMeta.studentLove.description}
-                                                onChange={e => setFeaturesMeta({
-                                                    ...featuresMeta,
-                                                    studentLove: { ...featuresMeta.studentLove, description: e.target.value }
-                                                })}
-                                                rows={4}
-                                                placeholder="Our comprehensive learning platform..."
-                                            />
-                                        </div>
-
-                                        {/* Benefits List */}
-                                        <div className="space-y-3">
-                                            <div className="flex items-center justify-between">
-                                                <Label className="text-gray-800">Benefits List</Label>
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    onClick={() => setFeaturesMeta({
-                                                        ...featuresMeta,
-                                                        studentLove: {
-                                                            ...featuresMeta.studentLove,
-                                                            benefits: [...featuresMeta.studentLove.benefits, '']
-                                                        }
-                                                    })}
-                                                    className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] h-8 px-3 text-sm"
-                                                >
-                                                    <Plus className="w-4 h-4 mr-1" /> Add Benefit
-                                                </Button>
-                                            </div>
-                                            <div className="space-y-2">
-                                                {featuresMeta.studentLove.benefits.map((benefit, index) => (
-                                                    <div key={index} className="flex gap-2">
-                                                        <Input
-                                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] flex-1"
-                                                            value={benefit}
-                                                            onChange={e => {
-                                                                const newBenefits = [...featuresMeta.studentLove.benefits];
-                                                                newBenefits[index] = e.target.value;
-                                                                setFeaturesMeta({
-                                                                    ...featuresMeta,
-                                                                    studentLove: { ...featuresMeta.studentLove, benefits: newBenefits }
-                                                                });
-                                                            }}
-                                                            placeholder={`Benefit ${index + 1}`}
-                                                        />
-                                                        <Button
-                                                            type="button"
-                                                            variant="outline"
-                                                            onClick={() => {
-                                                                const newBenefits = featuresMeta.studentLove.benefits.filter((_, i) => i !== index);
-                                                                setFeaturesMeta({
-                                                                    ...featuresMeta,
-                                                                    studentLove: { ...featuresMeta.studentLove, benefits: newBenefits }
-                                                                });
-                                                            }}
-                                                            className="h-10 px-3 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </Button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Success Rate Stats */}
-                                    <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                        <h4 className="font-medium text-gray-700">Success Rate Card</h4>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label className="text-gray-800">Value</Label>
-                                                <Input
-                                                    className="bg-white border-gray-300 text-gray-900"
-                                                    value={featuresMeta.studentLove.successRate.value}
-                                                    onChange={e => setFeaturesMeta({
-                                                        ...featuresMeta,
-                                                        studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, value: e.target.value } }
-                                                    })}
-                                                    placeholder="92"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-gray-800">Suffix</Label>
-                                                <Input
-                                                    className="bg-white border-gray-300 text-gray-900"
-                                                    value={featuresMeta.studentLove.successRate.suffix}
-                                                    onChange={e => setFeaturesMeta({
-                                                        ...featuresMeta,
-                                                        studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, suffix: e.target.value } }
-                                                    })}
-                                                    placeholder="%"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Label</Label>
-                                            <Input
-                                                className="bg-white border-gray-300 text-gray-900"
-                                                value={featuresMeta.studentLove.successRate.label}
-                                                onChange={e => setFeaturesMeta({
-                                                    ...featuresMeta,
-                                                    studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, label: e.target.value } }
-                                                })}
-                                                placeholder="Success Rate"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Bottom Description</Label>
-                                            <Textarea
-                                                className="bg-white border-gray-300 text-gray-900"
-                                                value={featuresMeta.studentLove.successRate.description}
-                                                onChange={e => setFeaturesMeta({
-                                                    ...featuresMeta,
-                                                    studentLove: { ...featuresMeta.studentLove, successRate: { ...featuresMeta.studentLove.successRate, description: e.target.value } }
-                                                })}
-                                                rows={2}
-                                                placeholder="of our students..."
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div >
-
-                    {/* Features List */}
-                    < div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm" >
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Feature Cards</h2>
-                            <div className="flex gap-2">
-                                <Button
-                                    onClick={() => setPreviewModal({ isOpen: true, type: 'features' })}
-                                    variant="outline"
-                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                                >
-                                    <Eye className="w-4 h-4 mr-2" /> Preview Section
-                                </Button>
-                                <Button onClick={() => { setEditingFeature(null); setFeatureForm({ title: '', description: '', icon: '', color: '', order: features.length }); setIsFeatureModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                    <Plus className="w-4 h-4 mr-2" /> Add Feature
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {features.map((feature) => (
-                                <div key={feature.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className={`h-10 w-10 rounded-lg flex items-center justify-center text-white bg-linear-to-br ${feature.color || 'from-gray-500 to-gray-600'}`}>
-                                            {(() => {
-                                                const Icon = (FEATURE_ICONS.find(i => i.name === feature.icon)?.icon || Zap) as any;
-                                                return <Icon className="w-5 h-5" />;
-                                            })()}
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => { setEditingFeature(feature); setFeatureForm(feature); setIsFeatureModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-                                                <Edit2 className="w-4 h-4" />
-                                            </button>
-                                            <button onClick={() => handleDeleteFeature(feature.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-2 text-gray-800">{feature.title}</h3>
-                                    <p className="text-gray-600 text-sm">{feature.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div >
-                </TabsContent>
-
-                {/* Testimonials Tab */}
-                <TabsContent value="testimonials" className="space-y-6">
-                    <div className="flex justify-between items-center">
+                    {/* Benefits List */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-gray-800">Benefits List</Label>
                         <Button
-                            onClick={() => setPreviewModal({ isOpen: true, type: 'testimonials' })}
-                            variant="outline"
-                            className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                          type="button"
+                          size="sm"
+                          onClick={() =>
+                            setFeaturesMeta({
+                              ...featuresMeta,
+                              studentLove: {
+                                ...featuresMeta.studentLove,
+                                benefits: [
+                                  ...featuresMeta.studentLove.benefits,
+                                  "",
+                                ],
+                              },
+                            })
+                          }
+                          className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F] h-8 px-3 text-sm"
                         >
-                            <Eye className="w-4 h-4 mr-2" /> Preview Section
+                          <Plus className="w-4 h-4 mr-1" /> Add Benefit
                         </Button>
-                        <Button onClick={() => { setEditingTestimonial(null); setTestimonialForm({ name: '', role: '', content: '', imageUrl: '', rating: 5, institute: '' }); setIsTestimonialModalOpen(true); }} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                            <Plus className="w-4 h-4 mr-2" /> Add Testimonial
-                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        {featuresMeta.studentLove.benefits.map(
+                          (benefit, index) => (
+                            <div key={index} className="flex gap-2">
+                              <Input
+                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] flex-1"
+                                value={benefit}
+                                onChange={(e) => {
+                                  const newBenefits = [
+                                    ...featuresMeta.studentLove.benefits,
+                                  ];
+                                  newBenefits[index] = e.target.value;
+                                  setFeaturesMeta({
+                                    ...featuresMeta,
+                                    studentLove: {
+                                      ...featuresMeta.studentLove,
+                                      benefits: newBenefits,
+                                    },
+                                  });
+                                }}
+                                placeholder={`Benefit ${index + 1}`}
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                  const newBenefits =
+                                    featuresMeta.studentLove.benefits.filter(
+                                      (_, i) => i !== index,
+                                    );
+                                  setFeaturesMeta({
+                                    ...featuresMeta,
+                                    studentLove: {
+                                      ...featuresMeta.studentLove,
+                                      benefits: newBenefits,
+                                    },
+                                  });
+                                }}
+                                className="h-10 px-3 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          ),
+                        )}
+                      </div>
                     </div>
+                  </div>
 
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Statistics Section</h2>
-                            <Button onClick={handleSaveTestimonialStats} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Stats
-                            </Button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Total Students</Label>
-                                <Input
-                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                    value={testimonialStats.totalStudents}
-                                    onChange={e => setTestimonialStats({ ...testimonialStats, totalStudents: e.target.value })}
-                                    placeholder="5000+"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Average Rating</Label>
-                                <Input
-                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                    value={testimonialStats.averageRating}
-                                    onChange={e => setTestimonialStats({ ...testimonialStats, averageRating: e.target.value })}
-                                    placeholder="4.9/5"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Recommend Rate</Label>
-                                <Input
-                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                    value={testimonialStats.recommendationRate}
-                                    onChange={e => setTestimonialStats({ ...testimonialStats, recommendationRate: e.target.value })}
-                                    placeholder="98%"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Experience</Label>
-                                <Input
-                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                    value={testimonialStats.experienceYears}
-                                    onChange={e => setTestimonialStats({ ...testimonialStats, experienceYears: e.target.value })}
-                                    placeholder="10+"
-                                />
-                            </div>
-                        </div>
+                  {/* Success Rate Stats */}
+                  <div className="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <h4 className="font-medium text-gray-700">
+                      Success Rate Card
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-gray-800">Value</Label>
+                        <Input
+                          className="bg-white border-gray-300 text-gray-900"
+                          value={featuresMeta.studentLove.successRate.value}
+                          onChange={(e) =>
+                            setFeaturesMeta({
+                              ...featuresMeta,
+                              studentLove: {
+                                ...featuresMeta.studentLove,
+                                successRate: {
+                                  ...featuresMeta.studentLove.successRate,
+                                  value: e.target.value,
+                                },
+                              },
+                            })
+                          }
+                          placeholder="92"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-gray-800">Suffix</Label>
+                        <Input
+                          className="bg-white border-gray-300 text-gray-900"
+                          value={featuresMeta.studentLove.successRate.suffix}
+                          onChange={(e) =>
+                            setFeaturesMeta({
+                              ...featuresMeta,
+                              studentLove: {
+                                ...featuresMeta.studentLove,
+                                successRate: {
+                                  ...featuresMeta.studentLove.successRate,
+                                  suffix: e.target.value,
+                                },
+                              },
+                            })
+                          }
+                          placeholder="%"
+                        />
+                      </div>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {testimonials.map((testimonial) => (
-                            <div key={testimonial.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden">
-                                            {testimonial.imageUrl && <img src={testimonial.imageUrl} alt={testimonial.name} className="w-full h-full object-cover" />}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900">{testimonial.name}</h3>
-                                            <p className="text-xs text-gray-500">{testimonial.role}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => { setEditingTestimonial(testimonial); setTestimonialForm({ ...testimonial, imageUrl: testimonial.imageUrl || '', institute: testimonial.institute || '' }); setIsTestimonialModalOpen(true); }} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        <button onClick={() => handleDeleteTestimonial(testimonial.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="mb-2 flex text-[#fdf021] text-xs">
-                                    {'★'.repeat(testimonial.rating || 5)}
-                                </div>
-                                <p className="text-gray-600 text-sm italic mb-2">&quot;{testimonial.content}&quot;</p>
-                                {testimonial.institute && <p className="text-xs text-gray-400 text-right">- {testimonial.institute}</p>}
-                            </div>
-                        ))}
+                    <div className="space-y-2">
+                      <Label className="text-gray-800">Label</Label>
+                      <Input
+                        className="bg-white border-gray-300 text-gray-900"
+                        value={featuresMeta.studentLove.successRate.label}
+                        onChange={(e) =>
+                          setFeaturesMeta({
+                            ...featuresMeta,
+                            studentLove: {
+                              ...featuresMeta.studentLove,
+                              successRate: {
+                                ...featuresMeta.studentLove.successRate,
+                                label: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                        placeholder="Success Rate"
+                      />
                     </div>
-                </TabsContent>
+                    <div className="space-y-2">
+                      <Label className="text-gray-800">
+                        Bottom Description
+                      </Label>
+                      <Textarea
+                        className="bg-white border-gray-300 text-gray-900"
+                        value={featuresMeta.studentLove.successRate.description}
+                        onChange={(e) =>
+                          setFeaturesMeta({
+                            ...featuresMeta,
+                            studentLove: {
+                              ...featuresMeta.studentLove,
+                              successRate: {
+                                ...featuresMeta.studentLove.successRate,
+                                description: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                        rows={2}
+                        placeholder="of our students..."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                <PreviewModal
-                    isOpen={previewModal.isOpen && previewModal.type === 'testimonials'}
-                    onClose={() => setPreviewModal({ isOpen: false, type: null })}
-                    title="Testimonials Section"
+          {/* Features List */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Feature Cards</h2>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() =>
+                    setPreviewModal({ isOpen: true, type: "features" })
+                  }
+                  variant="outline"
+                  className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
                 >
-                    <TestimonialsPreview data={testimonials} stats={testimonialStats} />
-                </PreviewModal>
-                < TabsContent value="contact" className="space-y-6" >
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Contact Information</h2>
-                            <div className="flex gap-2">
-                                <Button
-                                    onClick={() => setPreviewModal({ isOpen: true, type: 'contact' })}
-                                    variant="outline"
-                                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                                >
-                                    <Eye className="w-4 h-4 mr-2" /> Preview Section
-                                </Button>
-                                <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                    <Save className="w-4 h-4 mr-2" /> Save Changes
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Form Title</Label>
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.formTitle} onChange={e => setContactContent({ ...contactContent, formTitle: e.target.value })} placeholder="Start Your AL Economics Journey Today" />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Email Address</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.email} onChange={e => setContactContent({ ...contactContent, email: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Phone Number</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.phone} onChange={e => setContactContent({ ...contactContent, phone: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Address</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.address} onChange={e => setContactContent({ ...contactContent, address: e.target.value })} />
-                                </div>
-                            </div>
-                            <div className="space-y-6">
-                                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                                    <span>📍</span> Institute Locations (Up to 2)
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                    Add up to 2 institute locations with map coordinates.
-                                    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-[#D4AF37] hover:underline ml-1">
-                                        Get coordinates from Google Maps →
-                                    </a>
-                                </p>
-
-                                {(contactContent.locations || []).map((location, index) => (
-                                    <div key={index} className="p-6 border-2 border-gray-200 rounded-xl space-y-4 bg-gray-50">
-                                        <h4 className="font-bold text-gray-900">Location {index + 1}</h4>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Location Name</Label>
-                                            <Input
-                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                value={location.name}
-                                                onChange={e => {
-                                                    const newLocations = [...contactContent.locations];
-                                                    newLocations[index].name = e.target.value;
-                                                    setContactContent({ ...contactContent, locations: newLocations });
-                                                }}
-                                                placeholder="Colombo Institute"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Address</Label>
-                                            <Input
-                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                value={location.address}
-                                                onChange={e => {
-                                                    const newLocations = [...contactContent.locations];
-                                                    newLocations[index].address = e.target.value;
-                                                    setContactContent({ ...contactContent, locations: newLocations });
-                                                }}
-                                                placeholder="No. 123, High Level Road, Nugegoda"
-                                            />
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label className="text-gray-800">Latitude</Label>
-                                                <Input
-                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                    value={location.latitude}
-                                                    onChange={e => {
-                                                        const newLocations = [...contactContent.locations];
-                                                        newLocations[index].latitude = e.target.value;
-                                                        setContactContent({ ...contactContent, locations: newLocations });
-                                                    }}
-                                                    placeholder="7.0904"
-                                                    type="text"
-                                                />
-                                                <p className="text-xs text-gray-500">Example: 7.0904</p>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-gray-800">Longitude</Label>
-                                                <Input
-                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                    value={location.longitude}
-                                                    onChange={e => {
-                                                        const newLocations = [...contactContent.locations];
-                                                        newLocations[index].longitude = e.target.value;
-                                                        setContactContent({ ...contactContent, locations: newLocations });
-                                                    }}
-                                                    placeholder="80.1350"
-                                                    type="text"
-                                                />
-                                                <p className="text-xs text-gray-500">Example: 80.1350</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                    <p className="text-sm text-blue-900">
-                                        <strong>💡 How to get coordinates:</strong><br />
-                                        1. Open Google Maps<br />
-                                        2. Right-click on your location<br />
-                                        3. Click on the coordinates (e.g., "7.0904, 80.1350")<br />
-                                        4. Paste them here (latitude first, then longitude)
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Office Hours Title</Label>
-                                <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.officeHours.title} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, title: e.target.value } })} placeholder="Office Hours" />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Weekdays Hours</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.officeHours.weekdays} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, weekdays: e.target.value } })} placeholder="Monday - Friday: 9:00 AM - 6:00 PM" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-gray-800">Weekends Hours</Label>
-                                    <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={contactContent.officeHours.weekends} onChange={e => setContactContent({ ...contactContent, officeHours: { ...contactContent.officeHours, weekends: e.target.value } })} placeholder="Saturday: 9:00 AM - 4:00 PM" />
-                                </div>
-                            </div>
-                        </div>
+                  <Eye className="w-4 h-4 mr-2" /> Preview Section
+                </Button>
+                <Button
+                  onClick={() => {
+                    setEditingFeature(null);
+                    setFeatureForm({
+                      title: "",
+                      description: "",
+                      icon: "",
+                      color: "",
+                      order: features.length,
+                    });
+                    setIsFeatureModalOpen(true);
+                  }}
+                  className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]"
+                >
+                  <Plus className="w-4 h-4 mr-2" /> Add Feature
+                </Button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {features.map((feature) => (
+                <div
+                  key={feature.id}
+                  className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div
+                      className={`h-10 w-10 rounded-lg flex items-center justify-center text-white bg-linear-to-br ${feature.color || "from-gray-500 to-gray-600"}`}
+                    >
+                      {(() => {
+                        const Icon = (FEATURE_ICONS.find(
+                          (i) => i.name === feature.icon,
+                        )?.icon || Zap) as any;
+                        return <Icon className="w-5 h-5" />;
+                      })()}
                     </div>
-                </TabsContent >
-
-                {/* Footer Tab */}
-                <TabsContent value="footer" className="space-y-6">
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-gray-900">Footer Content</h2>
-                            <Button onClick={() => handleSaveGeneral()} disabled={isSaving} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">
-                                <Save className="w-4 h-4 mr-2" /> Save Changes
-                            </Button>
-                        </div>
-
-                        <div className="space-y-6">
-                            {/* Description */}
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Footer Description</Label>
-                                <Textarea
-                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                    value={footerContent.description}
-                                    onChange={e => setFooterContent({ ...footerContent, description: e.target.value })}
-                                    placeholder="The premier Economics education platform..."
-                                    rows={3}
-                                />
-                            </div>
-
-                            {/* Social Links */}
-                            <div className="space-y-4">
-                                <h3 className="font-semibold text-gray-900">Social Media Links</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Facebook URL</Label>
-                                        <Input
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={footerContent.socialLinks.facebook}
-                                            onChange={e => setFooterContent({ ...footerContent, socialLinks: { ...footerContent.socialLinks, facebook: e.target.value } })}
-                                            placeholder="https://facebook.com/..."
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">YouTube URL</Label>
-                                        <Input
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={footerContent.socialLinks.youtube}
-                                            onChange={e => setFooterContent({ ...footerContent, socialLinks: { ...footerContent.socialLinks, youtube: e.target.value } })}
-                                            placeholder="https://youtube.com/..."
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Telegram/Instagram URL</Label>
-                                        <Input
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={footerContent.socialLinks.telegram}
-                                            onChange={e => setFooterContent({ ...footerContent, socialLinks: { ...footerContent.socialLinks, telegram: e.target.value } })}
-                                            placeholder="https://t.me/... or https://instagram.com/..."
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Quick Links */}
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <h3 className="font-semibold text-gray-900">Quick Links</h3>
-                                    <Button
-                                        onClick={() => setFooterContent({ ...footerContent, quickLinks: [...footerContent.quickLinks, { title: '', url: '' }] })}
-                                        variant="outline"
-                                        size="sm"
-                                        className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
-                                    >
-                                        <Plus className="w-4 h-4 mr-2" /> Add Link
-                                    </Button>
-                                </div>
-                                <div className="space-y-3">
-                                    {footerContent.quickLinks.map((link, index) => (
-                                        <div key={index} className="flex gap-3 items-end">
-                                            <div className="flex-1 space-y-2">
-                                                <Label className="text-gray-800">Link Title</Label>
-                                                <Input
-                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                    value={link.title}
-                                                    onChange={e => {
-                                                        const newLinks = [...footerContent.quickLinks];
-                                                        newLinks[index].title = e.target.value;
-                                                        setFooterContent({ ...footerContent, quickLinks: newLinks });
-                                                    }}
-                                                    placeholder="Home"
-                                                />
-                                            </div>
-                                            <div className="flex-1 space-y-2">
-                                                <Label className="text-gray-800">Link URL</Label>
-                                                <Input
-                                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                    value={link.url}
-                                                    onChange={e => {
-                                                        const newLinks = [...footerContent.quickLinks];
-                                                        newLinks[index].url = e.target.value;
-                                                        setFooterContent({ ...footerContent, quickLinks: newLinks });
-                                                    }}
-                                                    placeholder="#home"
-                                                />
-                                            </div>
-                                            <Button
-                                                onClick={() => {
-                                                    const newLinks = footerContent.quickLinks.filter((_, i) => i !== index);
-                                                    setFooterContent({ ...footerContent, quickLinks: newLinks });
-                                                }}
-                                                variant="outline"
-                                                size="sm"
-                                                className="border-red-500 text-red-500 hover:bg-red-50"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Contact Info */}
-                            <div className="space-y-4">
-                                <h3 className="font-semibold text-gray-900">Contact Information</h3>
-                                <div className="space-y-3">
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Address</Label>
-                                        <Input
-                                            className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                            value={footerContent.contactInfo.address}
-                                            onChange={e => setFooterContent({ ...footerContent, contactInfo: { ...footerContent.contactInfo, address: e.target.value } })}
-                                            placeholder="No. 123, High Level Road, Nugegoda, Sri Lanka"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Phone</Label>
-                                            <Input
-                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                value={footerContent.contactInfo.phone}
-                                                onChange={e => setFooterContent({ ...footerContent, contactInfo: { ...footerContent.contactInfo, phone: e.target.value } })}
-                                                placeholder="+94 77 123 4567"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Email</Label>
-                                            <Input
-                                                className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                                value={footerContent.contactInfo.email}
-                                                onChange={e => setFooterContent({ ...footerContent, contactInfo: { ...footerContent.contactInfo, email: e.target.value } })}
-                                                placeholder="info@qualityecon.lk"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Copyright */}
-                            <div className="space-y-2">
-                                <Label className="text-gray-800">Copyright Text</Label>
-                                <Input
-                                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                                    value={footerContent.copyright}
-                                    onChange={e => setFooterContent({ ...footerContent, copyright: e.target.value })}
-                                    placeholder="© 2024 Quality Econ. All rights reserved."
-                                />
-                            </div>
-                        </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingFeature(feature);
+                          setFeatureForm(feature);
+                          setIsFeatureModalOpen(true);
+                        }}
+                        className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteFeature(feature.id)}
+                        className="p-2 hover:bg-red-50 rounded-lg text-red-500"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
-                </TabsContent>
-            </Tabs >
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-gray-800">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm">{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
 
-            {/* Testimonial Modal */}
-            <AnimatePresence>
-                {
-                    isTestimonialModalOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
-                                <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                                    <h2 className="text-xl font-bold text-gray-900">{editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial'}</h2>
-                                    <button onClick={() => setIsTestimonialModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                        <X className="w-5 h-5" />
-                                    </button>
-                                </div>
-                                <form onSubmit={handleTestimonialSubmit} className="p-6 space-y-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Student Name</Label>
-                                        <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.name} onChange={e => setTestimonialForm({ ...testimonialForm, name: e.target.value })} />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Role/Achievement</Label>
-                                            <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.role} onChange={e => setTestimonialForm({ ...testimonialForm, role: e.target.value })} placeholder="District Rank 1" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Institute</Label>
-                                            <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.institute} onChange={e => setTestimonialForm({ ...testimonialForm, institute: e.target.value })} placeholder="Colombo" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Testimonial Content</Label>
-                                        <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.content} onChange={e => setTestimonialForm({ ...testimonialForm, content: e.target.value })} rows={4} />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Image URL</Label>
-                                            <Input className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.imageUrl} onChange={e => setTestimonialForm({ ...testimonialForm, imageUrl: e.target.value })} placeholder="https://..." />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Rating (1-5)</Label>
-                                            <Input type="number" min="1" max="5" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={testimonialForm.rating} onChange={e => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })} />
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-end gap-3 pt-4">
-                                        <Button type="button" variant="outline" onClick={() => setIsTestimonialModalOpen(false)}>Cancel</Button>
-                                        <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                            {isSaving ? 'Saving...' : (editingTestimonial ? 'Update Testimonial' : 'Add Testimonial')}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </motion.div>
-                        </div>
-                    )
-                }
-            </AnimatePresence >
+        {/* Testimonials Tab */}
+        <TabsContent value="testimonials" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <Button
+              onClick={() =>
+                setPreviewModal({ isOpen: true, type: "testimonials" })
+              }
+              variant="outline"
+              className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+            >
+              <Eye className="w-4 h-4 mr-2" /> Preview Section
+            </Button>
+            <Button
+              onClick={() => {
+                setEditingTestimonial(null);
+                setTestimonialForm({
+                  name: "",
+                  role: "",
+                  content: "",
+                  imageUrl: "",
+                  rating: 5,
+                  institute: "",
+                });
+                setIsTestimonialModalOpen(true);
+              }}
+              className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Testimonial
+            </Button>
+          </div>
 
-            {/* Feature Modal */}
-            <AnimatePresence>
-                {
-                    isFeatureModalOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-                                <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
-                                    <h2 className="text-xl font-bold text-gray-900">{editingFeature ? 'Edit Feature' : 'Add Feature'}</h2>
-                                    <button onClick={() => setIsFeatureModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                                        <X className="w-5 h-5" />
-                                    </button>
-                                </div>
-                                <form onSubmit={handleFeatureSubmit} className="p-6 space-y-6">
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Feature Title</Label>
-                                        <Input required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.title} onChange={e => setFeatureForm({ ...featureForm, title: e.target.value })} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Description</Label>
-                                        <Textarea required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.description} onChange={e => setFeatureForm({ ...featureForm, description: e.target.value })} rows={3} />
-                                    </div>
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Statistics Section
+              </h2>
+              <Button
+                onClick={handleSaveTestimonialStats}
+                disabled={isSaving}
+                className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+              >
+                <Save className="w-4 h-4 mr-2" /> Save Stats
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <Label className="text-gray-800">Total Students</Label>
+                <Input
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={testimonialStats.totalStudents}
+                  onChange={(e) =>
+                    setTestimonialStats({
+                      ...testimonialStats,
+                      totalStudents: e.target.value,
+                    })
+                  }
+                  placeholder="5000+"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-800">Average Rating</Label>
+                <Input
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={testimonialStats.averageRating}
+                  onChange={(e) =>
+                    setTestimonialStats({
+                      ...testimonialStats,
+                      averageRating: e.target.value,
+                    })
+                  }
+                  placeholder="4.9/5"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-800">Recommend Rate</Label>
+                <Input
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={testimonialStats.recommendationRate}
+                  onChange={(e) =>
+                    setTestimonialStats({
+                      ...testimonialStats,
+                      recommendationRate: e.target.value,
+                    })
+                  }
+                  placeholder="98%"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-800">Experience</Label>
+                <Input
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={testimonialStats.experienceYears}
+                  onChange={(e) =>
+                    setTestimonialStats({
+                      ...testimonialStats,
+                      experienceYears: e.target.value,
+                    })
+                  }
+                  placeholder="10+"
+                />
+              </div>
+            </div>
+          </div>
 
-                                    {/* Icon Picker */}
-                                    <div className="space-y-3">
-                                        <Label className="text-gray-800">Select Icon</Label>
-                                        <div className="grid grid-cols-7 gap-2">
-                                            {FEATURE_ICONS.map((iconItem) => {
-                                                const IconComponent = iconItem.icon;
-                                                const isSelected = featureForm.icon === iconItem.name;
-                                                return (
-                                                    <button
-                                                        key={iconItem.name}
-                                                        type="button"
-                                                        onClick={() => setFeatureForm({ ...featureForm, icon: iconItem.name })}
-                                                        className={`p-3 rounded-lg border-2 transition-all hover:scale-110 ${isSelected
-                                                            ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg'
-                                                            : 'border-gray-200 hover:border-[#D4AF37]/50'
-                                                            }`}
-                                                        title={iconItem.label}
-                                                    >
-                                                        <IconComponent className={`w-6 h-6 ${isSelected ? 'text-[#D4AF37]' : 'text-gray-600'}`} />
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                        {featureForm.icon && (
-                                            <p className="text-sm text-gray-600">Selected: {FEATURE_ICONS.find(i => i.name === featureForm.icon)?.label}</p>
-                                        )}
-                                    </div>
-
-                                    {/* Color Picker */}
-                                    <div className="space-y-3">
-                                        <Label className="text-gray-800">Select Gradient Color</Label>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {GRADIENT_COLORS.map((colorItem) => {
-                                                const isSelected = featureForm.color === colorItem.value;
-                                                return (
-                                                    <button
-                                                        key={colorItem.value}
-                                                        type="button"
-                                                        onClick={() => setFeatureForm({ ...featureForm, color: colorItem.value })}
-                                                        className={`relative p-4 rounded-xl border-2 transition-all hover:scale-105 ${isSelected
-                                                            ? 'border-[#D4AF37] shadow-lg'
-                                                            : 'border-gray-200 hover:border-gray-300'
-                                                            }`}
-                                                    >
-                                                        <div className={`h-12 rounded-lg ${colorItem.preview}`} />
-                                                        <p className="text-xs font-medium text-gray-700 mt-2 text-center">{colorItem.name}</p>
-                                                        {isSelected && (
-                                                            <div className="absolute top-2 right-2 bg-[#D4AF37] rounded-full p-1">
-                                                                <CheckCircle className="w-4 h-4 text-white" />
-                                                            </div>
-                                                        )}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-
-                                    {/* Preview */}
-                                    {featureForm.icon && featureForm.color && (
-                                        <div className="space-y-2">
-                                            <Label className="text-gray-800">Preview</Label>
-                                            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                                                <div className="flex items-start gap-4">
-                                                    <div className={`p-3 rounded-xl bg-linear-to-r ${featureForm.color}`}>
-                                                        {(() => {
-                                                            const IconComponent = (FEATURE_ICONS.find(i => i.name === featureForm.icon)?.icon) as any;
-                                                            return IconComponent ? <IconComponent className="w-6 h-6 text-white" /> : null;
-                                                        })()}
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <h3 className="font-bold text-gray-900">{featureForm.title || 'Feature Title'}</h3>
-                                                        <p className="text-sm text-gray-600 mt-1">{featureForm.description || 'Feature description'}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="space-y-2">
-                                        <Label className="text-gray-800">Order</Label>
-                                        <Input type="number" required className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" value={featureForm.order} onChange={e => setFeatureForm({ ...featureForm, order: parseInt(e.target.value) })} />
-                                    </div>
-                                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                                        <Button type="button" variant="outline" onClick={() => setIsFeatureModalOpen(false)}>Cancel</Button>
-                                        <Button type="submit" disabled={isSaving} className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]">
-                                            {isSaving ? 'Saving...' : (editingFeature ? 'Update Feature' : 'Add Feature')}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </motion.div>
-                        </div>
-                    )
-                }
-            </AnimatePresence >
-
-            {/* Course, Institute, and Timetable modals removed - managed in dedicated pages */}
-
-
-
-            {/* Alert Dialog */}
-            <AnimatePresence>
-                {alert.isOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
-                            <div className="p-6 text-center space-y-4">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto ${alert.type === 'success' ? 'bg-green-100 text-green-600' : alert.type === 'error' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'}`}>
-                                    {alert.type === 'success' ? <Zap className="w-6 h-6" /> : alert.type === 'error' ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-gray-900">{alert.title}</h3>
-                                    <p className="text-gray-500 mt-2">{alert.description}</p>
-                                </div>
-                                <div className="flex gap-3 justify-center pt-2">
-                                    {alert.type === 'confirm' ? (
-                                        <>
-                                            <Button variant="outline" onClick={() => setAlert(prev => ({ ...prev, isOpen: false }))}>Cancel</Button>
-                                            <Button onClick={() => { alert.onConfirm?.(); setAlert(prev => ({ ...prev, isOpen: false })); }} className="bg-red-600 text-white hover:bg-red-700">Confirm</Button>
-                                        </>
-                                    ) : (
-                                        <Button onClick={() => setAlert(prev => ({ ...prev, isOpen: false }))} className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]">Close</Button>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {testimonials.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden">
+                      {testimonial.imageUrl && (
+                        <img
+                          src={testimonial.imageUrl}
+                          alt={testimonial.name}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                     </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">
+                        {testimonial.name}
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        {testimonial.role}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingTestimonial(testimonial);
+                        setTestimonialForm({
+                          ...testimonial,
+                          imageUrl: testimonial.imageUrl || "",
+                          institute: testimonial.institute || "",
+                        });
+                        setIsTestimonialModalOpen(true);
+                      }}
+                      className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTestimonial(testimonial.id)}
+                      className="p-2 hover:bg-red-50 rounded-lg text-red-500"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="mb-2 flex text-[#fdf021] text-xs">
+                  {"★".repeat(testimonial.rating || 5)}
+                </div>
+                <p className="text-gray-600 text-sm italic mb-2">
+                  &quot;{testimonial.content}&quot;
+                </p>
+                {testimonial.institute && (
+                  <p className="text-xs text-gray-400 text-right">
+                    - {testimonial.institute}
+                  </p>
                 )}
-            </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        </TabsContent>
 
-            {/* Preview Modals */}
-            <PreviewModal
-                isOpen={previewModal.isOpen && previewModal.type === 'hero'}
-                onClose={() => setPreviewModal({ isOpen: false, type: null })}
-                title="Hero Section"
+        <PreviewModal
+          isOpen={previewModal.isOpen && previewModal.type === "testimonials"}
+          onClose={() => setPreviewModal({ isOpen: false, type: null })}
+          title="Testimonials Section"
+        >
+          <TestimonialsPreview data={testimonials} stats={testimonialStats} />
+        </PreviewModal>
+        <TabsContent value="contact" className="space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Contact Information
+              </h2>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() =>
+                    setPreviewModal({ isOpen: true, type: "contact" })
+                  }
+                  variant="outline"
+                  className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                >
+                  <Eye className="w-4 h-4 mr-2" /> Preview Section
+                </Button>
+                <Button
+                  onClick={() => handleSaveGeneral()}
+                  disabled={isSaving}
+                  className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+                >
+                  <Save className="w-4 h-4 mr-2" /> Save Changes
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-gray-800">Form Title</Label>
+                <Input
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={contactContent.formTitle}
+                  onChange={(e) =>
+                    setContactContent({
+                      ...contactContent,
+                      formTitle: e.target.value,
+                    })
+                  }
+                  placeholder="Start Your AL Economics Journey Today"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Email Address</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={contactContent.email}
+                    onChange={(e) =>
+                      setContactContent({
+                        ...contactContent,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Phone Number</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={contactContent.phone}
+                    onChange={(e) =>
+                      setContactContent({
+                        ...contactContent,
+                        phone: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Address</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={contactContent.address}
+                    onChange={(e) =>
+                      setContactContent({
+                        ...contactContent,
+                        address: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="space-y-6">
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  <span>📍</span> Institute Locations (Up to 2)
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Add up to 2 institute locations with map coordinates.
+                  <a
+                    href="https://www.google.com/maps"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#D4AF37] hover:underline ml-1"
+                  >
+                    Get coordinates from Google Maps →
+                  </a>
+                </p>
+
+                {(contactContent.locations || []).map((location, index) => (
+                  <div
+                    key={index}
+                    className="p-6 border-2 border-gray-200 rounded-xl space-y-4 bg-gray-50"
+                  >
+                    <h4 className="font-bold text-gray-900">
+                      Location {index + 1}
+                    </h4>
+
+                    <div className="space-y-2">
+                      <Label className="text-gray-800">Location Name</Label>
+                      <Input
+                        className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                        value={location.name}
+                        onChange={(e) => {
+                          const newLocations = [...contactContent.locations];
+                          newLocations[index].name = e.target.value;
+                          setContactContent({
+                            ...contactContent,
+                            locations: newLocations,
+                          });
+                        }}
+                        placeholder="Colombo Institute"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-gray-800">Address</Label>
+                      <Input
+                        className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                        value={location.address}
+                        onChange={(e) => {
+                          const newLocations = [...contactContent.locations];
+                          newLocations[index].address = e.target.value;
+                          setContactContent({
+                            ...contactContent,
+                            locations: newLocations,
+                          });
+                        }}
+                        placeholder="No. 123, High Level Road, Nugegoda"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-gray-800">Latitude</Label>
+                        <Input
+                          className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                          value={location.latitude}
+                          onChange={(e) => {
+                            const newLocations = [...contactContent.locations];
+                            newLocations[index].latitude = e.target.value;
+                            setContactContent({
+                              ...contactContent,
+                              locations: newLocations,
+                            });
+                          }}
+                          placeholder="7.0904"
+                          type="text"
+                        />
+                        <p className="text-xs text-gray-500">Example: 7.0904</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-gray-800">Longitude</Label>
+                        <Input
+                          className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                          value={location.longitude}
+                          onChange={(e) => {
+                            const newLocations = [...contactContent.locations];
+                            newLocations[index].longitude = e.target.value;
+                            setContactContent({
+                              ...contactContent,
+                              locations: newLocations,
+                            });
+                          }}
+                          placeholder="80.1350"
+                          type="text"
+                        />
+                        <p className="text-xs text-gray-500">
+                          Example: 80.1350
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-900">
+                    <strong>💡 How to get coordinates:</strong>
+                    <br />
+                    1. Open Google Maps
+                    <br />
+                    2. Right-click on your location
+                    <br />
+                    3. Click on the coordinates (e.g., "7.0904, 80.1350")
+                    <br />
+                    4. Paste them here (latitude first, then longitude)
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-800">Office Hours Title</Label>
+                <Input
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={contactContent.officeHours.title}
+                  onChange={(e) =>
+                    setContactContent({
+                      ...contactContent,
+                      officeHours: {
+                        ...contactContent.officeHours,
+                        title: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Office Hours"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Weekdays Hours</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={contactContent.officeHours.weekdays}
+                    onChange={(e) =>
+                      setContactContent({
+                        ...contactContent,
+                        officeHours: {
+                          ...contactContent.officeHours,
+                          weekdays: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Monday - Friday: 9:00 AM - 6:00 PM"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Weekends Hours</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={contactContent.officeHours.weekends}
+                    onChange={(e) =>
+                      setContactContent({
+                        ...contactContent,
+                        officeHours: {
+                          ...contactContent.officeHours,
+                          weekends: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Saturday: 9:00 AM - 4:00 PM"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Footer Tab */}
+        <TabsContent value="footer" className="space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Footer Content
+              </h2>
+              <Button
+                onClick={() => handleSaveGeneral()}
+                disabled={isSaving}
+                className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+              >
+                <Save className="w-4 h-4 mr-2" /> Save Changes
+              </Button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Description */}
+              <div className="space-y-2">
+                <Label className="text-gray-800">Footer Description</Label>
+                <Textarea
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={footerContent.description}
+                  onChange={(e) =>
+                    setFooterContent({
+                      ...footerContent,
+                      description: e.target.value,
+                    })
+                  }
+                  placeholder="The premier Economics education platform..."
+                  rows={3}
+                />
+              </div>
+
+              {/* Social Links */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900">
+                  Social Media Links
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Facebook URL</Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={footerContent.socialLinks.facebook}
+                      onChange={(e) =>
+                        setFooterContent({
+                          ...footerContent,
+                          socialLinks: {
+                            ...footerContent.socialLinks,
+                            facebook: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="https://facebook.com/..."
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">YouTube URL</Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={footerContent.socialLinks.youtube}
+                      onChange={(e) =>
+                        setFooterContent({
+                          ...footerContent,
+                          socialLinks: {
+                            ...footerContent.socialLinks,
+                            youtube: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="https://youtube.com/..."
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">
+                      Telegram/Instagram URL
+                    </Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={footerContent.socialLinks.telegram}
+                      onChange={(e) =>
+                        setFooterContent({
+                          ...footerContent,
+                          socialLinks: {
+                            ...footerContent.socialLinks,
+                            telegram: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="https://t.me/... or https://instagram.com/..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Links */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900">Quick Links</h3>
+                  <Button
+                    onClick={() =>
+                      setFooterContent({
+                        ...footerContent,
+                        quickLinks: [
+                          ...footerContent.quickLinks,
+                          { title: "", url: "" },
+                        ],
+                      })
+                    }
+                    variant="outline"
+                    size="sm"
+                    className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                  >
+                    <Plus className="w-4 h-4 mr-2" /> Add Link
+                  </Button>
+                </div>
+                <div className="space-y-3">
+                  {footerContent.quickLinks.map((link, index) => (
+                    <div key={index} className="flex gap-3 items-end">
+                      <div className="flex-1 space-y-2">
+                        <Label className="text-gray-800">Link Title</Label>
+                        <Input
+                          className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                          value={link.title}
+                          onChange={(e) => {
+                            const newLinks = [...footerContent.quickLinks];
+                            newLinks[index].title = e.target.value;
+                            setFooterContent({
+                              ...footerContent,
+                              quickLinks: newLinks,
+                            });
+                          }}
+                          placeholder="Home"
+                        />
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <Label className="text-gray-800">Link URL</Label>
+                        <Input
+                          className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                          value={link.url}
+                          onChange={(e) => {
+                            const newLinks = [...footerContent.quickLinks];
+                            newLinks[index].url = e.target.value;
+                            setFooterContent({
+                              ...footerContent,
+                              quickLinks: newLinks,
+                            });
+                          }}
+                          placeholder="#home"
+                        />
+                      </div>
+                      <Button
+                        onClick={() => {
+                          const newLinks = footerContent.quickLinks.filter(
+                            (_, i) => i !== index,
+                          );
+                          setFooterContent({
+                            ...footerContent,
+                            quickLinks: newLinks,
+                          });
+                        }}
+                        variant="outline"
+                        size="sm"
+                        className="border-red-500 text-red-500 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900">
+                  Contact Information
+                </h3>
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Address</Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={footerContent.contactInfo.address}
+                      onChange={(e) =>
+                        setFooterContent({
+                          ...footerContent,
+                          contactInfo: {
+                            ...footerContent.contactInfo,
+                            address: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="No. 123, High Level Road, Nugegoda, Sri Lanka"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-gray-800">Phone</Label>
+                      <Input
+                        className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                        value={footerContent.contactInfo.phone}
+                        onChange={(e) =>
+                          setFooterContent({
+                            ...footerContent,
+                            contactInfo: {
+                              ...footerContent.contactInfo,
+                              phone: e.target.value,
+                            },
+                          })
+                        }
+                        placeholder="+94 77 123 4567"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gray-800">Email</Label>
+                      <Input
+                        className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                        value={footerContent.contactInfo.email}
+                        onChange={(e) =>
+                          setFooterContent({
+                            ...footerContent,
+                            contactInfo: {
+                              ...footerContent.contactInfo,
+                              email: e.target.value,
+                            },
+                          })
+                        }
+                        placeholder="info@qualityecon.lk"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Copyright */}
+              <div className="space-y-2">
+                <Label className="text-gray-800">Copyright Text</Label>
+                <Input
+                  className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  value={footerContent.copyright}
+                  onChange={(e) =>
+                    setFooterContent({
+                      ...footerContent,
+                      copyright: e.target.value,
+                    })
+                  }
+                  placeholder="© 2024 Quality Econ. All rights reserved."
+                />
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Testimonial Modal */}
+      <AnimatePresence>
+        {isTestimonialModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden"
             >
-                <HeroPreview data={heroContent} />
-            </PreviewModal>
+              <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-900">
+                  {editingTestimonial ? "Edit Testimonial" : "Add Testimonial"}
+                </h2>
+                <button
+                  onClick={() => setIsTestimonialModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <form
+                onSubmit={handleTestimonialSubmit}
+                className="p-6 space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Student Name</Label>
+                  <Input
+                    required
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={testimonialForm.name}
+                    onChange={(e) =>
+                      setTestimonialForm({
+                        ...testimonialForm,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Role/Achievement</Label>
+                    <Input
+                      required
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={testimonialForm.role}
+                      onChange={(e) =>
+                        setTestimonialForm({
+                          ...testimonialForm,
+                          role: e.target.value,
+                        })
+                      }
+                      placeholder="District Rank 1"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Institute</Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={testimonialForm.institute}
+                      onChange={(e) =>
+                        setTestimonialForm({
+                          ...testimonialForm,
+                          institute: e.target.value,
+                        })
+                      }
+                      placeholder="Colombo"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Testimonial Content</Label>
+                  <Textarea
+                    required
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={testimonialForm.content}
+                    onChange={(e) =>
+                      setTestimonialForm({
+                        ...testimonialForm,
+                        content: e.target.value,
+                      })
+                    }
+                    rows={4}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Image URL</Label>
+                    <Input
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={testimonialForm.imageUrl}
+                      onChange={(e) =>
+                        setTestimonialForm({
+                          ...testimonialForm,
+                          imageUrl: e.target.value,
+                        })
+                      }
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Rating (1-5)</Label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="5"
+                      required
+                      className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                      value={testimonialForm.rating}
+                      onChange={(e) =>
+                        setTestimonialForm({
+                          ...testimonialForm,
+                          rating: parseInt(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-3 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsTestimonialModalOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isSaving}
+                    className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]"
+                  >
+                    {isSaving
+                      ? "Saving..."
+                      : editingTestimonial
+                        ? "Update Testimonial"
+                        : "Add Testimonial"}
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
-            <PreviewModal
-                isOpen={previewModal.isOpen && previewModal.type === 'about'}
-                onClose={() => setPreviewModal({ isOpen: false, type: null })}
-                title="About Section"
+      {/* Feature Modal */}
+      <AnimatePresence>
+        {isFeatureModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             >
-                <AboutPreview data={aboutContent} />
-            </PreviewModal>
+              <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
+                <h2 className="text-xl font-bold text-gray-900">
+                  {editingFeature ? "Edit Feature" : "Add Feature"}
+                </h2>
+                <button
+                  onClick={() => setIsFeatureModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <form onSubmit={handleFeatureSubmit} className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Feature Title</Label>
+                  <Input
+                    required
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={featureForm.title}
+                    onChange={(e) =>
+                      setFeatureForm({ ...featureForm, title: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Description</Label>
+                  <Textarea
+                    required
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={featureForm.description}
+                    onChange={(e) =>
+                      setFeatureForm({
+                        ...featureForm,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
 
-            <PreviewModal
-                isOpen={previewModal.isOpen && previewModal.type === 'features'}
-                onClose={() => setPreviewModal({ isOpen: false, type: null })}
-                title="Modern Features Section"
+                {/* Icon Picker */}
+                <div className="space-y-3">
+                  <Label className="text-gray-800">Select Icon</Label>
+                  <div className="grid grid-cols-7 gap-2">
+                    {FEATURE_ICONS.map((iconItem) => {
+                      const IconComponent = iconItem.icon;
+                      const isSelected = featureForm.icon === iconItem.name;
+                      return (
+                        <button
+                          key={iconItem.name}
+                          type="button"
+                          onClick={() =>
+                            setFeatureForm({
+                              ...featureForm,
+                              icon: iconItem.name,
+                            })
+                          }
+                          className={`p-3 rounded-lg border-2 transition-all hover:scale-110 ${
+                            isSelected
+                              ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg"
+                              : "border-gray-200 hover:border-[#D4AF37]/50"
+                          }`}
+                          title={iconItem.label}
+                        >
+                          <IconComponent
+                            className={`w-6 h-6 ${isSelected ? "text-[#D4AF37]" : "text-gray-600"}`}
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {featureForm.icon && (
+                    <p className="text-sm text-gray-600">
+                      Selected:{" "}
+                      {
+                        FEATURE_ICONS.find((i) => i.name === featureForm.icon)
+                          ?.label
+                      }
+                    </p>
+                  )}
+                </div>
+
+                {/* Color Picker */}
+                <div className="space-y-3">
+                  <Label className="text-gray-800">Select Gradient Color</Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {GRADIENT_COLORS.map((colorItem) => {
+                      const isSelected = featureForm.color === colorItem.value;
+                      return (
+                        <button
+                          key={colorItem.value}
+                          type="button"
+                          onClick={() =>
+                            setFeatureForm({
+                              ...featureForm,
+                              color: colorItem.value,
+                            })
+                          }
+                          className={`relative p-4 rounded-xl border-2 transition-all hover:scale-105 ${
+                            isSelected
+                              ? "border-[#D4AF37] shadow-lg"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <div
+                            className={`h-12 rounded-lg ${colorItem.preview}`}
+                          />
+                          <p className="text-xs font-medium text-gray-700 mt-2 text-center">
+                            {colorItem.name}
+                          </p>
+                          {isSelected && (
+                            <div className="absolute top-2 right-2 bg-[#D4AF37] rounded-full p-1">
+                              <CheckCircle className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Preview */}
+                {featureForm.icon && featureForm.color && (
+                  <div className="space-y-2">
+                    <Label className="text-gray-800">Preview</Label>
+                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                      <div className="flex items-start gap-4">
+                        <div
+                          className={`p-3 rounded-xl bg-linear-to-r ${featureForm.color}`}
+                        >
+                          {(() => {
+                            const IconComponent = FEATURE_ICONS.find(
+                              (i) => i.name === featureForm.icon,
+                            )?.icon as any;
+                            return IconComponent ? (
+                              <IconComponent className="w-6 h-6 text-white" />
+                            ) : null;
+                          })()}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-gray-900">
+                            {featureForm.title || "Feature Title"}
+                          </h3>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {featureForm.description || "Feature description"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label className="text-gray-800">Order</Label>
+                  <Input
+                    type="number"
+                    required
+                    className="bg-white border-gray-300 text-gray-900 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    value={featureForm.order}
+                    onChange={(e) =>
+                      setFeatureForm({
+                        ...featureForm,
+                        order: parseInt(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsFeatureModalOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isSaving}
+                    className="bg-[#D4AF37] text-[#1a1a1a] hover:bg-[#B5952F]"
+                  >
+                    {isSaving
+                      ? "Saving..."
+                      : editingFeature
+                        ? "Update Feature"
+                        : "Add Feature"}
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Course, Institute, and Timetable modals removed - managed in dedicated pages */}
+
+      {/* Alert Dialog */}
+      <AnimatePresence>
+        {alert.isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
             >
-                <ModernFeaturesPreview data={features} />
-            </PreviewModal>
+              <div className="p-6 text-center space-y-4">
+                <div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto ${alert.type === "success" ? "bg-green-100 text-green-600" : alert.type === "error" ? "bg-red-100 text-red-600" : "bg-yellow-100 text-yellow-600"}`}
+                >
+                  {alert.type === "success" ? (
+                    <Zap className="w-6 h-6" />
+                  ) : alert.type === "error" ? (
+                    <X className="w-6 h-6" />
+                  ) : (
+                    <MessageSquare className="w-6 h-6" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {alert.title}
+                  </h3>
+                  <p className="text-gray-500 mt-2">{alert.description}</p>
+                </div>
+                <div className="flex gap-3 justify-center pt-2">
+                  {alert.type === "confirm" ? (
+                    <>
+                      <Button
+                        variant="outline"
+                        onClick={() =>
+                          setAlert((prev) => ({ ...prev, isOpen: false }))
+                        }
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          alert.onConfirm?.();
+                          setAlert((prev) => ({ ...prev, isOpen: false }));
+                        }}
+                        className="bg-red-600 text-white hover:bg-red-700"
+                      >
+                        Confirm
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={() =>
+                        setAlert((prev) => ({ ...prev, isOpen: false }))
+                      }
+                      className="bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
+                    >
+                      Close
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
-            <PreviewModal
-                isOpen={previewModal.isOpen && previewModal.type === 'testimonials'}
-                onClose={() => setPreviewModal({ isOpen: false, type: null })}
-                title="Testimonials Section"
-            >
-                <TestimonialsPreview data={testimonials} />
-            </PreviewModal>
+      {/* Preview Modals */}
+      <PreviewModal
+        isOpen={previewModal.isOpen && previewModal.type === "hero"}
+        onClose={() => setPreviewModal({ isOpen: false, type: null })}
+        title="Hero Section"
+      >
+        <HeroPreview data={heroContent} />
+      </PreviewModal>
 
+      <PreviewModal
+        isOpen={previewModal.isOpen && previewModal.type === "about"}
+        onClose={() => setPreviewModal({ isOpen: false, type: null })}
+        title="About Section"
+      >
+        <AboutPreview data={aboutContent} />
+      </PreviewModal>
 
+      <PreviewModal
+        isOpen={previewModal.isOpen && previewModal.type === "features"}
+        onClose={() => setPreviewModal({ isOpen: false, type: null })}
+        title="Modern Features Section"
+      >
+        <ModernFeaturesPreview data={features} />
+      </PreviewModal>
 
-            <PreviewModal
-                isOpen={previewModal.isOpen && previewModal.type === 'contact'}
-                onClose={() => setPreviewModal({ isOpen: false, type: null })}
-                title="Contact Section"
-            >
-                <ContactPreview data={contactContent} />
-            </PreviewModal>
-        </div >
-    );
+      <PreviewModal
+        isOpen={previewModal.isOpen && previewModal.type === "testimonials"}
+        onClose={() => setPreviewModal({ isOpen: false, type: null })}
+        title="Testimonials Section"
+      >
+        <TestimonialsPreview data={testimonials} />
+      </PreviewModal>
+
+      <PreviewModal
+        isOpen={previewModal.isOpen && previewModal.type === "contact"}
+        onClose={() => setPreviewModal({ isOpen: false, type: null })}
+        title="Contact Section"
+      >
+        <ContactPreview data={contactContent} />
+      </PreviewModal>
+    </div>
+  );
 }

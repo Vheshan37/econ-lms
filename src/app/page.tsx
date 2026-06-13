@@ -1,5 +1,3 @@
-
-
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { BannerSection } from "@/components/landing/BannerSection";
@@ -14,7 +12,7 @@ import { ExamResultsTeaser } from "@/components/landing/exam-results/ExamResults
 import { prisma } from "@/lib/prisma";
 import { getLandingPageContent } from "@/lib/actions/content";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const years = await prisma.academicYear.findMany({
@@ -23,31 +21,34 @@ export default async function Home() {
     include: {
       classTypes: {
         where: { isActive: true },
-        select: { name: true }
-      }
-    }
+        select: { name: true },
+      },
+    },
   });
 
   const institutes = await prisma.institute.findMany({
     include: {
       timetables: {
-        orderBy: { day: 'asc' }
-      }
-    }
+        orderBy: { day: "asc" },
+      },
+    },
   });
 
   const timestamp = new Date().getTime();
-  const heroContent = await getLandingPageContent('hero');
+  const heroContent = await getLandingPageContent("hero");
   const heroData = heroContent.success ? heroContent.data : null;
 
-  const bannerContent = await getLandingPageContent('banners');
+  const bannerContent = await getLandingPageContent("banners");
   const bannerData = bannerContent.success ? bannerContent.data : null;
 
-  const aboutContent = await getLandingPageContent('about');
+  const aboutContent = await getLandingPageContent("about");
   const aboutData = aboutContent.success ? aboutContent.data : null;
 
-  const hallOfFameContent = await getLandingPageContent('hall-of-fame');
-  const isHallOfFameEnabled = hallOfFameContent.success && hallOfFameContent.data ? hallOfFameContent.data.isEnabled !== false : true;
+  const hallOfFameContent = await getLandingPageContent("hall-of-fame");
+  const isHallOfFameEnabled =
+    hallOfFameContent.success && hallOfFameContent.data
+      ? hallOfFameContent.data.isEnabled !== false
+      : true;
 
   return (
     <div className="min-h-screen bg-black font-sans selection:bg-[#fdf021] selection:text-black">

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Award } from 'lucide-react';
+import { Award } from "lucide-react";
 
 interface ExamHeaderProps {
   title: string;
@@ -23,7 +23,7 @@ export function ExamHeader({ title, subtitle, examCount }: ExamHeaderProps) {
             <p className="text-gray-400 text-lg">
               {subtitle}
               <span className="ml-3 text-[#D4AF37] font-medium">
-                {examCount} {examCount === 1 ? 'Exam' : 'Exams'}
+                {examCount} {examCount === 1 ? "Exam" : "Exams"}
               </span>
             </p>
           </div>

@@ -165,7 +165,10 @@ export async function createExam(data: ExamInput) {
                 student_name: result.studentName || "",
               },
             });
-          } else if (result.studentName && result.studentName !== indexRecord.student_name) {
+          } else if (
+            result.studentName &&
+            result.studentName !== indexRecord.student_name
+          ) {
             indexRecord = await tx.index.update({
               where: { id: indexRecord.id },
               data: { student_name: result.studentName },
@@ -229,7 +232,10 @@ export async function updateExam(
                 student_name: result.studentName || "",
               },
             });
-          } else if (result.studentName && result.studentName !== indexRecord.student_name) {
+          } else if (
+            result.studentName &&
+            result.studentName !== indexRecord.student_name
+          ) {
             indexRecord = await tx.index.update({
               where: { id: indexRecord.id },
               data: { student_name: result.studentName },
@@ -297,7 +303,8 @@ export async function lookupStudentResults(indexNumber: string) {
     if (!indexRecord) {
       return {
         success: false,
-        error: "No results found for this index number. Please check and try again.",
+        error:
+          "No results found for this index number. Please check and try again.",
       };
     }
 

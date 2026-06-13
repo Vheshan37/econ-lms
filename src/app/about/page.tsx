@@ -16,7 +16,8 @@ export default async function AboutPage() {
 
   const teacherData = {
     name: heroData?.teacherName || "Krishan Kashthuriarachchi",
-    title: heroData?.teacherTitle || "B.Sc. Economics (Sp.) University of Colombo",
+    title:
+      heroData?.teacherTitle || "B.Sc. Economics (Sp.) University of Colombo",
     image: heroData?.teacherImage || null,
   };
 

@@ -3,113 +3,123 @@
 
 import { useState, useEffect } from "react";
 import { FEATURE_ICONS } from "@/lib/constants";
-import { getLandingPageContent, getModernFeatures } from "@/lib/actions/content";
+import {
+  getLandingPageContent,
+  getModernFeatures,
+} from "@/lib/actions/content";
 import { Zap, TrendingUp } from "lucide-react";
 
 export function ModernFeaturesSection() {
-    const [features, setFeatures] = useState<any[]>([]);
-    const [featuresMeta, setFeaturesMeta] = useState<any>({
-        description: 'අති නවීන තාක්ෂණය සහ ඔප්පු වූ ගුරු ක්‍රමවේද සමඟ උ.පෙ. ආර්ථික විද්‍යා අධ්‍යාපනයට විප්ලවවාදී ප්‍රවේශයක් අත්විඳින්න.',
-        studentLove: {
-            title: 'Why Students Love Us',
-            description: 'Our comprehensive learning platform is designed to give you every advantage in your A/L Economics journey, combining traditional teaching excellence with modern technology.',
-            benefits: [
-                "Flexible learning schedule that fits your lifestyle",
-                "Access to a vast library of educational resources",
-                "Personalized learning paths based on your progress",
-                "Direct communication with experienced teachers",
-                "Competitive environment that motivates excellence"
-            ],
-            successRate: {
-                value: '92',
-                suffix: '%',
-                label: 'Success Rate',
-                description: 'of our students achieve A or B grades'
-            }
+  const [features, setFeatures] = useState<any[]>([]);
+  const [featuresMeta, setFeaturesMeta] = useState<any>({
+    description:
+      "අති නවීන තාක්ෂණය සහ ඔප්පු වූ ගුරු ක්‍රමවේද සමඟ උ.පෙ. ආර්ථික විද්‍යා අධ්‍යාපනයට විප්ලවවාදී ප්‍රවේශයක් අත්විඳින්න.",
+    studentLove: {
+      title: "Why Students Love Us",
+      description:
+        "Our comprehensive learning platform is designed to give you every advantage in your A/L Economics journey, combining traditional teaching excellence with modern technology.",
+      benefits: [
+        "Flexible learning schedule that fits your lifestyle",
+        "Access to a vast library of educational resources",
+        "Personalized learning paths based on your progress",
+        "Direct communication with experienced teachers",
+        "Competitive environment that motivates excellence",
+      ],
+      successRate: {
+        value: "92",
+        suffix: "%",
+        label: "Success Rate",
+        description: "of our students achieve A or B grades",
+      },
+    },
+  });
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        // Fetch features list
+        const featuresResult = await getModernFeatures();
+        if (featuresResult.success && featuresResult.data) {
+          setFeatures(featuresResult.data);
         }
-    });
 
-    useEffect(() => {
-        const fetchContent = async () => {
-            try {
-                // Fetch features list
-                const featuresResult = await getModernFeatures();
-                if (featuresResult.success && featuresResult.data) {
-                    setFeatures(featuresResult.data);
-                }
+        // Fetch metadata (description, etc)
+        const metaResult = await getLandingPageContent("features");
+        if (metaResult.success && metaResult.data) {
+          setFeaturesMeta(metaResult.data);
+        }
+      } catch (error) {
+        console.error("Error fetching features content:", error);
+      }
+    };
 
-                // Fetch metadata (description, etc)
-                const metaResult = await getLandingPageContent('features');
-                if (metaResult.success && metaResult.data) {
-                    setFeaturesMeta(metaResult.data);
-                }
-            } catch (error) {
-                console.error("Error fetching features content:", error);
-            }
-        };
+    fetchContent();
+  }, []);
 
-        fetchContent();
-    }, []);
+  // Fallback if no features in DB yet
+  const displayFeatures = features.length > 0 ? features : [];
 
-    // Fallback if no features in DB yet
-    const displayFeatures = features.length > 0 ? features : [];
+  return (
+    <section className="py-24 bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white relative overflow-hidden">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
 
-    return (
-        <section className="py-24 bg-gradient-to-br from-gray-950 via-black to-gray-950 text-white relative overflow-hidden">
-            {/* Abstract Background Elements */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center mb-16">
+          <div className="inline-block">
+            <span className="text-[#fdf021] font-semibold text-sm uppercase tracking-wider mb-4 block">
+              Why Choose Us
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+              Modern Teaching Features
+            </h2>
+            <div className="h-1 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6" />
+          </div>
+          <p className="text-gray-400 max-w-3xl mx-auto text-lg">
+            {featuresMeta.description}
+          </p>
+        </div>
 
-            <div className="container mx-auto px-4 relative z-10">
-                <div className="text-center mb-16">
-                    <div className="inline-block">
-                        <span className="text-[#fdf021] font-semibold text-sm uppercase tracking-wider mb-4 block">
-                            Why Choose Us
-                        </span>
-                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
-                            Modern Teaching Features
-                        </h2>
-                        <div className="h-1 w-24 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full mx-auto mb-6" />
-                    </div>
-                    <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-                        {featuresMeta.description}
-                    </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {displayFeatures.map((feature, idx) => {
+            const Icon =
+              FEATURE_ICONS.find((i) => i.name === feature.icon)?.icon || Zap;
+
+            return (
+              <div
+                key={idx}
+                className="group relative bg-gradient-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)] hover:-translate-y-2"
+              >
+                {/* Icon with Gradient Background */}
+                <div className="relative mb-6">
+                  <div
+                    className={`inline-flex p-4 bg-gradient-to-br ${feature.color || "from-gray-600 to-gray-700"} rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${feature.color || "from-gray-600 to-gray-700"} blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-2xl`}
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {displayFeatures.map((feature, idx) => {
-                        const Icon = FEATURE_ICONS.find(i => i.name === feature.icon)?.icon || Zap;
+                {/* Content */}
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {feature.description}
+                </p>
 
-                        return (
-                            <div
-                                key={idx}
-                                className="group relative bg-gradient-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-gray-700 transition-all duration-500 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)] hover:-translate-y-2"
-                            >
-                                {/* Icon with Gradient Background */}
-                                <div className="relative mb-6">
-                                    <div className={`inline-flex p-4 bg-gradient-to-br ${feature.color || 'from-gray-600 to-gray-700'} rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                                        <Icon className="w-8 h-8 text-white" />
-                                    </div>
-                                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.color || 'from-gray-600 to-gray-700'} blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-2xl`} />
-                                </div>
+                {/* Decorative Corner */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-bl-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            );
+          })}
+        </div>
 
-                                {/* Content */}
-                                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
-                                    {feature.title}
-                                </h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">
-                                    {feature.description}
-                                </p>
-
-                                {/* Decorative Corner */}
-                                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-500/5 to-transparent rounded-bl-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {/* Student Benefits Section - Redesigned */}
-                {/* <div className="mt-24 relative">
+        {/* Student Benefits Section - Redesigned */}
+        {/* <div className="mt-24 relative">
                     <div className="absolute inset-0 bg-[#fdf021]/5 blur-3xl rounded-full" />
                     <div className="relative bg-black/40 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/10 overflow-hidden">
                         <div className="absolute inset-0 border border-white/5 rounded-3xl pointer-events-none" />
@@ -169,7 +179,7 @@ export function ModernFeaturesSection() {
                         </div>
                     </div>
                 </div> */}
-            </div>
-        </section>
-    );
+      </div>
+    </section>
+  );
 }

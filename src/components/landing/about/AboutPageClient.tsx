@@ -2,12 +2,7 @@
 
 import { Navbar } from "@/components/Navbar";
 import { motion } from "framer-motion";
-import {
-  TrendingUp,
-  Target,
-  Star,
-  CheckCircle2,
-} from "lucide-react";
+import { TrendingUp, Target, Star, CheckCircle2 } from "lucide-react";
 import { useMemo } from "react";
 
 interface AboutData {
@@ -226,8 +221,7 @@ export function AboutPageClient({
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div>
                   <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                    Why Students{" "}
-                    <span className="text-[#fdf021]">Love Us</span>
+                    Why Students <span className="text-[#fdf021]">Love Us</span>
                   </h3>
                   <p className="text-gray-400 mb-8 text-lg leading-relaxed">
                     {studentLove.description}
