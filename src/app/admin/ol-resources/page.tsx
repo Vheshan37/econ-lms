@@ -47,6 +47,13 @@ interface Resource {
   olSubjectId?: string;
 }
 
+const getYouTubeVideoId = (url: string) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
 interface OLSubject {
   id: string;
   name: string;
@@ -803,6 +810,8 @@ export default function OLResourcesPage() {
                 {filteredResources.map((resource, index) => {
                   const tabInfo = TABS.find((t) => t.id === resource.type);
                   const Icon = tabInfo?.icon || FileText;
+                  const videoId = resource.type === "VIDEO" ? getYouTubeVideoId(resource.url) : null;
+
                   return (
                     <motion.div
                       key={resource.id}
@@ -810,62 +819,129 @@ export default function OLResourcesPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ delay: index * 0.05 }}
-                      className="group relative bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                      className={`group bg-white rounded-2xl border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col relative overflow-hidden ${
+                        resource.type === "VIDEO" && videoId ? "h-[280px]" : "p-6"
+                      }`}
                       onClick={() => handleResourceClick(resource)}
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div
-                          className={`p-3 rounded-xl ${tabInfo?.bgColor} bg-opacity-10 relative`}
-                        >
-                          <Icon className={`w-6 h-6 ${tabInfo?.color}`} />
-                          {resource.type === "VIDEO" && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="bg-black/10 rounded-full p-1">
-                                <Play className="w-3 h-3 text-current opacity-50" />
+                      {resource.type === "VIDEO" && videoId ? (
+                        <>
+                          {/* Image wrapper that shrinks on hover */}
+                          <div className="absolute top-0 left-0 right-0 w-full h-full group-hover:h-[150px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-gray-900">
+                            <img
+                              src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+                              alt={resource.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
+                              <div className="w-12 h-12 rounded-full bg-[#D4AF37] text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
+                                <Play className="w-5 h-5 fill-current ml-0.5" />
                               </div>
                             </div>
+                            <div className="absolute top-3 right-3 z-20">
+                              <span className="px-2 py-0.5 bg-red-600 text-white rounded text-[10px] font-bold uppercase tracking-wider border border-red-500/20">
+                                Video
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Action Buttons Overlay for Admin */}
+                          <div className="absolute top-3 left-3 z-30 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <button
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditResource(resource);
+                              }}
+                              className="p-2 bg-black/60 hover:bg-black text-white hover:text-[#D4AF37] rounded-lg transition-colors border border-white/10"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(resource);
+                              }}
+                              className="p-2 bg-black/60 hover:bg-black text-white hover:text-red-500 rounded-lg transition-colors border border-white/10"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          {/* Sliding Text Content for Videos */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-white p-4 z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out border-t border-gray-100 flex flex-col justify-between h-[130px]">
+                            <div>
+                              <h3 className="font-bold text-gray-900 mb-1 group-hover:text-[#D4AF37] transition-colors line-clamp-1 text-base">
+                                {resource.title}
+                              </h3>
+                              {resource.description && (
+                                <p className="text-gray-600 line-clamp-2 leading-relaxed text-xs">
+                                  {resource.description}
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                              <span className="text-xs text-gray-500">
+                                {new Date(resource.createdAt).toLocaleDateString()}
+                              </span>
+                              <div className="inline-flex items-center gap-1 text-sm text-[#D4AF37] font-medium">
+                                Watch Now <Play className="w-3.5 h-3.5" />
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        /* Standard layout for non-video resources */
+                        <>
+                          <div className="flex items-start justify-between mb-4">
+                            <div
+                              className={`p-3 rounded-xl ${tabInfo?.bgColor} bg-opacity-10`}
+                            >
+                              <Icon className={`w-6 h-6 ${tabInfo?.color}`} />
+                            </div>
+                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditResource(resource);
+                                }}
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                              >
+                                <Edit2 className="w-4 h-4 text-gray-600" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(resource);
+                                }}
+                                className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4 text-red-500" />
+                              </button>
+                            </div>
+                          </div>
+
+                          <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                            {resource.title}
+                          </h3>
+                          {resource.description && (
+                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                              {resource.description}
+                            </p>
                           )}
-                        </div>
-                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditResource(resource);
-                            }}
-                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4 text-gray-600" />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteClick(resource);
-                            }}
-                            className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </button>
-                        </div>
-                      </div>
 
-                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
-                        {resource.title}
-                      </h3>
-                      {resource.description && (
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                          {resource.description}
-                        </p>
+                          <a
+                            href={resource.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-sm text-[#D4AF37] hover:text-[#B5952F] font-medium"
+                          >
+                            View Resource
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </>
                       )}
-
-                      <a
-                        href={resource.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-[#D4AF37] hover:text-[#B5952F] font-medium"
-                      >
-                        View Resource
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
                     </motion.div>
                   );
                 })}
