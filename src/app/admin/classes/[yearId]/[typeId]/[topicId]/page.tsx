@@ -13,6 +13,7 @@ import {
   File,
   ClipboardList,
   Play,
+  Download,
   ExternalLink,
   ChevronRight,
 } from "lucide-react";
@@ -433,137 +434,118 @@ function ResourceManagementPageClient({
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {currentTabResources.map((resource) => {
-                        const videoId = resource.type === "VIDEO" ? getYouTubeVideoId(resource.url) : null;
+                        const getCardThumbnail = (type: string, url: string) => {
+                          if (type === "VIDEO") {
+                            const id = getYouTubeVideoId(url);
+                            return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "/learning_materials.png";
+                          }
+                          if (type === "PAST_PAPER") return "/past_papers.png";
+                          if (type === "QUIZ") return "/quizzes.png";
+                          if (type === "PDF") return "/learning_materials.png";
+                          return "/learning_materials.png";
+                        };
+                        const thumbnailUrl = getCardThumbnail(resource.type, resource.url);
 
                         return (
                           <motion.div
                             key={resource.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className={`group bg-gray-50 rounded-xl hover:shadow-md transition-all border border-gray-100 cursor-pointer flex flex-col relative overflow-hidden ${
-                              resource.type === "VIDEO" && videoId ? "h-[280px]" : "p-4"
-                            }`}
+                            className="group relative bg-white rounded-2xl border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-[280px] overflow-hidden"
                             onClick={() => handleResourceClick(resource)}
                           >
-                            {resource.type === "VIDEO" && videoId ? (
-                              <>
-                                {/* Image wrapper that shrinks on hover */}
-                                <div className="absolute top-0 left-0 right-0 w-full h-full group-hover:h-[150px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-gray-900">
-                                  <img
-                                    src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-                                    alt={resource.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    loading="lazy"
-                                  />
-                                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
-                                    <div className="w-12 h-12 rounded-full bg-[#D4AF37] text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
-                                      <Play className="w-5 h-5 fill-current ml-0.5" />
-                                    </div>
-                                  </div>
-                                  <div className="absolute top-3 right-3 z-20">
-                                    <span className="px-2 py-0.5 bg-red-600 text-white rounded text-[10px] font-bold uppercase tracking-wider border border-red-500/20">
-                                      Video
-                                    </span>
-                                  </div>
-                                </div>
-
-                                {/* Action Buttons Overlay for Admin */}
-                                <div className="absolute top-3 left-3 z-30 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleEdit(resource);
-                                    }}
-                                    className="p-2 bg-black/60 hover:bg-black text-white hover:text-[#D4AF37] rounded-lg transition-colors border border-white/10"
-                                  >
-                                    <Edit2 className="w-3.5 h-3.5" />
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDeleteClick(resource.id, resource.title);
-                                    }}
-                                    className="p-2 bg-black/60 hover:bg-black text-white hover:text-red-500 rounded-lg transition-colors border border-white/10"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
-                                </div>
-
-                                {/* Sliding Text Content for Videos */}
-                                <div className="absolute bottom-0 left-0 right-0 bg-white p-4 z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out border-t border-gray-100 flex flex-col justify-between h-[130px]">
-                                  <div>
-                                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#D4AF37] transition-colors line-clamp-1 text-sm">
-                                      {resource.title}
-                                    </h3>
-                                    {resource.description && (
-                                      <p className="text-gray-500 line-clamp-2 leading-relaxed text-xs">
-                                        {resource.description}
-                                      </p>
-                                    )}
-                                  </div>
-
-                                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                                    <span className="text-xs text-gray-500">
-                                      {resource.month !== null && resource.month !== undefined
-                                        ? `Month ${resource.month + 1}`
-                                        : new Date(resource.createdAt).toLocaleDateString()}
-                                    </span>
-                                    <div className="inline-flex items-center gap-1 text-sm text-[#D4AF37] font-medium">
-                                      Watch Now <Play className="w-3.5 h-3.5" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </>
-                            ) : (
-                              /* Standard layout for non-video resources */
-                              <div className="flex items-start justify-between gap-3 flex-1">
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <h3 className="font-semibold text-gray-900 truncate">
-                                      {resource.title}
-                                    </h3>
-                                  </div>
-                                  {resource.description && (
-                                    <p className="text-sm text-gray-500 line-clamp-2 mb-2">
-                                      {resource.description}
-                                    </p>
+                            {/* Image wrapper that shrinks on hover */}
+                            <div className="absolute top-0 left-0 right-0 w-full h-full group-hover:h-[150px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-gray-900">
+                              <img
+                                src={thumbnailUrl}
+                                alt={resource.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                loading="lazy"
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
+                                <div className="w-12 h-12 rounded-full bg-[#D4AF37] text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
+                                  {resource.type === "VIDEO" ? (
+                                    <Play className="w-5 h-5 fill-current ml-0.5" />
+                                  ) : resource.type === "PAST_PAPER" || resource.type === "PDF" ? (
+                                    <Download className="w-5 h-5" />
+                                  ) : (
+                                    <ExternalLink className="w-5 h-5" />
                                   )}
-                                  {resource.type !== "VIDEO" && (
-                                    <div className="text-xs text-[#D4AF37] hover:underline inline-flex items-center gap-1">
-                                      Open Link <ExternalLink className="w-3 h-3" />
-                                    </div>
-                                  )}
-                                  {resource.month !== null &&
-                                    resource.month !== undefined && (
-                                      <div className="mt-2 flex flex-wrap gap-1">
-                                        <span className="text-xs bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-0.5 rounded-full">
-                                          Month {resource.month + 1}
-                                        </span>
-                                      </div>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleEdit(resource);
-                                    }}
-                                    className="p-2 text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg transition-colors"
-                                  >
-                                    <Edit2 className="w-4 h-4" />
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDeleteClick(resource.id, resource.title);
-                                    }}
-                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </button>
                                 </div>
                               </div>
-                            )}
+                              <div className="absolute top-3 right-3 z-20">
+                                <span className={`px-2 py-0.5 text-white rounded text-[10px] font-bold uppercase tracking-wider border ${
+                                  resource.type === "VIDEO"
+                                    ? "bg-red-600 border-red-500/20"
+                                    : resource.type === "PAST_PAPER"
+                                      ? "bg-blue-600 border-blue-500/20"
+                                      : resource.type === "QUIZ"
+                                        ? "bg-purple-600 border-purple-500/20"
+                                        : "bg-green-600 border-green-500/20"
+                                }`}>
+                                  {resource.type.replace("_", " ")}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Action Buttons Overlay for Admin */}
+                            <div className="absolute top-3 left-3 z-30 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEdit(resource);
+                                }}
+                                className="p-2 bg-black/60 hover:bg-black text-white hover:text-[#D4AF37] rounded-lg transition-colors border border-white/10"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(resource.id, resource.title);
+                                }}
+                                className="p-2 bg-black/60 hover:bg-black text-white hover:text-red-500 rounded-lg transition-colors border border-white/10"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            {/* Sliding Text Content */}
+                            <div className="absolute bottom-0 left-0 right-0 bg-white p-4 z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out border-t border-gray-100 flex flex-col justify-between h-[130px]">
+                              <div>
+                                <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#D4AF37] transition-colors line-clamp-1 text-sm">
+                                  {resource.title}
+                                </h3>
+                                {resource.description && (
+                                  <p className="text-gray-500 line-clamp-2 leading-relaxed text-xs">
+                                    {resource.description}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                                <span className="text-xs text-gray-500">
+                                  {resource.month !== null && resource.month !== undefined
+                                    ? `Month ${resource.month + 1}`
+                                    : new Date(resource.createdAt).toLocaleDateString()}
+                                </span>
+                                <div className="inline-flex items-center gap-1 text-xs text-[#D4AF37] font-semibold">
+                                  {resource.type === "VIDEO" ? (
+                                    <>
+                                      Watch Video <Play className="w-3 h-3 fill-current ml-0.5" />
+                                    </>
+                                  ) : resource.type === "PAST_PAPER" || resource.type === "PDF" ? (
+                                    <>
+                                      Download <Download className="w-3 h-3" />
+                                    </>
+                                  ) : (
+                                    <>
+                                      Open Link <ExternalLink className="w-3 h-3" />
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
                           </motion.div>
                         );
                       })}

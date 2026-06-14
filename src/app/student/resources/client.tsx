@@ -296,7 +296,7 @@ export default function ResourcesClient({
                         ? MONTHS[Number(resource.month)]
                         : null;
 
-                    const videoId = resource.type === "VIDEO" ? getYouTubeVideoId(resource.url) : nul                    const getCardThumbnail = (type: string, url: string) => {
+                    const getCardThumbnail = (type: string, url: string) => {
                       if (type === "VIDEO") {
                         const id = getYouTubeVideoId(url);
                         return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "/learning_materials.png";
@@ -436,8 +436,8 @@ export default function ResourcesClient({
                           </div>
                         </div>
                       </div>
-                    );  );
-                  })}
+                    );
+                    })}
                 </div>
               )}
             </motion.div>
