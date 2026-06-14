@@ -94,7 +94,13 @@ export function BannerSection({ content }: { content?: any[] }) {
   return (
     <section className="py-8 md:py-20 bg-black">
       <div className="container mx-auto px-4">
-        <div className="relative w-full h-[450px] sm:h-[500px] md:h-[600px] rounded-[24px] md:rounded-[32px] overflow-hidden border border-white/10 shadow-2xl isolate group">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative w-full h-[450px] sm:h-[500px] md:h-[600px] rounded-[24px] md:rounded-[32px] overflow-hidden border border-white/10 shadow-2xl isolate group"
+        >
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
               key={currentIndex}
@@ -214,7 +220,7 @@ export function BannerSection({ content }: { content?: any[] }) {
               />
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

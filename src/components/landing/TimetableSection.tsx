@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar, Clock, MapPin } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Timetable {
   id: string;
@@ -30,7 +31,13 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-10 md:mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10 md:mb-16"
+        >
           <div className="inline-flex items-center justify-center p-3 bg-[#fdf021]/10 rounded-full mb-6">
             <Calendar className="h-8 w-8 text-[#fdf021]" />
           </div>
@@ -41,9 +48,15 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
             ඔබට පහසු ආයතනය තෝරා ගන්න. පන්ති ශ්‍රී ලංකාව පුරා විවිධ ස්ථානවල
             පවත්වනු ලැබේ.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="block md:hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="block md:hidden"
+        >
           <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl border border-gray-800 overflow-hidden">
             <div className="p-5 border-b border-gray-800 bg-gradient-to-r from-gray-900 to-[#111]">
               <div className="flex items-center gap-3">
@@ -117,12 +130,28 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 }
+            }
+          }}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {institutes.map((institute) => (
-            <div
+            <motion.div
               key={institute.id}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+              }}
               className="group relative bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)]"
             >
               <div className="mb-6">
@@ -166,9 +195,9 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
               </div>
 
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {institutes.length === 0 && (
           <div className="text-center py-16">
