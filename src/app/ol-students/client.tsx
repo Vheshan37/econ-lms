@@ -694,7 +694,7 @@ export default function OLStudentsClient({
       </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute top-0 left-0 w-full h-full">
           <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-yellow-600/10 rounded-full blur-[120px]" />
           <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px]" />
@@ -705,7 +705,7 @@ export default function OLStudentsClient({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto space-y-8"
+            className="max-w-4xl mx-auto space-y-6"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-full text-[#fdf021] text-sm font-medium">
               <Sparkles className="w-4 h-4" />
@@ -714,7 +714,7 @@ export default function OLStudentsClient({
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
               {pageSettings?.hero?.title ? (
                 <span
                   dangerouslySetInnerHTML={{
@@ -733,7 +733,7 @@ export default function OLStudentsClient({
               )}
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
               {pageSettings?.cta?.message?.replace(
                 "{year}",
                 pageSettings?.cta?.year || "2027",
@@ -741,14 +741,14 @@ export default function OLStudentsClient({
                 "Don't wait until after O/Ls. Build your foundation now with our exclusive free resources designed for smart achievers."}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
                 size="lg"
                 onClick={() => {
                   const element = document.getElementById("subjects-section");
                   element?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="h-16 px-10 text-xl bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold rounded-full shadow-lg shadow-yellow-500/20"
+                className="h-14 px-8 text-lg bg-[#fdf021] hover:bg-[#f0e51f] text-black font-bold rounded-full shadow-lg shadow-yellow-500/20"
               >
                 Start Learning Free
                 <ArrowRight className="ml-2 h-6 w-6" />
