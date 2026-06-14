@@ -770,7 +770,11 @@ export default function OLStudentsClient({
           >
             {cards.map((card, idx) => {
               const Icon = iconMap[card.icon] || BookOpen;
-              const cardColor = card["card-color"] || "#ab1c1c";
+              
+              // Distinct light colors: Red, Green, Yellow, Blue
+              const colors = ["#f87171", "#4ade80", "#fdf021", "#60a5fa"];
+              const cardColor = colors[idx % colors.length];
+              
               const textColor = getContrastColor(cardColor);
               const hoverColor = adjustColor(cardColor, -15); // Darken by 15% for hover
 
