@@ -36,6 +36,7 @@ interface ExamMark {
 
 interface StudentResult {
   indexNumber: string;
+  studentName: string;
   marks: ExamMark[];
 }
 
@@ -270,6 +271,16 @@ export function ExamResultsClient() {
                           <p className="text-xs text-gray-500">Index Number</p>
                           <p className="text-white font-bold">
                             {studentResult.indexNumber}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5">
+                        <Hash className="w-4 h-4 text-[#fdf021]" />
+                        <div>
+                          <p className="text-xs text-gray-500">Student Name</p>
+                          <p className="text-white font-bold">
+                            {studentResult.studentName}
                           </p>
                         </div>
                       </div>
