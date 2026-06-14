@@ -68,6 +68,13 @@ interface Resource {
   isFree: boolean;
 }
 
+const getYouTubeVideoId = (url: string) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
 interface TopicResourcesClientProps {
   resources: Resource[];
 }
@@ -149,6 +156,7 @@ export function TopicResourcesClient({ resources }: TopicResourcesClientProps) {
                       ? MONTHS[resource.month]
                       : null;
                   const isLocked = !resource.isPaid && !resource.isFree;
+                  const videoId = resource.type === "VIDEO" ? getYouTubeVideoId(resource.url) : null;
 
                   return (
                     <a
@@ -157,83 +165,162 @@ export function TopicResourcesClient({ resources }: TopicResourcesClientProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => handleResourceClick(resource, e)}
-                      className={`group bg-gray-50 p-4 rounded-xl hover:shadow-md transition-all border cursor-pointer block relative ${
+                      className={`group bg-gray-50 rounded-xl hover:shadow-md transition-all border cursor-pointer flex flex-col relative overflow-hidden ${
                         isLocked
                           ? "border-amber-200 hover:border-amber-400"
                           : "border-gray-100"
+                      } ${
+                        resource.type === "VIDEO" && videoId ? "h-[280px]" : "p-4"
                       }`}
                     >
-                      {/* Status Badge */}
-                      <span
-                        className={`absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                          resource.isFree
-                            ? "bg-green-100 text-green-700"
-                            : resource.isPaid
-                              ? "bg-[#D4AF37]/10 text-[#D4AF37]"
-                              : "bg-amber-100 text-amber-700"
-                        }`}
-                      >
-                        {resource.isFree
-                          ? "Free"
-                          : resource.isPaid
-                            ? "Premium"
-                            : "Locked"}
-                      </span>
-
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-gray-900 truncate group-hover:text-[#D4AF37] transition-colors">
-                              {resource.title}
-                            </h3>
-                            {resource.type === "VIDEO" && (
-                              <div className="shrink-0 w-6 h-6 rounded-full bg-red-500/10 flex items-center justify-center">
-                                <Play className="w-3 h-3 text-red-500" />
-                              </div>
-                            )}
-                            {isLocked && (
-                              <div className="shrink-0 w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
-                                <Lock className="w-3 h-3 text-amber-600" />
-                              </div>
-                            )}
-                          </div>
-                          {resource.description && (
-                            <p className="text-sm text-gray-500 line-clamp-2 mb-3">
-                              {resource.description}
-                            </p>
-                          )}
-
-                          <div className="flex items-center gap-2">
-                            {monthName && (
-                              <span
-                                className={`text-xs flex items-center gap-1 ${
-                                  isLocked ? "text-amber-600" : "text-gray-400"
-                                }`}
-                              >
-                                <Calendar className="w-3 h-3" />
-                                {monthName}
-                              </span>
-                            )}
-                            <div className="flex items-center gap-2 text-xs font-medium">
+                      {resource.type === "VIDEO" && videoId ? (
+                        <>
+                          {/* Image wrapper that shrinks on hover */}
+                          <div className="absolute top-0 left-0 right-0 w-full h-full group-hover:h-[150px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-gray-900">
+                            <img
+                              src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+                              alt={resource.title}
+                              className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                                isLocked ? "opacity-60 saturate-50" : ""
+                              }`}
+                              loading="lazy"
+                            />
+                            {/* Icon Overlay (Play or Lock) */}
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
                               {isLocked ? (
-                                <span className="text-amber-600 flex items-center gap-1">
-                                  <Lock className="w-3 h-3" /> Payment Required
-                                </span>
-                              ) : resource.type === "VIDEO" ? (
-                                <span className="text-red-500 flex items-center gap-1">
-                                  <Play className="w-3 h-3" />
-                                  Watch Now
-                                </span>
+                                <div className="w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-lg">
+                                  <Lock className="w-5 h-5" />
+                                </div>
                               ) : (
-                                <span className="text-[#D4AF37] flex items-center gap-1">
-                                  <Download className="w-3 h-3" />
-                                  Download
-                                </span>
+                                <div className="w-12 h-12 rounded-full bg-[#D4AF37] text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
+                                  <Play className="w-5 h-5 fill-current ml-0.5" />
+                                </div>
                               )}
                             </div>
+                            
+                            {/* Badges Overlay */}
+                            <div className="absolute top-3 right-3 flex items-center gap-1.5 z-20">
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                                resource.isFree
+                                  ? "bg-green-100 text-green-700"
+                                  : resource.isPaid
+                                    ? "bg-[#D4AF37]/10 text-[#D4AF37] backdrop-blur-xs"
+                                    : "bg-amber-100 text-amber-700"
+                              }`}>
+                                {resource.isFree
+                                  ? "Free"
+                                  : resource.isPaid
+                                    ? "Premium"
+                                    : "Locked"}
+                              </span>
+                              <span className="px-2 py-0.5 bg-red-600 text-white rounded text-[10px] font-bold uppercase tracking-wider border border-red-500/20">
+                                Video
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      </div>
+
+                          {/* Sliding Text Content for Videos */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-white p-4 z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out border-t border-gray-100 flex flex-col justify-between h-[130px]">
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#D4AF37] transition-colors line-clamp-1 text-sm">
+                                {resource.title}
+                              </h3>
+                              {resource.description && (
+                                <p className="text-gray-500 line-clamp-2 leading-relaxed text-xs">
+                                  {resource.description}
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                              {monthName && (
+                                <span className={`text-xs flex items-center gap-1 ${
+                                  isLocked ? "text-amber-600" : "text-gray-400"
+                                }`}>
+                                  <Calendar className="w-3 h-3" />
+                                  {monthName}
+                                </span>
+                              )}
+                              <div className="flex items-center gap-2 text-xs font-medium">
+                                {isLocked ? (
+                                  <span className="text-amber-600 flex items-center gap-1">
+                                    <Lock className="w-3 h-3" /> Payment Required
+                                  </span>
+                                ) : (
+                                  <span className="text-red-500 flex items-center gap-1">
+                                    <Play className="w-3 h-3" /> Watch Now
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        /* Standard layout for non-video resources */
+                        <>
+                          {/* Status Badge */}
+                          <span
+                            className={`absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                              resource.isFree
+                                ? "bg-green-100 text-green-700"
+                                : resource.isPaid
+                                  ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                                  : "bg-amber-100 text-amber-700"
+                            }`}
+                          >
+                            {resource.isFree
+                              ? "Free"
+                              : resource.isPaid
+                                ? "Premium"
+                                : "Locked"}
+                          </span>
+
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="font-semibold text-gray-900 truncate group-hover:text-[#D4AF37] transition-colors">
+                                  {resource.title}
+                                </h3>
+                                {isLocked && (
+                                  <div className="shrink-0 w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                                    <Lock className="w-3 h-3 text-amber-600" />
+                                  </div>
+                                )}
+                              </div>
+                              {resource.description && (
+                                <p className="text-sm text-gray-500 line-clamp-2 mb-3">
+                                  {resource.description}
+                                </p>
+                              )}
+
+                              <div className="flex items-center gap-2">
+                                {monthName && (
+                                  <span
+                                    className={`text-xs flex items-center gap-1 ${
+                                      isLocked ? "text-amber-600" : "text-gray-400"
+                                    }`}
+                                  >
+                                    <Calendar className="w-3 h-3" />
+                                    {monthName}
+                                  </span>
+                                )}
+                                <div className="flex items-center gap-2 text-xs font-medium">
+                                  {isLocked ? (
+                                    <span className="text-amber-600 flex items-center gap-1">
+                                      <Lock className="w-3 h-3" /> Payment Required
+                                    </span>
+                                  ) : (
+                                    <span className="text-[#D4AF37] flex items-center gap-1">
+                                      <Download className="w-3 h-3" />
+                                      Download
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </a>
                   );
                 })}
