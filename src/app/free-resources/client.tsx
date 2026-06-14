@@ -255,9 +255,9 @@ export default function FreeResourcesClient({
               <span className="inline-block px-4 py-1.5 bg-[#fdf021]/10 text-[#fdf021] rounded-full text-sm font-bold tracking-wide mb-6 uppercase border border-[#fdf021]/20">
                 Knowledge Hub
               </span>
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-normal text-white mb-6 font-doodle tracking-wider">
                 Free{" "}
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-yellow-500 to-yellow-600">
+                <span className="text-[#fdf021]">
                   Learning Resources
                 </span>
               </h1>

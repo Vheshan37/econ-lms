@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { lookupStudentResults } from "@/lib/actions/exam-results";
 import { Navbar } from "@/components/Navbar";
+import { FooterSection } from "@/components/landing/FooterSection";
 
 interface ExamMark {
   id: number;
@@ -40,7 +41,11 @@ interface StudentResult {
   marks: ExamMark[];
 }
 
-export function ExamResultsClient() {
+interface ExamResultsClientProps {
+  isHallOfFameEnabled?: boolean;
+}
+
+export function ExamResultsClient({ isHallOfFameEnabled = true }: ExamResultsClientProps) {
   const [indexNumber, setIndexNumber] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [studentResult, setStudentResult] = useState<StudentResult | null>(
@@ -88,8 +93,9 @@ export function ExamResultsClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
-      <Navbar />
+    <div className="min-h-screen bg-[#050505] text-white flex flex-col justify-between">
+      <div className="flex-grow">
+        <Navbar isHallOfFameEnabled={isHallOfFameEnabled} />
       <section className="relative pt-32 pb-12 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
           <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#fdf021]/10 rounded-full blur-3xl" />
@@ -105,7 +111,7 @@ export function ExamResultsClient() {
             <div className="inline-flex items-center justify-center p-4 bg-[#fdf021]/10 rounded-full mb-6">
               <Shield className="h-8 w-8 text-[#fdf021]" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-doodle tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-normal mb-4 font-doodle tracking-wider">
               Exam <span className="text-[#fdf021]">Results</span>
             </h1>
             <p className="text-gray-400 max-w-xl mx-auto text-base">
@@ -585,6 +591,8 @@ export function ExamResultsClient() {
           )}
         </div>
       </section>
+      </div>
+      <FooterSection />
     </div>
   );
 }
