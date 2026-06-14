@@ -374,7 +374,7 @@ export default function FreeResourcesClient({
                         />
                         {/* Play / Action Overlay */}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/40 transition-colors duration-300">
-                          <div className="w-12 h-12 rounded-full bg-[#fdf021] text-black flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
+                          {/* <div className="w-12 h-12 rounded-full bg-[#fdf021] text-black flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
                             {resource.type === "VIDEO" ? (
                               <Play className="w-5 h-5 fill-current ml-0.5" />
                             ) : resource.type === "PAST_PAPER" ||
@@ -383,7 +383,7 @@ export default function FreeResourcesClient({
                             ) : (
                               <ArrowRight className="w-5 h-5" />
                             )}
-                          </div>
+                          </div> */}
                         </div>
                         {/* Video Tag */}
                         <div className="absolute top-3 right-3">

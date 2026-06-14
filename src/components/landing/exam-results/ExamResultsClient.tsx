@@ -105,7 +105,7 @@ export function ExamResultsClient() {
             <div className="inline-flex items-center justify-center p-4 bg-[#fdf021]/10 rounded-full mb-6">
               <Shield className="h-8 w-8 text-[#fdf021]" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 font-doodle tracking-tight">
               Exam <span className="text-[#fdf021]">Results</span>
             </h1>
             <p className="text-gray-400 max-w-xl mx-auto text-base">

@@ -297,15 +297,15 @@ export default function ResourcesClient({
                         : null;
 
                     const getCardThumbnail = (type: string, url: string) => {
-                      if (type === "VIDEO") {
-                        const id = getYouTubeVideoId(url);
-                        return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "/learning_materials.png";
-                      }
-                      if (type === "PAST_PAPER") return "/past_papers.png";
-                      if (type === "QUIZ") return "/quizzes.png";
-                      if (type === "PDF") return "/learning_materials.png";
-                      return "/learning_materials.png";
-                    };
+                       if (type === "VIDEO") {
+                         const id = getYouTubeVideoId(url);
+                         return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "/resource/learning-material.png";
+                       }
+                       if (type === "PAST_PAPER") return "/resource/past-papers.png";
+                       if (type === "QUIZ") return "/resource/quizzes.png";
+                       if (type === "PDF") return "/resource/learning-material.png";
+                       return "/resource/learning-material.png";
+                     };
                     const thumbnailUrl = getCardThumbnail(resource.type, resource.url);
 
                     return (

@@ -53,3 +53,15 @@ export const impact = localFont({
   variable: "--font-impact",
   display: "swap",
 });
+
+export const rubikDoodle = localFont({
+    src: [
+        {
+            path: "../../public/fonts/RubikDoodleShadow-Regular.ttf",
+            weight: "400",
+            style: "normal",
+        },
+    ],
+    variable: "--font-doodle",
+    display: "swap",
+});
