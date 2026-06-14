@@ -336,7 +336,22 @@ export default function FreeResourcesClient({
                 {filteredResources.map((resource) => {
                   const Icon = getResourceIcon(resource.type);
                   const styleClass = getResourceStyle(resource.type);
-                  const videoId = resource.type === "VIDEO" ? getYouTubeVideoId(resource.url) : null;
+                  const getCardThumbnail = (type: string, url: string) => {
+                    if (type === "VIDEO") {
+                      const id = getYouTubeVideoId(url);
+                      return id
+                        ? `https://img.youtube.com/vi/${id}/hqdefault.jpg`
+                        : "/learning_materials.png";
+                    }
+                    if (type === "PAST_PAPER") return "/past_papers.png";
+                    if (type === "QUIZ") return "/quizzes.png";
+                    if (type === "PDF") return "/learning_materials.png";
+                    return "/learning_materials.png";
+                  };
+                  const thumbnailUrl = getCardThumbnail(
+                    resource.type,
+                    resource.url,
+                  );
 
                   return (
                     <motion.div
@@ -347,96 +362,75 @@ export default function FreeResourcesClient({
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.3 }}
                       onClick={() => handleResourceClick(resource)}
-                      className={`group bg-[#111] rounded-2xl border border-white/5 overflow-hidden hover:border-[#fdf021]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-900/10 cursor-pointer flex flex-col relative ${
-                        resource.type === "VIDEO" && videoId ? "h-[300px]" : "h-full"
-                      }`}
+                      className="group bg-[#111] rounded-2xl border border-white/5 overflow-hidden hover:border-[#fdf021]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-900/10 cursor-pointer flex flex-col relative h-[300px]"
                     >
-                      {/* Thumbnail at the top for Video Resources */}
-                      {resource.type === "VIDEO" && videoId ? (
-                        <>
-                          {/* Image wrapper that shrinks on hover */}
-                          <div className="absolute top-0 left-0 right-0 w-full h-full group-hover:h-[170px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-black">
-                            <img
-                              src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-                              alt={resource.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              loading="lazy"
-                            />
-                            {/* Play Button Overlay */}
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/40 transition-colors duration-300">
-                              <div className="w-12 h-12 rounded-full bg-[#fdf021] text-black flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
-                                <Play className="w-5 h-5 fill-current ml-0.5" />
-                              </div>
-                            </div>
-                            {/* Video Tag */}
-                            <div className="absolute top-3 right-3">
-                              <span className="px-2 py-0.5 bg-red-600/90 text-white rounded text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs border border-red-500/20">
-                                Video
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Sliding Text Content for Videos */}
-                          <div className="absolute bottom-0 left-0 right-0 bg-[#111] p-4 z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out border-t border-white/5 flex flex-col justify-between h-[130px]">
-                            <div>
-                              <h3 className="font-bold text-white mb-1 group-hover:text-[#fdf021] transition-colors line-clamp-1 text-base">
-                                {resource.title}
-                              </h3>
-                              <p className="text-gray-400 line-clamp-2 leading-relaxed text-xs">
-                                {resource.description}
-                              </p>
-                            </div>
-
-                            <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                              <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
-                                <span>👁 {resource.views || 0} views</span>
-                              </div>
-
-                              <button className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-[#fdf021] group-hover:text-black transition-colors">
-                                <Play className="w-3.5 h-3.5 fill-current" />
-                              </button>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        /* Standard layout for PDF/QUIZ/PAST_PAPER */
-                        <div className="p-6 flex-1 flex flex-col justify-between">
-                          <div>
-                            <div className="flex justify-between items-start mb-6">
-                              <div
-                                className={`w-12 h-12 rounded-xl flex items-center justify-center ${styleClass}`}
-                              >
-                                <Icon className="w-6 h-6" />
-                              </div>
-                              <span className="px-3 py-1 bg-white/5 rounded-lg text-xs font-semibold text-gray-400 uppercase tracking-wider border border-white/5">
-                                {resource.type.replace("_", " ")}
-                              </span>
-                            </div>
-
-                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#fdf021] transition-colors line-clamp-2">
-                              {resource.title}
-                            </h3>
-                            <p className="text-gray-400 line-clamp-2 leading-relaxed mb-6 text-sm">
-                              {resource.description}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                            <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
-                              <span>👁 {resource.views || 0} views</span>
-                            </div>
-
-                            <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-[#fdf021] group-hover:text-black transition-colors">
-                              {resource.type === "PAST_PAPER" ||
+                      {/* Thumbnail at the top */}
+                      <div className="absolute top-0 left-0 right-0 w-full h-full group-hover:h-[170px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-black">
+                        <img
+                          src={thumbnailUrl}
+                          alt={resource.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        {/* Play / Action Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/40 transition-colors duration-300">
+                          <div className="w-12 h-12 rounded-full bg-[#fdf021] text-black flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300">
+                            {resource.type === "VIDEO" ? (
+                              <Play className="w-5 h-5 fill-current ml-0.5" />
+                            ) : resource.type === "PAST_PAPER" ||
                               resource.type === "PDF" ? (
-                                <Download className="w-4 h-4" />
-                              ) : (
-                                <ArrowRight className="w-4 h-4" />
-                              )}
-                            </button>
+                              <Download className="w-5 h-5" />
+                            ) : (
+                              <ArrowRight className="w-5 h-5" />
+                            )}
                           </div>
                         </div>
-                      )}
+                        {/* Video Tag */}
+                        <div className="absolute top-3 right-3">
+                          <span
+                            className={`px-2 py-0.5 text-white rounded text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs border ${
+                              resource.type === "VIDEO"
+                                ? "bg-red-600 border-red-500/20"
+                                : resource.type === "PAST_PAPER"
+                                  ? "bg-blue-600 border-blue-500/20"
+                                  : resource.type === "QUIZ"
+                                    ? "bg-purple-600 border-purple-500/20"
+                                    : "bg-green-600 border-green-500/20"
+                            }`}
+                          >
+                            {resource.type.replace("_", " ")}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Sliding Text Content */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-[#111] p-4 z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out border-t border-white/5 flex flex-col justify-between h-[130px]">
+                        <div>
+                          <h3 className="font-bold text-white mb-1 group-hover:text-[#fdf021] transition-colors line-clamp-1 text-base">
+                            {resource.title}
+                          </h3>
+                          <p className="text-gray-400 line-clamp-2 leading-relaxed text-xs">
+                            {resource.description}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                          <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
+                            <span>👁 {resource.views || 0} views</span>
+                          </div>
+
+                          <button className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-[#fdf021] group-hover:text-black transition-colors">
+                            {resource.type === "PAST_PAPER" ||
+                            resource.type === "PDF" ? (
+                              <Download className="w-3.5 h-3.5" />
+                            ) : resource.type === "VIDEO" ? (
+                              <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                            ) : (
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
                     </motion.div>
                   );
                 })}
