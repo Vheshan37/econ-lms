@@ -10,9 +10,14 @@ import { EnrollmentModal } from "./EnrollmentModal";
 interface HeroSectionProps {
   content?: any;
   timestamp?: number;
+  whatsappNumber?: string;
 }
 
-export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
+export function HeroSection({
+  content,
+  timestamp = 0,
+  whatsappNumber = "94773304548",
+}: HeroSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Default values if content is missing
@@ -44,7 +49,7 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
         <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px]" />
       </div>
 
-      <div className="container mx-auto px-4 z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pt-20">
+      <div className="container mx-auto px-4 z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pt-32 lg:pt-20 pb-12 lg:pb-0">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -140,11 +145,16 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
               <div className="absolute inset-0 via-transparent to-transparent opacity-90" />
 
               <div className="absolute bottom-8 left-8 right-8">
-                <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/10">
-                  <p className="text-[#fdf021] font-bold text-lg">
+                <div
+                  className="p-5 rounded-2xl border border-white/10 backdrop-blur-[24px] bg-gradient-to-b from-white/10 to-white/[0.02]"
+                  style={{
+                    boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15)",
+                  }}
+                >
+                  <p className="text-[#fdf021] font-bold text-lg leading-tight mb-1">
                     {data.teacherName}
                   </p>
-                  <p className="text-gray-300 text-sm">{data.teacherTitle}</p>
+                  <p className="text-gray-300 text-sm leading-relaxed">{data.teacherTitle}</p>
                 </div>
               </div>
             </div>
@@ -180,8 +190,8 @@ export function HeroSection({ content, timestamp = 0 }: HeroSectionProps) {
       <EnrollmentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        batch={"selectedBatch"}
-        whatsappNumber={"whatsappNumber"}
+        batch="A/L Economics"
+        whatsappNumber={whatsappNumber}
       />
     </section>
   );

@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: var(--font-geist-sans), var(--font-sinhala), sans-serif;
   --font-fm-gemunu: var(--font-fm-gemunu), sans-serif;
   --font-impact: var(--font-impact), sans-serif;
   --font-doodle: var(--font-doodle), cursive;
+  --font-sinhala: var(--font-sinhala), serif;
 }
 
 :root {
@@ -76,6 +78,7 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: var(--font-geist-sans), var(--font-sinhala), sans-serif;
   }
 }
 

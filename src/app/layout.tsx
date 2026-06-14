@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { fmGemunu, impact, rubikDoodle } from "./fonts";
+import { fmGemunu, impact, rubikDoodle, sinhalaFont } from "./fonts";
 import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
 
@@ -40,7 +40,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fmGemunu.variable} ${impact.variable} ${rubikDoodle.variable} antialiased`}
+        className={`
+          ${geistSans.variable} 
+          ${geistMono.variable} 
+          ${fmGemunu.variable} 
+          ${impact.variable} 
+          ${rubikDoodle.variable} 
+          antialiased`}
       >
         <SmoothScroll>{children}</SmoothScroll>
       </body>

@@ -65,3 +65,15 @@ export const rubikDoodle = localFont({
     variable: "--font-doodle",
     display: "swap",
 });
+
+export const sinhalaFont = localFont({
+    src: [
+        {
+            path: "../../public/fonts/maname.ttf",
+            weight: "400",
+            style: "normal",
+        },
+    ],
+    variable: "--font-sinhala",
+    display: "swap",
+});

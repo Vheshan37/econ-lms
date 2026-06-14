@@ -57,7 +57,11 @@ export default async function Home() {
       </div>
 
       <main>
-        <HeroSection content={heroData} timestamp={timestamp} />
+        <HeroSection
+          content={heroData}
+          timestamp={timestamp}
+          whatsappNumber={process.env.WHATSAPP_NUMBER || "94773304548"}
+        />
         <AboutSection content={aboutData} />
         {/* <ExamResultsTeaser /> */}
         {/* <CoursesSection years={years} whatsappNumber={process.env.WHATSAPP_NUMBER || ''} /> */}
