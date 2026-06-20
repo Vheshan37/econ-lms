@@ -83,9 +83,8 @@ export default async function StudentClassTypesPage({
               const isDefault = Object.keys(DEFAULT_TYPES).includes(
                 classType.name,
               );
-              // @ts-ignore
               const config = isDefault
-                ? DEFAULT_TYPES[classType.name]
+                ? (DEFAULT_TYPES as any)[classType.name]
                 : CUSTOM_TYPE_CONFIG;
               const Icon = config.icon;
 

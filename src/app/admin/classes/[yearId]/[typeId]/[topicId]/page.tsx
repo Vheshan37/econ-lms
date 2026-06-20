@@ -35,7 +35,7 @@ interface Resource {
   url: string;
   description: string | null;
   createdAt: Date;
-  year?: Date | null;
+  year?: number | null;
   month?: number | null;
 }
 
