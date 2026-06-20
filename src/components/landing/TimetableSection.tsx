@@ -32,10 +32,10 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="text-center mb-10 md:mb-16"
         >
           <div className="inline-flex items-center justify-center p-3 bg-[#fdf021]/10 rounded-full mb-6">
@@ -51,10 +51,10 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="block md:hidden"
         >
           <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl border border-gray-800 overflow-hidden">
@@ -137,20 +137,20 @@ export function TimetableSection({ institutes }: TimetableSectionProps) {
             hidden: { opacity: 0 },
             show: {
               opacity: 1,
-              transition: { staggerChildren: 0.1 }
+              transition: { staggerChildren: 0.08 }
             }
           }}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, amount: 0.05 }}
           className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {institutes.map((institute) => (
             <motion.div
               key={institute.id}
               variants={{
-                hidden: { opacity: 0, y: 30 },
-                show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+                hidden: { opacity: 0, y: 15 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] } }
               }}
               className="group relative bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-8 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)]"
             >

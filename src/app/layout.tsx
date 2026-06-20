@@ -46,6 +46,7 @@ export default function RootLayout({
           ${fmGemunu.variable} 
           ${impact.variable} 
           ${rubikDoodle.variable} 
+          ${sinhalaFont.variable} 
           antialiased`}
       >
         <SmoothScroll>{children}</SmoothScroll>

@@ -1,9 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { VideoPlayer } from "@/components/ui/VideoPlayer";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+} as const;
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.21, 0.47, 0.32, 0.98] as const,
+    },
+  },
+} as const;
 
 export function AboutSection({ content }: { content?: any }) {
   const features =
@@ -17,6 +40,12 @@ export function AboutSection({ content }: { content?: any }) {
         ];
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: aboutRef,
+    offset: ["start end", "end start"],
+  });
+  const dotsY = useTransform(scrollYProgress, [0, 1], ["-10%", "15%"]);
 
   // Default Fallback Data if content is missing
   const data = {
@@ -33,7 +62,7 @@ export function AboutSection({ content }: { content?: any }) {
   };
 
   return (
-    <section className="py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
+    <section ref={aboutRef} className="py-24 bg-[#0a0a0a] text-white relative overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-[#fdf021] font-medium tracking-widest uppercase text-sm mb-4">
@@ -52,10 +81,10 @@ export function AboutSection({ content }: { content?: any }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.05 }}
+            transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="relative"
           >
             <div
@@ -114,21 +143,24 @@ export function AboutSection({ content }: { content?: any }) {
             </div>
 
             {/* Decorative dots */}
-            <div className="absolute -bottom-8 -left-8 grid grid-cols-6 gap-2 opacity-20">
+            <motion.div
+              style={{ y: dotsY }}
+              className="absolute -bottom-8 -left-8 grid grid-cols-6 gap-2 opacity-20"
+            >
               {[...Array(24)].map((_, i) => (
                 <div
                   key={i}
                   className="w-1.5 h-1.5 bg-[#fdf021] rounded-full"
                 />
               ))}
-            </div>
+            </motion.div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.05 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="space-y-8"
           >
             <h4 className="text-3xl font-bold text-white">
@@ -145,14 +177,20 @@ export function AboutSection({ content }: { content?: any }) {
               {data.description}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.05 }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
               {features.map((feature: string, index: number) => (
-                <div key={index} className="flex items-center gap-3">
+                <motion.div variants={itemVariants} key={index} className="flex items-center gap-3">
                   <CheckCircle2 className="text-[#fdf021] h-5 w-5 shrink-0" />
                   <span className="text-gray-300">{feature}</span>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             <div className="pt-6">
               <div className="p-6 bg-gray-900 rounded-xl border-l-4 border-[#fdf021]">

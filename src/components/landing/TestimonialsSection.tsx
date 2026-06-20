@@ -62,10 +62,10 @@ export function TestimonialsSection() {
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="text-center mb-16"
         >
           <div className="inline-flex items-center justify-center p-3 bg-[#fdf021]/10 rounded-full mb-6">
@@ -88,20 +88,20 @@ export function TestimonialsSection() {
               hidden: { opacity: 0 },
               show: {
                 opacity: 1,
-                transition: { staggerChildren: 0.1 }
+                transition: { staggerChildren: 0.08 }
               }
             }}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, amount: 0.05 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {testimonials.map((testimonial) => (
               <motion.div
                 key={testimonial.id}
                 variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+                  hidden: { opacity: 0, y: 15 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] } }
                 }}
                 className="group relative bg-linear-to-br from-gray-900/80 to-gray-950/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800 hover:border-[#fdf021]/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(234,179,8,0.15)] hover:-translate-y-2"
               >
@@ -168,10 +168,10 @@ export function TestimonialsSection() {
 
         {/* Stats Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8"
         >
           <div className="text-center">

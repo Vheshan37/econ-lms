@@ -95,10 +95,10 @@ export function BannerSection({ content }: { content?: any[] }) {
     <section className="py-8 md:py-20 bg-black">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="relative w-full h-[450px] sm:h-[500px] md:h-[600px] rounded-[24px] md:rounded-[32px] overflow-hidden border border-white/10 shadow-2xl isolate group"
         >
           <AnimatePresence initial={false} custom={direction}>
@@ -151,9 +151,9 @@ export function BannerSection({ content }: { content?: any[] }) {
               <div className="relative h-full px-4 flex flex-col justify-center items-center text-center z-10 space-y-6">
                 {banners[currentIndex].subtitle && (
                   <motion.div
-                    initial={{ y: 20, opacity: 0 }}
+                    initial={{ y: 15, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ duration: 0.6, delay: 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
                     className="bg-black/50 backdrop-blur-md px-4 py-1 rounded-full border border-white/10 shadow-lg"
                   >
                     <span className="text-yellow-400 font-medium tracking-wide uppercase text-sm md:text-base">
@@ -164,9 +164,9 @@ export function BannerSection({ content }: { content?: any[] }) {
 
                 {banners[currentIndex].title && (
                   <motion.h1
-                    initial={{ y: 20, opacity: 0 }}
+                    initial={{ y: 15, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
+                    transition={{ duration: 0.6, delay: 0.25, ease: [0.21, 0.47, 0.32, 0.98] }}
                     className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] px-2"
                   >
                     {banners[currentIndex].title}
@@ -175,9 +175,9 @@ export function BannerSection({ content }: { content?: any[] }) {
 
                 {banners[currentIndex].description && (
                   <motion.p
-                    initial={{ y: 20, opacity: 0 }}
+                    initial={{ y: 15, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.6 }}
+                    transition={{ duration: 0.6, delay: 0.35, ease: [0.21, 0.47, 0.32, 0.98] }}
                     className="text-base md:text-xl text-gray-200 max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-4"
                   >
                     {banners[currentIndex].description}

@@ -150,11 +150,12 @@ export default function LoginPage() {
               transition={{ delay: 0.3 }}
               className="flex items-center gap-3"
             >
-              <div className="h-10 w-10 rounded-xl bg-[#D4AF37] flex items-center justify-center">
-                <span className="text-[#1a1a1a] font-bold text-xl">E</span>
-              </div>
               <span className="text-2xl font-bold tracking-tight">
-                Econ LMS
+                <span>Quality </span>
+                <span className="font-fm-gemunu text-[#fdf021] font-black text-3xl">
+                  ම{" "}
+                </span>
+                <span className="font-black">Econ</span>
               </span>
             </motion.div>
           </div>
@@ -164,16 +165,16 @@ export default function LoginPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-4xl font-bold leading-tight"
+              className="text-5xl font-black leading-none tracking-tight"
             >
-              Master Economics <br />
-              <span className="text-[#D4AF37]">With Excellence</span>
+              <span>Krishan</span> <br />
+              <span className="text-[#fdf021]">Kasthuriarachchi</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-gray-400 text-lg max-w-md"
+              className="text-gray-400 text-base max-w-md leading-relaxed"
             >
               Join our premium learning platform designed to help you achieve
               your academic goals with structured lessons and expert guidance.
@@ -181,7 +182,7 @@ export default function LoginPage() {
           </div>
 
           <div className="relative z-10 flex gap-2">
-            <div className="h-1 w-12 rounded-full bg-[#D4AF37]" />
+            <div className="h-1 w-12 rounded-full bg-[#fdf021]" />
             <div className="h-1 w-4 rounded-full bg-gray-600" />
             <div className="h-1 w-4 rounded-full bg-gray-600" />
           </div>
@@ -233,7 +234,7 @@ export default function LoginPage() {
                       }`}
                     >
                       <GraduationCap
-                        className={`w-4 h-4 ${userType === "student" ? "text-[#D4AF37]" : ""}`}
+                        className={`w-4 h-4 ${userType === "student" ? "text-[#fdf021]" : ""}`}
                       />
                       Student
                     </button>
@@ -246,7 +247,7 @@ export default function LoginPage() {
                       }`}
                     >
                       <ShieldCheck
-                        className={`w-4 h-4 ${userType === "teacher" ? "text-[#D4AF37]" : ""}`}
+                        className={`w-4 h-4 ${userType === "teacher" ? "text-[#fdf021]" : ""}`}
                       />
                       Teacher
                     </button>
@@ -259,7 +260,7 @@ export default function LoginPage() {
                           Email Address
                         </label>
                         <div className="relative group">
-                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#D4AF37] transition-colors" />
+                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#fdf021] transition-colors" />
                           <input
                             type="email"
                             value={email}

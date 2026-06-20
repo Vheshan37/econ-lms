@@ -69,7 +69,7 @@ export const rubikDoodle = localFont({
 export const sinhalaFont = localFont({
     src: [
         {
-            path: "../../public/fonts/maname.ttf",
+            path: "../../public/fonts/fm_bindu.ttf",
             weight: "400",
             style: "normal",
         },

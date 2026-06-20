@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useState, useRef } from "react";
 import { EnrollmentModal } from "./EnrollmentModal";
 
 interface HeroSectionProps {
@@ -19,6 +19,14 @@ export function HeroSection({
   whatsappNumber = "94773304548",
 }: HeroSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const bgY1 = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const bgY2 = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   // Default values if content is missing
   const defaults = {
@@ -40,20 +48,25 @@ export function HeroSection({
   const teacherImageUrl = data.teacherImage
     ? `${data.teacherImage}${timestamp ? `?t=${timestamp}` : ""}`
     : null;
-
   return (
-    <section className="relative min-h-screen bg-[#050505] text-white overflow-hidden flex items-center">
+    <section ref={sectionRef} className="relative min-h-screen bg-[#050505] text-white overflow-hidden flex items-center">
       {/* Background Effects */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-yellow-600/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px]" />
+        <motion.div
+          style={{ y: bgY1 }}
+          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-yellow-600/20 rounded-full blur-[120px]"
+        />
+        <motion.div
+          style={{ y: bgY2 }}
+          className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px]"
+        />
       </div>
 
       <div className="container mx-auto px-4 z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pt-32 lg:pt-20 pb-12 lg:pb-0">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="space-y-8"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-full text-[#fdf021] text-sm font-medium tracking-wider uppercase">
@@ -126,9 +139,9 @@ export function HeroSection({
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          initial={{ opacity: 0, scale: 0.98, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="relative"
         >
           <div className="relative z-10 w-full max-w-md mx-auto">
@@ -161,8 +174,16 @@ export function HeroSection({
           </div>
 
           {/* Decorative Elements */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-[#fdf021]/10 rounded-full animate-[spin_60s_linear_infinite]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-dashed border-gray-800 rounded-full animate-[spin_80s_linear_infinite_reverse]" />
+          <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center">
+            <motion.div
+              style={{ y: bgY2 }}
+              className="absolute w-[120%] h-[120%] border border-[#fdf021]/10 rounded-full animate-[spin_60s_linear_infinite]"
+            />
+            <motion.div
+              style={{ y: bgY1 }}
+              className="absolute w-[140%] h-[140%] border border-dashed border-gray-800 rounded-full animate-[spin_80s_linear_infinite_reverse]"
+            />
+          </div>
         </motion.div>
 
         <div className="flex items-center justify-center gap-8 pt-8 border-t border-gray-800 lg:hidden">
