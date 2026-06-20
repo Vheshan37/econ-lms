@@ -140,19 +140,33 @@ export function FooterSection() {
         <div className="mt-16 pt-8 border-t border-gray-900 flex flex-col items-center gap-4 text-center">
           <p className="text-sm text-gray-600">{footerContent.copyright}</p>
           <div className="text-xs text-gray-700 max-w-lg mx-auto">
-            <p>Developed by Quantum Blaze</p>
-            <p className="mt-1">
-              <Link href={"mailto:contact@quantumblaze.lk"}>
-                contact@quantumblaze.lk
-              </Link>{" "}
-              | Website:{" "}
-              <Link
+            <p>
+              Developed by{" "}
+              <a
                 href="https://quantumblaze.lk/"
                 target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-500 transition-colors"
+              >
+                Quantum Blaze
+              </a>
+            </p>
+            <p className="mt-1">
+              <a
+                href="mailto:contact@quantumblaze.lk"
+                className="hover:text-gray-500 transition-colors"
+              >
+                contact@quantumblaze.lk
+              </a>{" "}
+              | Website:{" "}
+              <a
+                href="https://quantumblaze.lk/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-blue-500 hover:text-blue-600 transition-colors"
               >
                 Quantum Blaze
-              </Link>
+              </a>
             </p>
           </div>
         </div>
