@@ -111,7 +111,7 @@ export function HeroSection({
             </Button>
           </div>
           <div className="pb-5 m-0">
-            <span className="text-gray-400">Contact Us: 077 11 22 334</span>
+            <span className="text-gray-400">Contact Us: 077 330 4548</span>
           </div>
 
           <div className="items-center gap-8 pt-8 border-t border-gray-800 hidden lg:flex">

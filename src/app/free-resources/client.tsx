@@ -362,10 +362,10 @@ export default function FreeResourcesClient({
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.3 }}
                       onClick={() => handleResourceClick(resource)}
-                      className="group bg-[#111] rounded-2xl border border-white/5 overflow-hidden hover:border-[#fdf021]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-900/10 cursor-pointer flex flex-col relative h-[300px]"
+                      className="group bg-[#111] rounded-2xl border border-white/5 overflow-hidden hover:border-[#fdf021]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-yellow-900/10 cursor-pointer flex flex-col relative h-auto md:h-[300px]"
                     >
                       {/* Thumbnail at the top */}
-                      <div className="absolute top-0 left-0 right-0 w-full h-full group-hover:h-[170px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-black">
+                      <div className="relative h-[170px] md:absolute md:top-0 md:left-0 md:right-0 md:w-full md:h-full md:group-hover:h-[170px] transition-all duration-500 ease-in-out z-10 overflow-hidden bg-black">
                         <img
                           src={thumbnailUrl}
                           alt={resource.title}
@@ -404,7 +404,7 @@ export default function FreeResourcesClient({
                       </div>
 
                       {/* Sliding Text Content */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-[#111] p-4 z-20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out border-t border-white/5 flex flex-col justify-between h-[130px]">
+                      <div className="relative bg-[#111] p-4 z-20 transition-transform duration-500 ease-in-out border-t border-white/5 flex flex-col justify-between h-[130px] md:absolute md:bottom-0 md:left-0 md:right-0 md:transform md:translate-y-full md:group-hover:translate-y-0">
                         <div>
                           <h3 className="font-bold text-white mb-1 group-hover:text-[#fdf021] transition-colors line-clamp-1 text-base">
                             {resource.title}
