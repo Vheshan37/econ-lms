@@ -56,7 +56,6 @@ export function MarksInputRow({
               placeholder="e.g., 111200"
               value={indexNumber}
               onChange={(e) => onIndexChange(e.target.value)}
-              disabled={isBlocked}
               className={`h-12 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 ${
                 isBlocked
                   ? "border-red-400 focus:border-red-500 focus:ring-red-500 bg-red-50"
@@ -82,7 +81,6 @@ export function MarksInputRow({
             placeholder="Enter student name"
             value={studentName}
             onChange={(e) => onStudentNameChange(e.target.value)}
-            disabled={isBlocked}
             className={`h-12 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 ${
               isBlocked ? "bg-red-50 border-red-300" : "border-gray-300"
             } focus:border-[#D4AF37] focus:ring-[#D4AF37]`}
@@ -98,7 +96,6 @@ export function MarksInputRow({
             placeholder="e.g., 75"
             value={marks}
             onChange={(e) => onMarksChange(e.target.value)}
-            disabled={isBlocked}
             className={`h-12 rounded-xl bg-white text-gray-900 focus:border-[#D4AF37] focus:ring-[#D4AF37] placeholder:text-gray-400 ${
               isBlocked ? "bg-red-50 border-red-300" : "border-gray-300"
             }`}
