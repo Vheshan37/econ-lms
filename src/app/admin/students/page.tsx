@@ -326,18 +326,18 @@ export default function StudentsPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-              <Users className="w-10 h-10 text-[#1a1a1a]" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+            <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
+              <Users className="w-8 h-8 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
                 Student Management
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-sm sm:text-lg">
                 Manage student accounts and class assignments
-                <span className="ml-3 text-[#D4AF37] font-medium">
+                <span className="block sm:inline sm:ml-3 text-[#D4AF37] font-medium">
                   {filteredStudents.length}{" "}
                   {filteredStudents.length === 1 ? "Student" : "Students"}
                 </span>
@@ -346,7 +346,7 @@ export default function StudentsPage() {
           </div>
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30"
+            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30 w-full sm:w-auto justify-center"
           >
             <UserPlus className="w-5 h-5" />
             Register Student
@@ -428,7 +428,7 @@ export default function StudentsPage() {
       {/* Students Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[800px]">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">

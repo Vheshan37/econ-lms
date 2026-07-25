@@ -60,8 +60,14 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect logged-in users away from login page
-  if (pathname === "/login" && session) {
+  // Redirect logged-in users away from login pages and landing page
+  if (
+    (pathname === "/login" ||
+      pathname === "/login/student" ||
+      pathname === "/login/teacher" ||
+      pathname === "/") &&
+    session
+  ) {
     if (session.role === "teacher") {
       return NextResponse.redirect(new URL("/admin/dashboard", request.url));
     } else {
@@ -73,5 +79,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/student/:path*", "/login"],
+  matcher: ["/admin/:path*", "/student/:path*", "/login", "/login/student", "/login/teacher", "/"],
 };
