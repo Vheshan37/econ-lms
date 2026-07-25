@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { NotificationBubble } from "@/components/admin/NotificationBubble";
+import { NotificationBell } from "@/components/admin/NotificationBell";
 import { name } from "next/dist/server/ci-info";
 
 export default function AdminLayout({
@@ -283,12 +284,15 @@ export default function AdminLayout({
             </div>
             <h1 className="text-xl font-bold text-white">Econ LMS</h1>
           </div>
-          <button
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="p-1.5 hover:bg-white/5 text-gray-400 hover:text-white rounded-lg transition-colors cursor-pointer"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <button
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              className="p-1.5 hover:bg-white/5 text-gray-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Mobile Drawer */}

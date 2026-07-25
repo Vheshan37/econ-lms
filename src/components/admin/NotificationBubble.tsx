@@ -34,7 +34,7 @@ export function NotificationBubble() {
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       onClick={() => router.push("/admin/notifications")}
-      className="fixed bottom-8 right-8 z-50 w-14 h-14 bg-[#D4AF37] rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-[#B5952F] transition-colors"
+      className="hidden md:flex fixed bottom-8 right-8 z-50 w-14 h-14 bg-[#D4AF37] rounded-full shadow-lg items-center justify-center cursor-pointer hover:bg-[#B5952F] transition-colors"
     >
       <div className="relative">
         <Bell className="w-6 h-6 text-[#1a1a1a]" />
