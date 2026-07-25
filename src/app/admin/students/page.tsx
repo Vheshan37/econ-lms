@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertDialog } from "@/components/ui/alert-dialog";
+import { FloatingAddButton } from "@/components/admin/FloatingAddButton";
 import {
   getStudents,
   createStudent,
@@ -346,7 +347,7 @@ export default function StudentsPage() {
           </div>
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 w-full sm:w-auto justify-center"
+            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 hidden md:flex sm:w-auto justify-center"
           >
             <UserPlus className="w-5 h-5" />
             Register Student
@@ -824,6 +825,7 @@ export default function StudentsPage() {
         type="error"
         cancelText="Close"
       />
+      <FloatingAddButton onClick={() => setIsModalOpen(true)} label="Register Student" />
     </div>
   );
 }

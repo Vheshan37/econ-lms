@@ -221,12 +221,7 @@ export default async function StudentDashboard() {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-20 -mb-20" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-2 sm:mb-4">
-            <div className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
-              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>Welcome Back</span>
-            </div>
-          </div>
+
           <h1 className="text-2xl sm:text-5xl font-bold text-white mb-2 sm:mb-4">
             Student Dashboard
           </h1>

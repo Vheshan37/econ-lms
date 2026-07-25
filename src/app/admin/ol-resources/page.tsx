@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { FloatingAddButton } from "@/components/admin/FloatingAddButton";
 import {
   getFreeResources,
   createFreeResource,
@@ -777,7 +778,7 @@ export default function OLResourcesPage() {
 
             <Button
               onClick={handleAddResource}
-              className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 font-bold shadow-lg shadow-[#D4AF37]/30"
+              className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 font-bold shadow-lg shadow-[#D4AF37]/30 hidden md:flex"
             >
               <Plus className="w-4 h-4" />
               Add Resource
@@ -1092,7 +1093,6 @@ export default function OLResourcesPage() {
         type="success"
         cancelText="Close"
       />
-      {/* Video Player */}
       <VideoPlayer
         isOpen={videoPlayer.isOpen}
         onClose={() => setVideoPlayer({ isOpen: false, url: "", title: "" })}
@@ -1100,6 +1100,9 @@ export default function OLResourcesPage() {
         title={videoPlayer.title}
         showWarning={false}
       />
+      {selectedSubject && (
+        <FloatingAddButton onClick={handleAddResource} label="Add Resource" />
+      )}
     </div>
   );
 }

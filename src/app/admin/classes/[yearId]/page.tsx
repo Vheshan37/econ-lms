@@ -261,12 +261,7 @@ function ClassTypesPageClient({ yearId }: { yearId: string }) {
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
               <div>
-                <div className="flex items-center gap-3 mb-1 sm:mb-2">
-                  <div className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] sm:text-xs font-medium flex items-center gap-1.5">
-                    <BookOpen className="w-3 h-3" />
-                    <span>Academic Year</span>
-                  </div>
-                </div>
+
                 <h1 className="text-xl sm:text-4xl font-bold text-white">
                   {yearData.year}
                 </h1>

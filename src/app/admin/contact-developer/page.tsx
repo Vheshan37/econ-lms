@@ -95,12 +95,7 @@ export default function ContactDeveloperPage() {
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-20 -mt-20" />
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-2 sm:mb-4">
-            <div className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-xs sm:text-sm font-medium flex items-center gap-2">
-              <Mail className="w-4 h-4" />
-              <span>Developer Support</span>
-            </div>
-          </div>
+
           <h1 className="text-xl sm:text-4xl font-bold text-white mb-2 sm:mb-4">
             Contact Developer
           </h1>

@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { FloatingAddButton } from "@/components/admin/FloatingAddButton";
 import {
   getFreeResources,
   createFreeResource,
@@ -410,7 +411,7 @@ export default function FreeResourcesPage() {
           </div>
           <Button
             onClick={() => setIsAddingResource(true)}
-            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 w-full md:w-auto justify-center"
+            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 hidden md:flex md:w-auto justify-center"
           >
             <Plus className="w-5 h-5" />
             Add Resource
@@ -894,6 +895,7 @@ export default function FreeResourcesPage() {
         videoUrl={videoPlayer.url}
         title={videoPlayer.title}
       />
+      <FloatingAddButton onClick={() => setIsAddingResource(true)} label="Add Resource" />
     </div>
   );
 }

@@ -27,6 +27,7 @@ import { updateResource, deleteResource } from "@/lib/actions/resource";
 import { uploadFile } from "@/lib/actions/upload";
 import { ResourceType } from "@prisma/client";
 import { AddResourceModal } from "@/components/admin/classes/resources/AddResourceModal";
+import { FloatingAddButton } from "@/components/admin/FloatingAddButton";
 
 interface Resource {
   id: string;
@@ -355,7 +356,7 @@ function ResourceManagementPageClient({
 
             <Button
               onClick={() => setIsAddingResource(true)}
-              className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-10 sm:h-12 px-4 sm:px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center justify-center gap-2 w-full md:w-auto"
+              className="bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-10 sm:h-12 px-4 sm:px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all hidden md:flex items-center justify-center gap-2 w-full md:w-auto"
             >
               <Plus className="w-5 h-5" />
               Add Resource
@@ -776,8 +777,8 @@ function ResourceManagementPageClient({
           isOpen={videoPlayer.isOpen}
           onClose={() => setVideoPlayer({ isOpen: false, url: "", title: "" })}
           videoUrl={videoPlayer.url}
-          title={videoPlayer.title}
         />
+        <FloatingAddButton onClick={() => setIsAddingResource(true)} label="Add Resource" />
       </div>
     </div>
   );

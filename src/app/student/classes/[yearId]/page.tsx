@@ -61,12 +61,7 @@ export default async function StudentClassTypesPage({
                 </Button>
               </Link>
               <div>
-                <div className="flex items-center gap-3 mb-1 sm:mb-2">
-                  <div className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] sm:text-xs font-medium flex items-center gap-1.5">
-                    <BookOpen className="w-3 h-3" />
-                    <span>Academic Year</span>
-                  </div>
-                </div>
+
                 <h1 className="text-xl sm:text-4xl font-bold text-white">{yearName}</h1>
                 <p className="text-gray-400 mt-1 text-xs sm:text-sm max-w-xl">
                   Select a class type to view topics and resources.
