@@ -129,20 +129,20 @@ export default function StudentFreeResourcesPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="h-16 w-16 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg">
-              <BookOpen className="w-8 h-8 text-[#1a1a1a]" />
+          <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-4">
+            <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg flex-shrink-0">
+              <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white mb-1">
+              <h1 className="text-xl sm:text-3xl font-bold text-white mb-0.5 sm:mb-1">
                 Free Resources
               </h1>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-xs sm:text-sm">
                 Access free study materials for A/L and O/L
               </p>
             </div>
@@ -151,7 +151,7 @@ export default function StudentFreeResourcesPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-200 overflow-x-auto">
+      <div className="w-full flex gap-2 border-b border-gray-200 overflow-x-auto scrollbar-none">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const count = allResources.filter((r) => r.type === tab.id).length;
@@ -159,7 +159,7 @@ export default function StudentFreeResourcesPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as ResourceType)}
-              className={`flex items-center gap-2 px-6 py-3 font-medium transition-all relative whitespace-nowrap ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-6 sm:py-3 font-medium transition-all relative whitespace-nowrap text-sm ${
                 activeTab === tab.id
                   ? "text-[#1a1a1a]"
                   : "text-gray-500 hover:text-gray-700"

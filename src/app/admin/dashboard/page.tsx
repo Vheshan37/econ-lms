@@ -109,22 +109,22 @@ export default function AdminDashboard() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-10 shadow-2xl"
+        className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-6 sm:p-10 shadow-2xl"
       >
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-20 -mt-20" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-20 -mb-20" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-sm font-medium flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
+          <div className="flex items-center gap-3 mb-2 sm:mb-4">
+            <div className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Welcome Back</span>
             </div>
           </div>
-          <h1 className="text-5xl font-bold text-white mb-4">
+          <h1 className="text-2xl sm:text-5xl font-bold text-white mb-2 sm:mb-4">
             Teacher Dashboard
           </h1>
-          <p className="text-gray-400 text-xl max-w-2xl">
+          <p className="text-gray-400 text-sm sm:text-xl max-w-2xl">
             Manage your students, classes, and resources from one central hub.
             You have{" "}
             <span className="text-[#D4AF37] font-bold">
@@ -140,13 +140,13 @@ export default function AdminDashboard() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
       >
         {statCards.map((stat, index) => (
           <motion.div
             key={stat.title}
             variants={item}
-            className={`relative overflow-hidden rounded-2xl p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group cursor-pointer ${
+            className={`relative overflow-hidden rounded-2xl p-4 sm:p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group cursor-pointer ${
               stat.isDark
                 ? "bg-white border border-gray-100 hover:border-[#D4AF37]/30"
                 : "bg-linear-to-br from-[#D4AF37] to-[#B5952F] text-[#1a1a1a]"
@@ -163,32 +163,32 @@ export default function AdminDashboard() {
 
             <div className="relative z-20">
               <div
-                className={`h-12 w-12 rounded-xl flex items-center justify-center mb-4 ${
+                className={`h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 ${
                   stat.isDark
                     ? "bg-[#1a1a1a] text-[#D4AF37]"
                     : "bg-[#1a1a1a]/10 text-[#1a1a1a]"
                 }`}
               >
-                <stat.icon className="w-6 h-6" />
+                <stat.icon className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-0.5 sm:space-y-1">
                 <p
-                  className={`text-sm font-medium ${
+                  className={`text-xs sm:text-sm font-medium ${
                     stat.isDark ? "text-gray-500" : "text-[#1a1a1a]/70"
                   }`}
                 >
                   {stat.title}
                 </p>
                 <h3
-                  className={`text-3xl font-bold ${
+                  className={`text-xl sm:text-3xl font-bold ${
                     stat.isDark ? "text-gray-900" : "text-[#1a1a1a]"
                   }`}
                 >
                   {stat.value}
                 </h3>
                 <p
-                  className={`text-xs ${
+                  className={`text-[10px] sm:text-xs ${
                     stat.isDark ? "text-gray-400" : "text-[#1a1a1a]/60"
                   }`}
                 >

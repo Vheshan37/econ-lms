@@ -170,22 +170,22 @@ export default function ResourcesClient({
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
         <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-              <BookOpen className="w-10 h-10 text-[#1a1a1a]" />
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
+              <BookOpen className="w-7 h-7 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
                 All Resources
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-xs sm:text-lg">
                 Browse all your learning materials in one place
-                <span className="ml-3 text-[#D4AF37] font-medium">
+                <span className="ml-2 sm:ml-3 text-[#D4AF37] font-medium">
                   {filteredResources.length} Found
                 </span>
               </p>
@@ -197,7 +197,7 @@ export default function ResourcesClient({
       {/* Filters & Tabs Container */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Search and Year Filter */}
-        <div className="p-6 border-b border-gray-200 bg-gray-50/50">
+        <div className="p-4 sm:p-6 border-b border-gray-200 bg-gray-50/50">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -226,7 +226,7 @@ export default function ResourcesClient({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 overflow-x-auto">
+        <div className="w-full flex border-b border-gray-200 overflow-x-auto scrollbar-none">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -270,7 +270,7 @@ export default function ResourcesClient({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab + selectedYear + searchQuery}
