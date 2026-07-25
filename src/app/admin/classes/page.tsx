@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertDialog } from "@/components/ui/alert-dialog";
+import { FloatingAddButton } from "@/components/admin/FloatingAddButton";
 import {
   getYears,
   createYear,
@@ -192,7 +193,7 @@ export default function YearsPage() {
           </div>
           <Button
             onClick={() => setIsAdding(true)}
-            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 w-full sm:w-auto justify-center"
+            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 hidden md:flex sm:w-auto justify-center"
           >
             <Plus className="w-5 h-5" />
             Add Year
@@ -457,6 +458,8 @@ export default function YearsPage() {
         confirmText="Delete"
         cancelText="Cancel"
       />
+
+      <FloatingAddButton onClick={() => setIsAdding(true)} label="Add Year" />
     </div>
   );
 }

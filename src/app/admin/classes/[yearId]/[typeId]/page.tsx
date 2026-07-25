@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { AlertDialog } from "@/components/ui/alert-dialog";
+import { FloatingAddButton } from "@/components/admin/FloatingAddButton";
 import { getClassTypeById } from "@/lib/actions/classType";
 import { createTopic, updateTopic, deleteTopic } from "@/lib/actions/topic";
 
@@ -231,7 +232,7 @@ function TopicsPageClient({
 
             <Button
               onClick={() => setIsAdding(true)}
-              className="bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-10 sm:h-12 px-4 sm:px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all flex items-center justify-center gap-2 w-full md:w-auto"
+              className="bg-linear-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] font-bold h-10 sm:h-12 px-4 sm:px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all hidden md:flex items-center justify-center gap-2 w-full md:w-auto"
             >
               <Plus className="w-5 h-5" />
               Add Topic
@@ -464,6 +465,7 @@ function TopicsPageClient({
           cancelText="Close"
         />
       </div>
+      <FloatingAddButton onClick={() => setIsAdding(true)} label="Add Topic" />
     </div>
   );
 }
