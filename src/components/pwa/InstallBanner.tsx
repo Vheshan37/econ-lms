@@ -15,6 +15,11 @@ export default function InstallBanner() {
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
 
+    // Do not show banner if running in standalone mode (PWA is open)
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      return;
+    }
+
     // Show banner after 3 seconds to let PWA register/settle
     const timer = setTimeout(() => {
       const dismissed = sessionStorage.getItem("pwa-banner-dismissed");

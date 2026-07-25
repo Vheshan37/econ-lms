@@ -88,6 +88,7 @@ export default function LoginPage() {
     const result = await verifyOTP(email, otpString, userType);
 
     if (result.success) {
+      localStorage.setItem("user-role", userType);
       // Redirect based on user type
       if (userType === "teacher") {
         router.push("/admin/dashboard");

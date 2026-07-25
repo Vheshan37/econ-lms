@@ -55,6 +55,7 @@ export default function StudentLayout({
     }
   };
   const handleLogout = async () => {
+    localStorage.removeItem("user-role");
     await logout();
     router.push("/login");
   };

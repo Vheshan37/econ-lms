@@ -82,6 +82,7 @@ export default function TeacherLoginPage() {
     const result = await verifyOTP(email, otpString, "teacher");
 
     if (result.success) {
+      localStorage.setItem("user-role", "teacher");
       router.push("/admin/dashboard");
     } else {
       setError(result.error || "Invalid OTP");

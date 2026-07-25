@@ -66,6 +66,7 @@ export default function AdminLayout({
   };
 
   const handleLogout = async () => {
+    localStorage.removeItem("user-role");
     await logout();
     router.push("/login");
   };

@@ -6,6 +6,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import PwaInstallProvider from "@/components/pwa/PwaInstallProvider";
 import ServiceWorkerRegister from "@/components/pwa/ServiceWorkerRegister";
 import DynamicManifest from "@/components/pwa/DynamicManifest";
+import PwaRedirect from "@/components/pwa/PwaRedirect";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +58,7 @@ export default function RootLayout({
       >
         <PwaInstallProvider>
           <DynamicManifest />
+          <PwaRedirect />
           <ServiceWorkerRegister />
           <SmoothScroll>{children}</SmoothScroll>
         </PwaInstallProvider>

@@ -82,6 +82,7 @@ export default function StudentLoginPage() {
     const result = await verifyOTP(email, otpString, "student");
 
     if (result.success) {
+      localStorage.setItem("user-role", "student");
       router.push("/student/dashboard");
     } else {
       setError(result.error || "Invalid OTP");
