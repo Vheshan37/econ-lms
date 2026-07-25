@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -97,23 +97,13 @@ export default function ResourceManagementPage({
 }: {
   params: Promise<{ yearId: string; typeId: string; topicId: string }>;
 }) {
-  const [resolvedParams, setResolvedParams] = useState<{
-    yearId: string;
-    typeId: string;
-    topicId: string;
-  } | null>(null);
-
-  useEffect(() => {
-    params.then(setResolvedParams);
-  }, [params]);
-
-  if (!resolvedParams) return null;
+  const { yearId, typeId, topicId } = use(params);
 
   return (
     <ResourceManagementPageClient
-      yearId={resolvedParams.yearId}
-      typeId={resolvedParams.typeId}
-      topicId={resolvedParams.topicId}
+      yearId={yearId}
+      typeId={typeId}
+      topicId={topicId}
     />
   );
 }

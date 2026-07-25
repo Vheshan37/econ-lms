@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -84,12 +84,12 @@ const CUSTOM_TYPE_CONFIG = {
   emoji: "✨",
 };
 
-export default async function ClassTypesPage({
+export default function ClassTypesPage({
   params,
 }: {
   params: Promise<{ yearId: string }>;
 }) {
-  const { yearId } = await params;
+  const { yearId } = use(params);
   return <ClassTypesPageClient yearId={yearId} />;
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -42,12 +42,12 @@ interface ClassTypeData {
   topics: Topic[];
 }
 
-export default async function TopicsPage({
+export default function TopicsPage({
   params,
 }: {
   params: Promise<{ yearId: string; typeId: string }>;
 }) {
-  const { yearId, typeId } = await params;
+  const { yearId, typeId } = use(params);
   return <TopicsPageClient yearId={yearId} typeId={typeId} />;
 }
 
