@@ -443,7 +443,7 @@ export default function AdminLayout({
         </AnimatePresence>
 
         {/* Mobile Layout */}
-        <main className="flex-1 p-4 md:hidden pt-20 pb-24">
+        <main className="flex-1 p-4 md:hidden pt-20 pb-24 w-full max-w-full overflow-x-hidden">
           {children}
         </main>
 

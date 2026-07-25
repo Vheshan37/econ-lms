@@ -167,24 +167,24 @@ export default function YearsPage() {
   const activeCount = years.filter((y) => y.isActive).length;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-            <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
-              <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-[#1a1a1a]" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+            <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
+              <BookOpen className="w-7 h-7 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
+              <h1 className="text-xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
                 Class Management
               </h1>
-              <p className="text-gray-400 text-sm sm:text-lg">
+              <p className="text-gray-400 text-xs sm:text-lg">
                 Organize your academic years and class structure
-                <span className="block sm:inline sm:ml-3 text-[#D4AF37] font-medium">
+                <span className="block sm:inline sm:ml-2 sm:ml-3 text-[#D4AF37] font-medium">
                   {years.length} {years.length === 1 ? "Year" : "Years"}
                 </span>
               </p>
@@ -192,7 +192,7 @@ export default function YearsPage() {
           </div>
           <Button
             onClick={() => setIsAdding(true)}
-            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30 w-full sm:w-auto justify-center"
+            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 w-full sm:w-auto justify-center"
           >
             <Plus className="w-5 h-5" />
             Add Year
@@ -200,7 +200,7 @@ export default function YearsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <AnimatePresence>
           {years.map((yr) => (
             <motion.div
@@ -263,23 +263,23 @@ export default function YearsPage() {
               </div>
 
               {/* Content */}
-              <div className="relative z-10 p-8">
+              <div className="relative z-10 p-5 sm:p-8">
                 {/* Icon */}
                 <div
-                  className={`h-16 w-16 rounded-2xl flex items-center justify-center mb-6 ${
+                  className={`h-12 w-12 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 ${
                     yr.isActive
                       ? "bg-linear-to-br from-[#D4AF37] to-[#B5952F] shadow-lg shadow-[#D4AF37]/30"
                       : "bg-gray-300"
                   }`}
                 >
                   <GraduationCap
-                    className={`w-8 h-8 ${yr.isActive ? "text-[#1a1a1a]" : "text-gray-600"}`}
+                    className={`w-6 h-6 sm:w-8 sm:h-8 ${yr.isActive ? "text-[#1a1a1a]" : "text-gray-600"}`}
                   />
                 </div>
 
                 {/* Year */}
                 <h3
-                  className={`text-4xl font-bold mb-2 ${yr.isActive ? "text-white" : "text-gray-700"}`}
+                  className={`text-xl sm:text-4xl font-bold mb-1 sm:mb-2 ${yr.isActive ? "text-white" : "text-gray-700"}`}
                 >
                   {yr.year}
                 </h3>
