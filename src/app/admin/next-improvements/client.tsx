@@ -404,10 +404,10 @@ export default function NextImprovementsClient({
   ];
 
   return (
-    <div className="min-h-screen">
-      <div className="space-y-10 pb-16">
+    <div className="min-h-screen w-full max-w-full overflow-hidden">
+      <div className="space-y-10 pb-16 w-full max-w-full">
         {/* Hero Header - Enhanced */}
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-16 shadow-2xl border border-[#D4AF37]/20">
+        <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-6 sm:p-16 shadow-2xl border border-[#D4AF37]/20">
           {/* Animated Background */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-3xl animate-pulse" />
@@ -432,13 +432,13 @@ export default function NextImprovementsClient({
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-linear-to-r from-[#D4AF37]/20 to-[#F4C430]/20 border border-[#D4AF37]/30 mb-8 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full bg-linear-to-r from-[#D4AF37]/20 to-[#F4C430]/20 border border-[#D4AF37]/30 mb-6 sm:mb-8 backdrop-blur-sm"
               >
-                <Star className="w-5 h-5 text-[#D4AF37] animate-pulse" />
-                <span className="text-[#D4AF37] text-base font-bold tracking-wide">
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] animate-pulse" />
+                <span className="text-[#D4AF37] text-xs sm:text-base font-bold tracking-wide">
                   PREMIUM FEATURES SHOWCASE
                 </span>
-                <Star className="w-5 h-5 text-[#D4AF37] animate-pulse" />
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] animate-pulse" />
               </motion.div>
 
               {/* Main Title */}
@@ -446,7 +446,7 @@ export default function NextImprovementsClient({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-linear-to-r from-white via-[#D4AF37] to-white mb-6 leading-tight"
+                className="text-3xl md:text-7xl font-black text-transparent bg-clip-text bg-linear-to-r from-white via-[#D4AF37] to-white mb-4 sm:mb-6 leading-tight"
               >
                 Next-Level Features
               </motion.h1>
@@ -456,7 +456,7 @@ export default function NextImprovementsClient({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="text-2xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed"
+                className="text-sm sm:text-2xl text-gray-300 max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed"
               >
                 Transform your LMS into a{" "}
                 <span className="text-[#D4AF37] font-bold">
@@ -470,10 +470,10 @@ export default function NextImprovementsClient({
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 }}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-linear-to-r from-orange-500/20 to-red-500/20 border-2 border-orange-500/40 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-4 py-3 sm:px-8 sm:py-4 rounded-2xl bg-linear-to-r from-orange-500/20 to-red-500/20 border-2 border-orange-500/40 backdrop-blur-sm"
               >
-                <Rocket className="w-6 h-6 text-orange-400" />
-                <span className="text-orange-300 font-bold text-lg">
+                <Rocket className="w-5 h-5 sm:w-6 sm:h-6 text-orange-400" />
+                <span className="text-orange-300 font-bold text-xs sm:text-lg">
                   Premium Add-Ons • Custom Pricing • Contact Developer
                 </span>
               </motion.div>

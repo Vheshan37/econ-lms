@@ -455,7 +455,7 @@ export default function ExamResultsPage() {
       : "Create exams and manage student marks";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       <ExamHeader
         title="Exam Results Management"
         subtitle={headerSubtitle}

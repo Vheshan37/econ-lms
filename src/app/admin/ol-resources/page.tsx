@@ -504,22 +504,22 @@ export default function OLResourcesPage() {
   const filteredResources = resources.filter((r) => r.type === activeTab);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg">
-              <BookOpen className="w-8 h-8 text-[#1a1a1a]" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg flex-shrink-0">
+              <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white mb-1">
+              <h1 className="text-xl sm:text-3xl font-bold text-white mb-1">
                 O/L Free Resources
               </h1>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-xs sm:text-sm">
                 Manage Ordinary Level free resources for students
               </p>
             </div>

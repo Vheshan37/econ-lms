@@ -346,23 +346,23 @@ export default function OnlineClassPage() {
 
   // ─── Render ─────────────────────────────────────────────
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header - Same as before */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-              <Video className="w-10 h-10 text-[#1a1a1a]" />
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
+              <Video className="w-7 h-7 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
                 Online Classes
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-xs sm:text-lg">
                 Schedule and manage live online sessions
-                <span className="ml-3 text-[#D4AF37] font-medium">
+                <span className="ml-2 sm:ml-3 text-[#D4AF37] font-medium">
                   {classes.length} Upcoming
                 </span>
               </p>

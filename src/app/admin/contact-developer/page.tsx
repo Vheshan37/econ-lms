@@ -86,25 +86,25 @@ export default function ContactDeveloperPage() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+    <div className="max-w-4xl mx-auto space-y-8 pb-12 w-full max-w-full overflow-hidden">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-10 shadow-2xl"
+        className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-10 shadow-2xl"
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-20 -mt-20" />
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-sm font-medium flex items-center gap-2">
+          <div className="flex items-center gap-3 mb-2 sm:mb-4">
+            <div className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-xs sm:text-sm font-medium flex items-center gap-2">
               <Mail className="w-4 h-4" />
               <span>Developer Support</span>
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-xl sm:text-4xl font-bold text-white mb-2 sm:mb-4">
             Contact Developer
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl">
+          <p className="text-gray-400 text-xs sm:text-lg max-w-2xl">
             Have a suggestion or found a bug? Send your requests directly to the
             developer team.
           </p>
@@ -153,7 +153,7 @@ export default function ContactDeveloperPage() {
         >
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 space-y-6"
+            className="bg-white rounded-3xl p-4 sm:p-8 shadow-sm border border-gray-100 space-y-6"
           >
             {status.type && (
               <motion.div

@@ -679,22 +679,22 @@ export default function ContentManagementPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-              <Layers className="w-10 h-10 text-[#1a1a1a]" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
+              <Layers className="w-7 h-7 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
                 Site Content
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-xs sm:text-lg">
                 Manage landing page content
               </p>
             </div>
@@ -707,43 +707,43 @@ export default function ContentManagementPage() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="bg-white p-1 rounded-xl border border-gray-200 shadow-sm h-14">
+        <TabsList className="bg-white p-1 rounded-xl border border-gray-200 shadow-sm h-auto flex flex-wrap gap-1 sm:h-14 sm:flex-nowrap">
           <TabsTrigger
             value="general"
-            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+            className="h-10 sm:h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-3 sm:px-6 gap-1.5 sm:gap-2 text-xs sm:text-sm flex-grow sm:flex-grow-0"
           >
-            <Layers className="w-4 h-4" /> General
+            <Layers className="w-4 h-4" /> <span className="hidden sm:inline">General</span>
           </TabsTrigger>
 
           <TabsTrigger
             value="banners"
-            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+            className="h-10 sm:h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-3 sm:px-6 gap-1.5 sm:gap-2 text-xs sm:text-sm flex-grow sm:flex-grow-0"
           >
-            <ImageIcon className="w-4 h-4" /> Banners
+            <ImageIcon className="w-4 h-4" /> <span className="hidden sm:inline">Banners</span>
           </TabsTrigger>
           <TabsTrigger
             value="features"
-            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+            className="h-10 sm:h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-3 sm:px-6 gap-1.5 sm:gap-2 text-xs sm:text-sm flex-grow sm:flex-grow-0"
           >
-            <Zap className="w-4 h-4" /> Features
+            <Zap className="w-4 h-4" /> <span className="hidden sm:inline">Features</span>
           </TabsTrigger>
           <TabsTrigger
             value="testimonials"
-            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+            className="h-10 sm:h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-3 sm:px-6 gap-1.5 sm:gap-2 text-xs sm:text-sm flex-grow sm:flex-grow-0"
           >
-            <MessageSquare className="w-4 h-4" /> Testimonials
+            <MessageSquare className="w-4 h-4" /> <span className="hidden sm:inline">Testimonials</span>
           </TabsTrigger>
           <TabsTrigger
             value="contact"
-            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+            className="h-10 sm:h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-3 sm:px-6 gap-1.5 sm:gap-2 text-xs sm:text-sm flex-grow sm:flex-grow-0"
           >
-            <Mail className="w-4 h-4" /> Contact
+            <Mail className="w-4 h-4" /> <span className="hidden sm:inline">Contact</span>
           </TabsTrigger>
           <TabsTrigger
             value="footer"
-            className="h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-6 gap-2"
+            className="h-10 sm:h-12 rounded-lg data-[state=active]:bg-[#D4AF37] data-[state=active]:text-[#1a1a1a] px-3 sm:px-6 gap-1.5 sm:gap-2 text-xs sm:text-sm flex-grow sm:flex-grow-0"
           >
-            <FileText className="w-4 h-4" /> Footer
+            <FileText className="w-4 h-4" /> <span className="hidden sm:inline">Footer</span>
           </TabsTrigger>
         </TabsList>
 

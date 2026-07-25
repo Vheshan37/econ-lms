@@ -32,12 +32,12 @@ export default function TestDrivePage() {
   };
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-gray-900">
+    <div className="space-y-8 w-full max-w-full overflow-hidden mx-auto">
+      <div className="flex flex-col gap-1 sm:gap-2">
+        <h1 className="text-xl sm:text-3xl font-bold text-gray-900">
           Test Drive: Restricted Player
         </h1>
-        <p className="text-gray-500">
+        <p className="text-xs sm:text-base text-gray-500">
           Verify the secure playback experience. This player prevents direct
           YouTube interactions, hiding native controls and blocking
           right-clicks.
@@ -45,22 +45,22 @@ export default function TestDrivePage() {
       </div>
 
       {/* Controls */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-        <div className="flex gap-4 items-end">
-          <div className="flex-1 space-y-2">
-            <label className="text-sm font-medium text-gray-700">
+      <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-end">
+          <div className="flex-1 space-y-2 w-full">
+            <label className="text-xs sm:text-sm font-medium text-gray-700">
               YouTube Video URL
             </label>
             <Input
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="e.g. https://www.youtube.com/watch?v=..."
-              className="bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+              className="bg-gray-50 border-gray-200 focus:bg-white transition-colors h-10 sm:h-12 text-sm"
             />
           </div>
           <Button
             onClick={handleLoadVideo}
-            className="bg-black text-white hover:bg-gray-800"
+            className="bg-black text-white hover:bg-gray-800 w-full sm:w-auto h-10 sm:h-12"
           >
             <Play className="w-4 h-4 mr-2" />
             Load Video

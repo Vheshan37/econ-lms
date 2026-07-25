@@ -384,24 +384,24 @@ export default function FreeResourcesPage() {
   const TabIcon = currentTab.icon;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-              <BookOpen className="w-10 h-10 text-[#1a1a1a]" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
+              <BookOpen className="w-7 h-7 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
                 Free Resources
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-xs sm:text-lg">
                 Manage public learning materials
-                <span className="ml-3 text-[#D4AF37] font-medium">
+                <span className="ml-2 sm:ml-3 text-[#D4AF37] font-medium">
                   {resources.length}{" "}
                   {resources.length === 1 ? "Resource" : "Resources"}
                 </span>
@@ -410,7 +410,7 @@ export default function FreeResourcesPage() {
           </div>
           <Button
             onClick={() => setIsAddingResource(true)}
-            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-12 px-6 font-bold shadow-lg shadow-[#D4AF37]/30"
+            className="bg-[#D4AF37] hover:bg-[#B5952F] text-[#1a1a1a] gap-2 h-10 sm:h-12 px-4 sm:px-6 font-bold shadow-lg shadow-[#D4AF37]/30 w-full md:w-auto justify-center"
           >
             <Plus className="w-5 h-5" />
             Add Resource
@@ -487,15 +487,15 @@ export default function FreeResourcesPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as ResourceType)}
-                className={`flex-1 relative px-6 py-4 font-medium transition-colors ${
+                className={`flex-grow md:flex-1 relative px-2 py-3 sm:px-6 sm:py-4 font-medium transition-colors ${
                   isActive
                     ? "text-gray-900"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
-                <div className="flex items-center justify-center gap-2">
-                  <Icon className={`w-5 h-5 ${isActive ? tab.color : ""}`} />
-                  <span>{tab.label}</span>
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${isActive ? tab.color : ""}`} />
+                  <span className="hidden sm:inline">{tab.label}</span>
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full ${
                       isActive
