@@ -277,7 +277,7 @@ export default function StudentLoginPage() {
                           }
                           onKeyDown={(e) => handleKeyDown(index, e)}
                           onPaste={handlePaste}
-                          className="w-12 h-14 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37] transition-all text-gray-900"
+                          className="w-9 h-11 min-[360px]:w-10 min-[360px]:h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37] transition-all text-gray-900"
                         />
                       ))}
                     </div>

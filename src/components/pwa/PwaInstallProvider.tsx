@@ -6,12 +6,16 @@ interface PwaInstallContextType {
   deferredPrompt: any;
   isInstallable: boolean;
   installApp: () => Promise<boolean>;
+  showInstructions: boolean;
+  setShowInstructions: (show: boolean) => void;
 }
 
 const PwaInstallContext = createContext<PwaInstallContextType>({
   deferredPrompt: null,
   isInstallable: false,
   installApp: async () => false,
+  showInstructions: false,
+  setShowInstructions: () => {},
 });
 
 export const usePwaInstall = () => useContext(PwaInstallContext);
@@ -23,6 +27,7 @@ export default function PwaInstallProvider({
 }) {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -78,6 +83,8 @@ export default function PwaInstallProvider({
         deferredPrompt,
         isInstallable,
         installApp,
+        showInstructions,
+        setShowInstructions,
       }}
     >
       {children}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import InstallBanner from "@/components/pwa/InstallBanner";
@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Menu,
   X,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,6 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AlertDialog } from "@/components/ui/alert-dialog";
+import { usePwaInstall } from "@/components/pwa/PwaInstallProvider";
 
 export default function StudentLayout({
   children,
@@ -36,7 +38,22 @@ export default function StudentLayout({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
+  const { isInstallable, installApp, setShowInstructions } = usePwaInstall();
+
+  const handleInstallClick = async () => {
+    if (isInstallable) {
+      const success = await installApp();
+      if (!success) setShowInstructions(true);
+    } else {
+      setShowInstructions(true);
+    }
+  };
   const handleLogout = async () => {
     await logout();
     router.push("/login");
@@ -186,6 +203,38 @@ export default function StudentLayout({
                 <ChevronLeft className="h-5 w-5" />
                 <span>Collapse Sidebar</span>
               </Button>
+            )}
+
+            {/* Install App Button */}
+            {mounted && !window.matchMedia("(display-mode: standalone)").matches && (
+              isCollapsed ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      onClick={handleInstallClick}
+                      className="w-full justify-center px-2 text-[#D4AF37] hover:text-[#B5952F] hover:bg-[#D4AF37]/10"
+                    >
+                      <Download className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="right"
+                    className="bg-[#D4AF37] text-[#1a1a1a] border-none"
+                  >
+                    Install App
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Button
+                  variant="ghost"
+                  onClick={handleInstallClick}
+                  className="w-full justify-start gap-3 text-[#D4AF37] hover:text-[#B5952F] hover:bg-[#D4AF37]/10"
+                >
+                  <Download className="h-5 w-5" />
+                  <span>Install App</span>
+                </Button>
+              )
             )}
 
             {/* Logout Button - Now at bottom */}

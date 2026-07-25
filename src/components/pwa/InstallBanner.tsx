@@ -6,9 +6,8 @@ import { Download, X, Smartphone, MoreVertical, Share } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function InstallBanner() {
-  const { isInstallable, installApp } = usePwaInstall();
+  const { isInstallable, installApp, showInstructions, setShowInstructions } = usePwaInstall();
   const [isVisible, setIsVisible] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
