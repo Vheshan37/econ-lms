@@ -45,8 +45,8 @@ export function MarksInputRow({
 }: MarksInputRowProps) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-end gap-4">
-        <div className="flex-1 flex flex-col gap-2">
+      <div className="flex flex-col md:flex-row md:items-end gap-4">
+        <div className="w-full md:flex-1 flex flex-col gap-2">
           <Label className="text-gray-700 ml-1 flex items-center gap-2">
             <Hash className="w-4 h-4 text-[#D4AF37]" />
             Index No
@@ -72,7 +72,7 @@ export function MarksInputRow({
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-2">
+        <div className="w-full md:flex-1 flex flex-col gap-2">
           <Label className="text-gray-700 ml-1 flex items-center gap-2">
             <User className="w-4 h-4 text-[#D4AF37]" />
             Student Name
@@ -87,7 +87,7 @@ export function MarksInputRow({
           />
         </div>
 
-        <div className="flex-1 flex flex-col gap-2">
+        <div className="w-full md:flex-1 flex flex-col gap-2">
           <Label className="text-gray-700 ml-1">Marks (0-100)</Label>
           <Input
             type="number"
@@ -102,11 +102,11 @@ export function MarksInputRow({
           />
         </div>
 
-        <div className="flex gap-2 items-end">
+        <div className="flex gap-2 items-end w-full md:w-auto">
           <Button
             onClick={onAddOrUpdate}
             disabled={isBlocked}
-            className={`h-12 px-6 font-bold rounded-xl shadow-lg transition-all gap-2 whitespace-nowrap ${
+            className={`h-12 px-6 font-bold rounded-xl shadow-lg transition-all gap-2 w-full md:w-auto justify-center whitespace-nowrap ${
               isBlocked
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-[#D4AF37] to-[#B5952F] hover:opacity-90 text-[#1a1a1a] shadow-[#D4AF37]/20"
@@ -133,7 +133,7 @@ export function MarksInputRow({
             <Button
               onClick={onClear}
               variant="outline"
-              className="h-12 px-4 rounded-xl border-gray-300"
+              className="h-12 px-4 rounded-xl border-gray-300 flex-shrink-0"
             >
               <X className="w-4 h-4" />
             </Button>
