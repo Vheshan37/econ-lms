@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { fmGemunu, impact, rubikDoodle, sinhalaFont } from "./fonts";
 import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import PwaInstallProvider from "@/components/pwa/PwaInstallProvider";
+import ServiceWorkerRegister from "@/components/pwa/ServiceWorkerRegister";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +41,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body
         className={`
           ${geistSans.variable} 
@@ -49,7 +54,10 @@ export default function RootLayout({
           ${sinhalaFont.variable} 
           antialiased`}
       >
-        <SmoothScroll>{children}</SmoothScroll>
+        <PwaInstallProvider>
+          <ServiceWorkerRegister />
+          <SmoothScroll>{children}</SmoothScroll>
+        </PwaInstallProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import InstallBanner from "@/components/pwa/InstallBanner";
 import {
   LayoutDashboard,
   BookOpen,
@@ -11,9 +12,11 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
+  Menu,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { logout } from "@/lib/actions/auth";
 import {
   Tooltip,
@@ -32,6 +35,7 @@ export default function StudentLayout({
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -43,6 +47,13 @@ export default function StudentLayout({
     { name: "My Classes", href: "/student/classes", icon: GraduationCap },
     { name: "All Resources", href: "/student/resources", icon: BookOpen },
     { name: "Free Resources", href: "/student/free-resources", icon: BookOpen },
+    { name: "Profile", href: "/student/profile", icon: User },
+  ];
+
+  const mobileBottomNavigation = [
+    { name: "Dashboard", href: "/student/dashboard", icon: LayoutDashboard },
+    { name: "Classes", href: "/student/classes", icon: GraduationCap },
+    { name: "Resources", href: "/student/resources", icon: BookOpen },
     { name: "Profile", href: "/student/profile", icon: User },
   ];
 
@@ -221,21 +232,124 @@ export default function StudentLayout({
         />
 
         {/* Mobile Sidebar */}
-        <div className="md:hidden fixed top-0 left-0 right-0 bg-[#1a1a1a] border-b border-gray-800 z-10 p-4">
+        <div className="md:hidden fixed top-0 left-0 right-0 bg-[#1a1a1a] border-b border-gray-800 z-30 p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
               <span className="text-[#1a1a1a] font-bold text-lg">E</span>
             </div>
             <h1 className="text-xl font-bold text-white">Econ LMS</h1>
           </div>
+          <button
+            onClick={() => setIsMobileOpen(!isMobileOpen)}
+            className="p-1.5 hover:bg-white/5 text-gray-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
         </div>
+
+        {/* Mobile Drawer */}
+        <AnimatePresence>
+          {isMobileOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileOpen(false)}
+                className="fixed inset-0 bg-black z-40 md:hidden"
+              />
+              {/* Drawer */}
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="fixed top-0 bottom-0 left-0 w-72 bg-[#1a1a1a] border-r border-gray-800 z-50 p-6 flex flex-col justify-between shadow-2xl md:hidden"
+              >
+                <div>
+                  <div className="flex items-center justify-between pb-6 border-b border-gray-800 mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
+                        <span className="text-[#1a1a1a] font-bold text-lg">E</span>
+                      </div>
+                      <h1 className="text-xl font-bold text-white">Econ LMS</h1>
+                    </div>
+                    <button
+                      onClick={() => setIsMobileOpen(false)}
+                      className="p-1.5 hover:bg-white/5 text-gray-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <nav className="space-y-2">
+                    {navigation.map((item) => {
+                      const isActive = pathname === item.href;
+                      return (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={() => setIsMobileOpen(false)}
+                          className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                            isActive
+                              ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                              : "text-gray-400 hover:text-white hover:bg-white/5"
+                          }`}
+                        >
+                          <item.icon className="w-5 h-5" />
+                          {item.name}
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                <div className="pt-6 border-t border-gray-800">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setIsMobileOpen(false);
+                      setIsLogoutDialogOpen(true);
+                    }}
+                    className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span>Logout</span>
+                  </Button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
         {/* Main Content */}
         <main
-          className={`flex-1 transition-all duration-300 ${isCollapsed ? "md:ml-20" : "md:ml-64"} pt-20 md:pt-8 p-4 md:p-8`}
+          className={`flex-1 transition-all duration-300 ${isCollapsed ? "md:ml-20" : "md:ml-64"} pt-20 md:pt-8 pb-24 md:pb-8 p-4 md:p-8`}
         >
           {children}
         </main>
+
+        {/* Mobile Bottom Navigation Bar */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-gray-800 z-30 p-2 flex items-center justify-around shadow-2xl">
+          {mobileBottomNavigation.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl transition-all cursor-pointer ${
+                  isActive ? "text-[#D4AF37]" : "text-gray-400 hover:text-white"
+                }`}
+              >
+                <item.icon className="w-5.5 h-5.5" />
+                <span className="text-[10px] font-medium tracking-wide">{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        <InstallBanner />
       </div>
     </TooltipProvider>
   );
