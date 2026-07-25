@@ -43,32 +43,32 @@ export default async function StudentClassTypesPage({
     classTypes.length > 0 ? classTypes[0].year.year : "Academic Year";
 
   return (
-    <div className="space-y-8">
-      <div className="mx-auto space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
+      <div className="mx-auto space-y-8 w-full max-w-full">
         {/* Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <Link href="/student/classes">
                 <Button
                   variant="ghost"
-                  className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
+                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0 flex-shrink-0"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </Link>
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-medium flex items-center gap-2">
+                <div className="flex items-center gap-3 mb-1 sm:mb-2">
+                  <div className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] sm:text-xs font-medium flex items-center gap-1.5">
                     <BookOpen className="w-3 h-3" />
                     <span>Academic Year</span>
                   </div>
                 </div>
-                <h1 className="text-4xl font-bold text-white">{yearName}</h1>
-                <p className="text-gray-400 mt-2 max-w-xl">
+                <h1 className="text-xl sm:text-4xl font-bold text-white">{yearName}</h1>
+                <p className="text-gray-400 mt-1 text-xs sm:text-sm max-w-xl">
                   Select a class type to view topics and resources.
                 </p>
               </div>
@@ -77,7 +77,7 @@ export default async function StudentClassTypesPage({
         </div>
 
         {/* Class Types Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {classTypes.length > 0 ? (
             classTypes.map((classType: any) => {
               const isDefault = Object.keys(DEFAULT_TYPES).includes(
@@ -99,14 +99,14 @@ export default async function StudentClassTypesPage({
                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-2xl -ml-16 -mb-16 pointer-events-none" />
 
                   {/* Content */}
-                  <div className="relative z-10 p-8">
+                  <div className="relative z-10 p-5 sm:p-8">
                     {/* Icon Badge */}
-                    <div className="h-16 w-16 rounded-2xl flex items-center justify-center mb-6 bg-gradient-to-br from-[#D4AF37] to-[#B5952F] shadow-lg shadow-[#D4AF37]/30">
-                      <Icon className="w-8 h-8 text-[#1a1a1a]" />
+                    <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 bg-gradient-to-br from-[#D4AF37] to-[#B5952F] shadow-lg shadow-[#D4AF37]/30">
+                      <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-[#1a1a1a]" />
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-4xl font-bold mb-2 text-white">
+                    <h3 className="text-xl sm:text-4xl font-bold mb-1 sm:mb-2 text-white">
                       {classType.name}
                     </h3>
 

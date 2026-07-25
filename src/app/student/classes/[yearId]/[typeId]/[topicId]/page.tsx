@@ -57,30 +57,30 @@ export default async function StudentTopicResourcesPage({
       : [];
 
   return (
-    <div className="space-y-8">
-      <div className="mx-auto space-y-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
+      <div className="mx-auto space-y-8 w-full max-w-full">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <Link href={`/student/classes/${yearId}/${typeId}`}>
                 <Button
                   variant="ghost"
-                  className="h-12 w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0"
+                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 p-0 flex-shrink-0"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </Link>
               <div>
-                <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">
                   <span className="text-[#D4AF37] font-medium">Resources</span>
                 </div>
-                <h1 className="text-4xl font-bold text-white">
+                <h1 className="text-xl sm:text-4xl font-bold text-white">
                   Topic Materials
                 </h1>
-                <p className="text-gray-400 mt-2 max-w-xl">
+                <p className="text-gray-400 mt-1 text-xs sm:text-sm max-w-xl">
                   Access videos, notes, and quizzes for this topic.
                 </p>
               </div>

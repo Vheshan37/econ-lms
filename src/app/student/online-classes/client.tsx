@@ -391,24 +391,24 @@ export default function OnlineClassesClient({
   const totalSessions = filteredSessions.length;
 
   return (
-    <div className="flex flex-col h-full space-y-8">
+    <div className="flex flex-col h-full space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl shrink-0">
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl shrink-0">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
 
         <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30">
-              <Video className="w-10 h-10 text-[#1a1a1a]" />
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-linear-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/30 flex-shrink-0">
+              <Video className="w-7 h-7 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
                 Online Classes
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-xs sm:text-lg">
                 Join your upcoming live sessions
-                <span className="ml-3 text-[#D4AF37] font-medium">
+                <span className="ml-2 sm:ml-3 text-[#D4AF37] font-medium">
                   {totalSessions} Session{totalSessions !== 1 ? "s" : ""}
                 </span>
               </p>
@@ -418,9 +418,9 @@ export default function OnlineClassesClient({
       </div>
 
       {/* Filters & Tabs Container - Flex column to fill remaining space */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex-1 flex flex-col min-h-0">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex-1 flex flex-col min-h-0 w-full max-w-full">
         {/* Search Bar - Shrinkable */}
-        <div className="p-6 border-b border-gray-200 bg-gray-50/50 shrink-0">
+        <div className="p-4 sm:p-6 border-b border-gray-200 bg-gray-50/50 shrink-0">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
@@ -433,7 +433,7 @@ export default function OnlineClassesClient({
         </div>
 
         {/* Tabs - Shrinkable */}
-        <div className="flex border-b border-gray-200 overflow-x-auto shrink-0">
+        <div className="w-full flex border-b border-gray-200 overflow-x-auto shrink-0 scrollbar-none">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -453,15 +453,15 @@ export default function OnlineClassesClient({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TabType)}
-                className={`flex-1 min-w-[120px] relative px-6 py-4 font-medium transition-colors ${
+                className={`flex-grow md:flex-1 min-w-[60px] sm:min-w-[120px] relative px-2 py-3 sm:px-6 sm:py-4 font-medium transition-colors ${
                   isActive
                     ? "text-gray-900"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
-                <div className="flex items-center justify-center gap-2">
-                  <Icon className={`w-5 h-5 ${isActive ? tab.color : ""}`} />
-                  <span className="whitespace-nowrap">{tab.label}</span>
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${isActive ? tab.color : ""}`} />
+                  <span className="hidden sm:inline whitespace-nowrap">{tab.label}</span>
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full ${
                       isActive

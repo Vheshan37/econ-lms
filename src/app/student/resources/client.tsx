@@ -168,7 +168,7 @@ export default function ResourcesClient({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
@@ -195,7 +195,7 @@ export default function ResourcesClient({
       </div>
 
       {/* Filters & Tabs Container */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden w-full max-w-full">
         {/* Search and Year Filter */}
         <div className="p-4 sm:p-6 border-b border-gray-200 bg-gray-50/50">
           <div className="flex flex-col md:flex-row gap-4">
@@ -238,15 +238,15 @@ export default function ResourcesClient({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 min-w-[120px] relative px-6 py-4 font-medium transition-colors ${
+                className={`flex-grow md:flex-1 min-w-[60px] sm:min-w-[120px] relative px-2 py-3 sm:px-6 sm:py-4 font-medium transition-colors ${
                   isActive
                     ? "text-gray-900"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
-                <div className="flex items-center justify-center gap-2">
-                  <Icon className={`w-5 h-5 ${isActive ? tab.color : ""}`} />
-                  <span className="whitespace-nowrap">{tab.label}</span>
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${isActive ? tab.color : ""}`} />
+                  <span className="hidden sm:inline whitespace-nowrap">{tab.label}</span>
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full ${
                       isActive

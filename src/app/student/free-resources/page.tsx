@@ -127,7 +127,7 @@ export default function StudentFreeResourcesPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
       <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl" />
@@ -159,16 +159,16 @@ export default function StudentFreeResourcesPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as ResourceType)}
-              className={`flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-6 sm:py-3 font-medium transition-all relative whitespace-nowrap text-sm ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2.5 sm:px-6 sm:py-3 font-medium transition-all relative whitespace-nowrap text-sm ${
                 activeTab === tab.id
                   ? "text-[#1a1a1a]"
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <Icon
-                className={`w-5 h-5 ${activeTab === tab.id ? tab.color : ""}`}
+                className={`w-4 h-4 sm:w-5 sm:h-5 ${activeTab === tab.id ? tab.color : ""}`}
               />
-              {tab.label}
+              <span className="hidden sm:inline">{tab.label}</span>
               <span
                 className={`text-xs px-2 py-0.5 rounded-full ${
                   activeTab === tab.id ? "bg-gray-200" : "bg-gray-100"

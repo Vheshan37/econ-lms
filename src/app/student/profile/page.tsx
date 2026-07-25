@@ -40,20 +40,20 @@ export default async function StudentProfilePage() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-full overflow-hidden">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-8 shadow-2xl border border-gray-800">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1a1a] via-[#2a2a2a] to-[#1a1a1a] p-4 sm:p-8 shadow-2xl border border-gray-800">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-6">
-            <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
-              <User className="w-10 h-10 text-[#1a1a1a]" />
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20 flex-shrink-0">
+              <User className="w-7 h-7 sm:w-10 sm:h-10 text-[#1a1a1a]" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
-              <p className="text-gray-400 text-lg">
+              <h1 className="text-xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">My Profile</h1>
+              <p className="text-gray-400 text-xs sm:text-lg">
                 View your account information and assigned classes
               </p>
             </div>
@@ -63,13 +63,13 @@ export default async function StudentProfilePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Personal Information */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
             Personal Information
           </h2>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl">
               <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#B5952F] flex items-center justify-center shadow-sm">
                 <User className="w-6 h-6 text-white" />
               </div>
@@ -79,35 +79,35 @@ export default async function StudentProfilePage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-              <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center">
+            <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl">
+              <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
                 <Mail className="w-6 h-6 text-purple-600" />
               </div>
               <div>
                 <div className="text-sm text-gray-500">Email Address</div>
-                <div className="font-medium text-gray-900">{profile.email}</div>
+                <div className="font-medium text-gray-900 break-all text-sm sm:text-base">{profile.email}</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-              <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
+            <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl">
+              <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
                 <School className="w-6 h-6 text-green-600" />
               </div>
               <div>
                 <div className="text-sm text-gray-500">School</div>
-                <div className="font-medium text-gray-900">
+                <div className="font-medium text-gray-900 text-sm sm:text-base">
                   {profile.school}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-              <div className="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center">
+            <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl">
+              <div className="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0">
                 <Calendar className="w-6 h-6 text-orange-600" />
               </div>
               <div>
                 <div className="text-sm text-gray-500">Date of Birth</div>
-                <div className="font-medium text-gray-900">
+                <div className="font-medium text-gray-900 text-sm sm:text-base">
                   {new Date(profile.dateOfBirth).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -120,13 +120,13 @@ export default async function StudentProfilePage() {
         </div>
 
         {/* Account Status */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
             Account Status
           </h2>
 
-          <div className="space-y-4">
-            <div className="p-4 bg-green-50 rounded-xl border border-green-200">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="p-3 sm:p-4 bg-green-50 rounded-xl border border-green-200">
               <div className="flex items-center gap-2 mb-2">
                 <div className="h-2 w-2 rounded-full bg-green-500" />
                 <span className="text-sm font-medium text-green-700">
@@ -138,9 +138,9 @@ export default async function StudentProfilePage() {
               </p>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-xl">
+            <div className="p-3 sm:p-4 bg-gray-50 rounded-xl">
               <div className="text-sm text-gray-500 mb-1">Member Since</div>
-              <div className="font-medium text-gray-900">
+              <div className="font-medium text-gray-900 text-sm sm:text-base">
                 {new Date(profile.createdAt).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
@@ -148,9 +148,9 @@ export default async function StudentProfilePage() {
               </div>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-xl">
+            <div className="p-3 sm:p-4 bg-gray-50 rounded-xl">
               <div className="text-sm text-gray-500 mb-1">Total Classes</div>
-              <div className="font-medium text-gray-900">
+              <div className="font-medium text-gray-900 text-sm sm:text-base">
                 {profile.classAssignments.length}
               </div>
             </div>
@@ -159,8 +159,8 @@ export default async function StudentProfilePage() {
       </div>
 
       {/* Assigned Classes */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
           Assigned Classes
         </h2>
 
@@ -177,7 +177,7 @@ export default async function StudentProfilePage() {
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ml-13">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ml-0 sm:ml-13">
                   {yearGroup.classTypes.map((classType: any) => (
                     <div
                       key={classType.id}
