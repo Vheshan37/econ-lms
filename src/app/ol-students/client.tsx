@@ -707,13 +707,6 @@ export default function OLStudentsClient({
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto space-y-6"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-full text-[#fdf021] text-sm font-medium">
-              <Sparkles className="w-4 h-4" />
-              <span>
-                {pageSettings?.hero?.badge || "Calling all O/L Students"}
-              </span>
-            </div>
-
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
               {pageSettings?.hero?.title ? (
                 <span

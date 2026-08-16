@@ -112,10 +112,6 @@ export function AboutPageClient({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-full text-[#fdf021] text-sm font-medium uppercase tracking-wider mb-6">
-              <span className="w-2 h-2 bg-[#fdf021] rounded-full animate-pulse" />
-              Sri Lanka&apos;s Premier Economics Education Platform
-            </span>
             <h1 className="text-5xl md:text-7xl leading-tight font-impact">
               <span>About Quality </span>
               <span className="font-fm-gemunu text-[#fdf021] font-black text-6xl md:text-8xl">

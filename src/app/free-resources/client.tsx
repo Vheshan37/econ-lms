@@ -252,9 +252,6 @@ export default function FreeResourcesClient({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <span className="inline-block px-4 py-1.5 bg-[#fdf021]/10 text-[#fdf021] rounded-full text-sm font-bold tracking-wide mb-6 uppercase border border-[#fdf021]/20">
-                Knowledge Hub
-              </span>
               <h1 className="text-4xl md:text-6xl font-normal text-white mb-6 font-doodle tracking-wider">
                 Free{" "}
                 <span className="text-[#fdf021]">
