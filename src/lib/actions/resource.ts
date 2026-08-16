@@ -10,7 +10,7 @@ export async function createResource(data: {
   type: ResourceType;
   url: string;
   description?: string;
-  year?: Date | null;
+  year?: number | null;
   month?: number | null;
 }) {
   try {
@@ -59,7 +59,7 @@ export async function updateResource(
     type: ResourceType;
     url: string;
     description?: string;
-    year?: Date | null;
+    year?: number | null;
     month?: number | null;
   },
 ) {

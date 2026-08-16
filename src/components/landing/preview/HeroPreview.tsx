@@ -33,8 +33,7 @@ export function HeroPreview({ data }: HeroPreviewProps) {
           transition={{ duration: 0.8 }}
           className="space-y-8"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf021]/10 border border-[#fdf021]/20 rounded-full text-[#fdf021] text-sm font-medium tracking-wider uppercase">
-            <span className="w-2 h-2 bg-[#fdf021] rounded-full animate-pulse" />
+          <div className="text-[#fdf021] text-sm font-semibold tracking-wider uppercase ml-1">
             #1 Economics Class in Sri Lanka
           </div>
 

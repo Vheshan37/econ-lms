@@ -116,7 +116,7 @@ export function AddResourceModal({
         type: selectedType,
         url: url.trim(),
         description: description.trim() || undefined,
-        year: selectedYear ? new Date(`${selectedYear}-01-01`) : null,
+        year: selectedYear || null,
         month: selectedMonth,
       });
 
